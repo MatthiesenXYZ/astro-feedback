@@ -6,11 +6,12 @@
 		"jsx": "preserve",
 		"baseUrl": ".",
 		"paths": {
-			"~routes/*": ["routes/*"],
-			"~db/*": ["db/*"],
+			"~src/*": ["src/*"],
 			"~lib/*": ["src/lib/*"],
 			"~types/*": ["src/types/*"],
-			"~schemas/*": ["src/schemas/*"]
+			"~schemas/*": ["src/schemas/*"],
+			"~stubs/*": ["src/stubs/*"],
+			"~utils/*": ["src/utils/*"]
 		}
 	},
 	"exclude": ["dist"]

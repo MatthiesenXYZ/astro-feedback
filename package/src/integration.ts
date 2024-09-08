@@ -1,10 +1,11 @@
-import { defineIntegration } from "astro-integration-kit";
-import { AstroFeedbackOptionsSchema as optionsSchema } from "~schemas/index.ts";
-import { name } from "../package.json";
 import { integrationLogger } from "@matthiesenxyz/integration-utils/astroUtils";
+import { addVirtualImports, defineIntegration } from "astro-integration-kit";
 import { infoLoggerOpts } from "~lib/LoggerOpts.ts";
-import type { AstroDBIntegrationParams } from "~types/index.ts";
-import { dbConfigEntrypoint, middlewareConfig } from "./consts.ts";
+import { AstroFeedbackOptionsSchema as optionsSchema } from "~schemas/index.ts";
+import { dbConfigEntrypoint, middlewareConfig } from "~src/consts.ts";
+import configDtsFile from "~stubs/config.ts";
+import type { AstroDBIntegrationParams } from "~types/astroHooks.ts";
+import { name } from "../package.json";
 
 /**
  * Astro Feedback integration.
@@ -12,7 +13,7 @@ import { dbConfigEntrypoint, middlewareConfig } from "./consts.ts";
 export const astroFeedback = defineIntegration({
 	name,
 	optionsSchema,
-	setup({ options: { verbose } }) {
+	setup({ name, options, options: { verbose } }) {
 		return {
 			hooks: {
 				"astro:db:setup": ({ extendDb }: AstroDBIntegrationParams) => {
@@ -30,6 +31,21 @@ export const astroFeedback = defineIntegration({
 
 					// Add the Astro Feedback Middleware
 					addMiddleware(middlewareConfig);
+
+					// Add virtual modules for Astro Feedback
+					addVirtualImports(params, {
+						name,
+						imports: {
+							"astro-feedback:config": `export default ${JSON.stringify(options)}`,
+						},
+					});
+				},
+				"astro:config:done": async ({ injectTypes }) => {
+					// Inject the Astro Feedback types
+					injectTypes({
+						filename: "config.d.ts",
+						content: configDtsFile,
+					});
 				},
 			},
 		};

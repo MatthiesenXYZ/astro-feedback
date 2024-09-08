@@ -1,11 +1,11 @@
 import { asDrizzleTable } from "@astrojs/db/utils";
 import {
-	AstroFeedbackUser,
-	AstroFeedbackSession,
 	AstroFeedbackAdmin,
 	AstroFeedbackProject,
+	AstroFeedbackSession,
 	AstroFeedbackSubmission,
 	AstroFeedbackTeam,
+	AstroFeedbackUser,
 } from "./tables.ts";
 
 /**

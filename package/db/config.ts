@@ -1,12 +1,12 @@
 /// <Reference types="@astrojs/db" />
 import { defineDb } from "astro:db";
 import {
-	AstroFeedbackSession,
-	AstroFeedbackUser,
 	AstroFeedbackAdmin,
 	AstroFeedbackProject,
+	AstroFeedbackSession,
 	AstroFeedbackSubmission,
 	AstroFeedbackTeam,
+	AstroFeedbackUser,
 } from "./tables.ts";
 
 export default defineDb({

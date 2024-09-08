@@ -3,7 +3,7 @@
 	"private": true,
 	"packageManager": "pnpm@9.9.0",
 	"engines": {
-		"node": ">=18.20.3"
+		"node": ">=20.10"
 	},
 	"scripts": {
 		"package:dev": "pnpm --filter package-name dev",
@@ -14,7 +14,9 @@
 		"lint:fix": "biome check --apply ."
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.8.3",
-		"@changesets/cli": "^2.27.7"
+		"@biomejs/biome": "catalog:",
+		"@changesets/cli": "catalog:",
+		"@changesets/config": "catalog:",
+		"typescript": "catalog:"
 	}
 }

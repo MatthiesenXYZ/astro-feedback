@@ -1,5 +1,5 @@
 /// <Reference types="@astrojs/db" />
-import { defineTable, column, NOW } from "astro:db";
+import { NOW, column, defineTable } from "astro:db";
 
 /**
  * Astro Feedback User table.

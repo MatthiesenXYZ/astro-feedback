@@ -1,7 +1,7 @@
+import { db } from "astro:db";
 import { Lucia } from "lucia";
 import { AstroDBAdapter } from "lucia-adapter-astrodb";
-import { db } from "astro:db";
-import { tsUser, tsSession } from "../../db/tsTables.ts";
+import { tsSession, tsUser } from "../../db/tsTables.ts";
 
 const astroDB = new AstroDBAdapter(db, tsSession, tsUser);
 

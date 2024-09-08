@@ -1,7 +1,7 @@
-import type { Router } from "./lib/types.ts";
-import { lucia } from "./lib/auth.ts";
 import { verifyRequestOrigin } from "lucia";
+import { lucia } from "./lib/auth.ts";
 import { defineMiddlewareRouter } from "./lib/middlewareRouter.ts";
+import type { Router } from "./lib/types.ts";
 
 // Define a middleware router that routes requests to different handlers based on the request path.
 const router: Router = {
