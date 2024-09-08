@@ -15,11 +15,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18.19.0
+          node-version: 20.10
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm ci:install
 
       - name: Build
-        run: pnpm --filter package-name build
+        run: pnpm package:build

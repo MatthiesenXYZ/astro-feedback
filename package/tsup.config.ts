@@ -6,14 +6,14 @@ export default defineConfig((options) => {
 	return {
 		entry: ["src/**/*.(ts|js)"],
 		format: ["esm"],
-		target: "node18",
+		target: "esnext",
 		bundle: true,
 		dts: true,
 		sourcemap: true,
 		clean: true,
 		splitting: false,
 		minify: !dev,
-		external: [...Object.keys(peerDependencies), "astro:db"],
+		external: [...Object.keys(peerDependencies)],
 		tsconfig: "tsconfig.json",
 	};
 });
