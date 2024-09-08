@@ -1,11 +1,11 @@
 {
-	"name": "package-name",
+	"name": "@matthiesenxyz/astro-feedback",
 	"version": "0.0.0",
 	"description": "TODO:",
 	"author": {
-		"email": "TODO:",
-		"name": "TODO:",
-		"url": "TODO:"
+		"email": "adam@matthiesen.xyz",
+		"name": "Adam Matthiesen",
+		"url": "https://matthiesen.xyz"
 	},
 	"license": "MIT",
 	"keywords": [
@@ -13,9 +13,9 @@
 		"astro-component",
 		"withastro",
 		"astro",
-		"TODO:"
+		"feedback"
 	],
-	"homepage": "TODO:",
+	"homepage": "https://github.com/matthiesenxyz/astro-feedback",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -24,6 +24,10 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
+		},
+		"./schema": {
+			"types": "./dist/schema.d.ts",
+			"default": "./dist/schema.js"
 		}
 	},
 	"files": ["dist"],
@@ -33,9 +37,11 @@
 	},
 	"type": "module",
 	"peerDependencies": {
+		"@astrojs/db": "^0.14.1",
 		"astro": "^4.15.1"
 	},
 	"dependencies": {
+		"@matthiesenxyz/integration-utils": "^0.2.0",
 		"astro-integration-kit": "^0.16.1"
 	},
 	"devDependencies": {

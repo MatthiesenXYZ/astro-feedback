@@ -1,4 +1,4 @@
-# `package-name`
+# `@matthiesenxyz/astro-feedback`
 
 This is an [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) that TODO:description
 
@@ -13,15 +13,15 @@ TODO:
 Install the integration **automatically** using the Astro CLI:
 
 ```bash
-pnpm astro add package-name
+pnpm astro add @matthiesenxyz/astro-feedback
 ```
 
 ```bash
-npx astro add package-name
+npx astro add @matthiesenxyz/astro-feedback
 ```
 
 ```bash
-yarn astro add package-name
+yarn astro add @matthiesenxyz/astro-feedback
 ```
 
 Or install it **manually**:
@@ -29,25 +29,25 @@ Or install it **manually**:
 1. Install the required dependencies
 
 ```bash
-pnpm add package-name
+pnpm add @matthiesenxyz/astro-feedback
 ```
 
 ```bash
-npm install package-name
+npm install @matthiesenxyz/astro-feedback
 ```
 
 ```bash
-yarn add package-name
+yarn add @matthiesenxyz/astro-feedback
 ```
 
 2. Add the integration to your astro config
 
 ```diff
-+import integration from "package-name";
++import astroFeedback from "@matthiesenxyz/astro-feedback";
 
 export default defineConfig({
   integrations: [
-+    integration(),
++    astroFeedback(),
   ],
 });
 ```
@@ -79,8 +79,8 @@ You can now edit files in `package`. Please note that making changes to those fi
 
 ## Licensing
 
-[MIT Licensed](https://github.com/TODO:/blob/main/LICENSE). Made with ❤️ by [TODO:](https://github.com/TODO:).
+[MIT Licensed](https://github.com/matthiesenxyz/astro-feedback/blob/main/LICENSE). Made with ❤️ by [Adam Matthiesen](https://github.com/adammatthiesen).
 
 ## Acknowledgements
 
-TODO:
+[astro-integration-template(kit)](https://github.com/florian-lefebvre/astro-integration-template) by Florian Lefebvre.

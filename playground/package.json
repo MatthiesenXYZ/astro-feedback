@@ -11,10 +11,10 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"@astrojs/tailwind": "^5.1.0",
+		"@astrojs/db": "^0.14.1",
+		"@matthiesenxyz/astro-feedback": "workspace:*",
 		"astro": "^4.15.1",
 		"astro-integration-kit": "^0.16.1",
-		"package-name": "workspace:*",
 		"tailwindcss": "^3.4.10"
 	},
 	"devDependencies": {

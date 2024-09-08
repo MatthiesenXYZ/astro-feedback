@@ -1,15 +1,17 @@
-import tailwind from "@astrojs/tailwind";
+import { defineConfig } from "astro/config";
 import { createResolver } from "astro-integration-kit";
 import { hmrIntegration } from "astro-integration-kit/dev";
-import { defineConfig } from "astro/config";
+import db from "@astrojs/db";
 
-const { default: packageName } = await import("package-name");
+const { default: astroFeedback } = await import(
+	"@matthiesenxyz/astro-feedback"
+);
 
 // https://astro.build/config
 export default defineConfig({
 	integrations: [
-		tailwind(),
-		packageName(),
+		db(),
+		astroFeedback({ verbose: true }),
 		hmrIntegration({
 			directory: createResolver(import.meta.url).resolve("../package/dist"),
 		}),
