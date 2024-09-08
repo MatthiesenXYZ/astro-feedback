@@ -16,4 +16,9 @@ export default defineConfig({
 			directory: createResolver(import.meta.url).resolve("../package/dist"),
 		}),
 	],
+	vite: {
+		optimizeDeps: {
+			exclude: ["astro:db"],
+		},
+	},
 });

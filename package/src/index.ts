@@ -1,3 +1,5 @@
-import { integration } from "./integration.js";
+import { astroFeedback } from "./integration.ts";
+import type { AstroFeedbackOptions } from "./schemas/index.ts";
 
-export default integration;
+export default astroFeedback;
+export type { AstroFeedbackOptions };

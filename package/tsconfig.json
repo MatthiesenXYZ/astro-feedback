@@ -3,7 +3,15 @@
 	"compilerOptions": {
 		"module": "Node16",
 		"moduleResolution": "Node16",
-		"jsx": "preserve"
+		"jsx": "preserve",
+		"baseUrl": ".",
+		"paths": {
+			"~routes/*": ["routes/*"],
+			"~db/*": ["db/*"],
+			"~lib/*": ["src/lib/*"],
+			"~types/*": ["src/types/*"],
+			"~schemas/*": ["src/schemas/*"]
+		}
 	},
 	"exclude": ["dist"]
 }
