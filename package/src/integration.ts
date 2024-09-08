@@ -3,7 +3,7 @@ import { addVirtualImports, defineIntegration } from "astro-integration-kit";
 import { infoLoggerOpts } from "~lib/LoggerOpts.ts";
 import { AstroFeedbackOptionsSchema as optionsSchema } from "~schemas/index.ts";
 import { dbConfigEntrypoint, middlewareConfig } from "~src/consts.ts";
-import configDtsFile from "~stubs/config.ts";
+import configDts from "~stubs/config.ts";
 import type { AstroDBIntegrationParams } from "~types/astroHooks.ts";
 import { name } from "../package.json";
 
@@ -40,12 +40,9 @@ export const astroFeedback = defineIntegration({
 						},
 					});
 				},
-				"astro:config:done": async ({ injectTypes }) => {
+				"astro:config:done": ({ injectTypes }) => {
 					// Inject the Astro Feedback types
-					injectTypes({
-						filename: "config.d.ts",
-						content: configDtsFile,
-					});
+					injectTypes(configDts);
 				},
 			},
 		};
