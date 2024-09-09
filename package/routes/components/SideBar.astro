@@ -1,16 +1,25 @@
 ---
+import type { RouteMap } from 'astro-feedback:routes';
+import { Image } from 'astro:assets';
+import Logo from '../assets/astrofeedback-logo.webp';
 import SideBarFooter from './SideBarFooter.astro';
 import SideBarMenu from './SideBarMenu.astro';
-const { sideBarActiveItemID } = Astro.props;
+
+interface Props {
+	r: RouteMap;
+	sideBarActiveItemID?: string | undefined;
+}
+
+const { sideBarActiveItemID, r } = Astro.props;
 ---
 
 <div class="drawer-side z-40">
   <label for="my-drawer" class="drawer-overlay"></label>
   <aside class="px-2 pt-2 h-auto min-h-full w-[19rem] bg-base-200 text-base-content flex flex-col">
     <div class="w-fit mx-auto mt-5 mb-6">
-        <div class="text-2xl font-bold py-1">Astro Feedback 🚀</div>
+        <div class="text-2xl font-bold py-1">Astro Feedback  <Image src={Logo} height={48} width={48} alt="Logo" loading={'eager'}/></div>
     </div>
-    <SideBarMenu sideBarActiveItemID={sideBarActiveItemID} />
-    <SideBarFooter />
+    <SideBarMenu sideBarActiveItemID={sideBarActiveItemID} r={r} />
+    <SideBarFooter r={r} />
   </aside>
 </div>

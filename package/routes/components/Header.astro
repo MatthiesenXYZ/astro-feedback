@@ -1,10 +1,15 @@
 ---
+import type { RouteMap } from 'astro-feedback:routes';
+import { Image } from 'astro:assets';
+import Logo from '../assets/astrofeedback-logo.webp';
+import Menu from './icons/Menu.astro';
 
 interface Props {
+	r: RouteMap;
 	includeSidebar?: boolean;
 }
 
-const { includeSidebar = true } = Astro.props;
+const { includeSidebar = true, r } = Astro.props;
 ---
 <div
   class="sticky lg:hidden top-0 z-30 flex h-16 w-full justify-center bg-opacity-90 backdrop-blur transition-all duration-100 bg-base-100 text-base-content shadow-sm"
@@ -12,13 +17,11 @@ const { includeSidebar = true } = Astro.props;
   <div class="navbar">
     <div class="navbar-start">
       {includeSidebar && <label for="my-drawer" class="btn btn-square btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"
-          ><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-        </svg>
+        <Menu />
       </label>}
     </div>
     <div class="navbar-center">
-      <a class="btn btn-ghost normal-case text-xl" href="/">Astro-Feedback 🚀</a>
+      <a class="btn btn-ghost normal-case text-xl" href={r.base.index}>Astro-Feedback <Image src={Logo} height={48} width={48} alt="Logo" loading={'eager'}/></a>
     </div>
     <div class="navbar-end"></div>
   </div>

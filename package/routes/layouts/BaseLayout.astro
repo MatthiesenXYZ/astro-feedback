@@ -1,18 +1,20 @@
 ---
+import b from 'astro-feedback:branding';
+import c from 'astro-feedback:config';
+import r from 'astro-feedback:routes';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import SideBar from '../components/SideBar.astro';
 
-import { SITE_DESCRIPTION, SITE_TITLE } from '../config';
-
+const { SITE_TITLE, SITE_DESCRIPTION } = b;
 interface Props {
 	image?: string;
 	title?: string;
 	description?: string;
 	includeSidebar?: boolean;
+	includeHeader?: boolean;
 	sideBarActiveItemID?: string;
-	ogType?: string;
 }
 
 const {
@@ -20,15 +22,15 @@ const {
 	title = SITE_TITLE,
 	description = SITE_DESCRIPTION,
 	includeSidebar = true,
+	includeHeader = true,
 	sideBarActiveItemID,
-	ogType,
 } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} image={image} ogType={ogType} />
+    <BaseHead config={c} title={title} description={description} image={image} />
     <style>
       @view-transition {
         navigation: auto; /* enabled! */
@@ -39,15 +41,15 @@ const {
     <div class="bg-base-100 drawer lg:drawer-open">
       <input id="my-drawer" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content bg-base-100">
-        <Header includeSidebar={includeSidebar} />
+        {includeHeader && <Header r={r} includeSidebar={includeSidebar} />}
         <div class="md:flex md:justify-center">
           <main class="p-6 pt-10 lg:max-w-[1000px] max-w-[100vw]">
             <slot />
           </main>
         </div>
-        <Footer />
+        <Footer/>
       </div>
-      {includeSidebar && <SideBar sideBarActiveItemID={sideBarActiveItemID} />}
+      {includeSidebar && <SideBar r={r} sideBarActiveItemID={sideBarActiveItemID} />}
     </div>
   </body>
 </html>

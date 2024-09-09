@@ -1,0 +1,21 @@
+---
+import type { RouteMap } from 'astro-feedback:routes';
+import Github from './icons/Github.astro';
+
+interface Props {
+	r: RouteMap;
+}
+
+const {
+	r: {
+		api: { login },
+		base: { index },
+	},
+} = Astro.props;
+---
+<div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl text-center">
+    <div class="card-body flex-col gap-4">
+        <a href={login} class="btn btn-primary">Sign in with Github <Github height={32} /></a>
+        <a href={index}>Back to Homepage</a>
+    </div>
+</div>

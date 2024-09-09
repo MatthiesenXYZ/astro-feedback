@@ -1,34 +1,40 @@
 ---
+import b from 'astro-feedback:branding';
+import r from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
 import Logo from './assets/astrofeedback-logo.webp';
 import BaseLayout from './layouts/BaseLayout.astro';
 
-const isLoggedIn = !!Astro.locals.user;
+const { SITE_TITLE, SITE_DESCRIPTION } = b;
+
+// get links
+const {
+	base: { feedback },
+	portal: { login },
+} = r;
 ---
 
-<BaseLayout sideBarActiveItemID="home" includeSidebar={false}>
+<BaseLayout sideBarActiveItemID="home" includeSidebar={false} includeHeader={false}>
 
     <div class="pb-12 mt-5">
-        <div class="hero bg-base-200 min-h-[50vh]">
+        <div class="hero bg-base-300 drop-shadow-xl min-h-[70vh]">
             <div class="hero-content flex-col lg:flex-row">
 
-                <Image src={Logo} class="max-w-sm rounded-lg md:scale-125" alt="Astro Feedback Center" loading={'eager'}/>
+                <Image src={Logo} class="max-w-sm rounded-lg md:scale-125" alt="Astro Feedback Center Logo" loading={'eager'}/>
 
                 <div>
                     <div class="text-2xl py-1 text-secondary">Welcome to the</div>
-                    <h1 class="text-5xl font-bold text-primary">Astro Feedback Center</h1>
+                    <h1 class="text-5xl font-bold text-primary">{SITE_TITLE}</h1>
 
-                    <p class="text-lg mt-5">
-                        This is a feedback application built with Astro and AstroDB. It allows users to submit feedback from your projects and you can view them in the dashboard.
-                    </p>
+                    <p class="text-lg mt-5">{SITE_DESCRIPTION}</p>
 
                     <div class="mt-8">
                     
-                        <a href="/login" class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg btn-primary btn-outline text-lg">Sign in</a>
+                        <a href={login} class="btn btn-sm md:btn-md lg:btn-lg btn-primary btn-outline text-lg">Sign in</a>
                     
-                        {isLoggedIn && <a href="/submit-feedback" class="btn btn-xs sm:btn-sm md:btn-md lg:btn-lg btn-outline btn-accent ml-5 text-lg">
-                            Submit Feedback about a Project
-                        </a>}
+                        <a href={feedback} class="btn btn-sm md:btn-md lg:btn-lg btn-outline btn-accent ml-5 text-lg">
+                            Submit Feedback
+                        </a>
             
                     </div>
                 </div>

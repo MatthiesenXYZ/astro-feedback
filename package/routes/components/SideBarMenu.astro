@@ -1,10 +1,21 @@
 ---
-const { sideBarActiveItemID } = Astro.props;
+import type { RouteMap } from 'astro-feedback:routes';
+
+interface Props {
+	r: RouteMap;
+	sideBarActiveItemID?: string | undefined;
+}
+const {
+	sideBarActiveItemID,
+	r: {
+		base: { index },
+	},
+} = Astro.props;
 const activeClass = 'bg-base-300'; // For primary color replace with `active` class
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
-    <li><a class="py-3 text-base" id="home" href="/">Home</a></li>
+    <li><a class="py-3 text-base" id="home" href={index}>Home</a></li>
 </ul>
 
 <script is:inline define:vars={{ sideBarActiveItemID: sideBarActiveItemID, activeClass: activeClass }}>

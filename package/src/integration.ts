@@ -1,76 +1,71 @@
-import { integrationLogger } from '@matthiesenxyz/integration-utils/astroUtils';
 import { addVirtualImports, defineIntegration } from 'astro-integration-kit';
-import copy from 'rollup-plugin-copy';
-import { infoLoggerOpts } from '~lib/LoggerOpts.ts';
 import { AstroFeedbackOptionsSchema as optionsSchema } from '~schemas/index.ts';
-import { dbConfigEntrypoint, middlewareConfig } from '~src/consts.ts';
+import {
+	astroFeedbackAstroDBConfig,
+	astroFeedbackVirtualModules,
+	astroFeedbackViteConfig,
+	loggerLabel,
+	middlewareConfig,
+	namedRoutes,
+} from '~src/consts.ts';
+import BrandingDTS from '~stubs/branding.ts';
 import configDts from '~stubs/config.ts';
+import RouteMapDTS from '~stubs/routemap.ts';
 import type { AstroDBIntegrationParams } from '~types/astroHooks.ts';
-import { name } from '../package.json';
+import { name as packageName } from '../package.json';
 
 /**
  * Astro Feedback integration.
  */
 export const astroFeedback = defineIntegration({
-	name,
+	name: packageName,
 	optionsSchema,
 	setup({ name, options, options: { verbose } }) {
 		return {
 			hooks: {
 				'astro:db:setup': ({ extendDb }: AstroDBIntegrationParams) => {
 					// Add the Astro Feedback `@astrojs/db` Table Schema
-					extendDb({
-						configEntrypoint: dbConfigEntrypoint,
-					});
+					extendDb(astroFeedbackAstroDBConfig(name));
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the Astro params
 					const { logger, addMiddleware, injectRoute, updateConfig } = params;
 
+					const fL = logger.fork(loggerLabel);
+
 					// Log a Setup message
-					integrationLogger(infoLoggerOpts(logger, verbose), 'Setting up...');
-
-					// Add the Astro Feedback Middleware
-					addMiddleware(middlewareConfig);
-
-					// Add virtual modules for Astro Feedback
-					addVirtualImports(params, {
-						name,
-						imports: {
-							'astro-feedback:config': `export default ${JSON.stringify(options)}`,
-						},
-					});
+					verbose && fL.info('Setting up...');
 
 					// Update the Astro Config
-					updateConfig({
-						vite: {
-							optimizeDeps: {
-								exclude: ['astro:db'],
-							},
-							plugins: [
-								copy({
-									copyOnce: true,
-									hook: 'buildStart',
-									targets: [
-										{
-											src: 'node_modules/@matthiesenxyz/astro-feedback/routes/assets/public/*',
-											dest: 'public/',
-										},
-									],
-								}),
-							],
-						},
-					});
+					verbose && fL.info('Updating Astro Config...');
+					updateConfig(astroFeedbackViteConfig(name));
 
-					// Inject Pages
-					injectRoute({
-						pattern: '/',
-						entrypoint: '@matthiesenxyz/astro-feedback/routes/index.astro',
-					});
+					// Add virtual modules for Astro Feedback
+					verbose && fL.info('Addming Virtual Modules...');
+					addVirtualImports(params, astroFeedbackVirtualModules(name, { options }));
+
+					// Add the Astro Feedback Middleware
+					verbose && fL.info('Adding Middleware...');
+					addMiddleware(middlewareConfig(name));
+
+					// Inject the Astro Feedback Routes
+					verbose && fL.info('injecting Routes...');
+					const routes = namedRoutes(name);
+					for (const [name, route] of Object.entries(routes)) {
+						verbose && fL.info(`Route Injected: ["${name}" - "${route.pattern}"]`);
+						injectRoute(route);
+					}
+
+					// Log a Done message
+					verbose && fL.info('Setup Done!');
 				},
-				'astro:config:done': ({ injectTypes }) => {
+				'astro:config:done': ({ injectTypes, logger }) => {
 					// Inject the Astro Feedback types
+					const fL = logger.fork(loggerLabel);
+					verbose && fL.info('Generating types...');
 					injectTypes(configDts);
+					injectTypes(RouteMapDTS);
+					injectTypes(BrandingDTS);
 				},
 			},
 		};
