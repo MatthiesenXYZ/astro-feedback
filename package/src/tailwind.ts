@@ -15,5 +15,6 @@ export default {
 	daisyui: {
 		themes: ['emerald', 'forest'],
 		darkTheme: 'forest',
+		logs: false,
 	},
 };
