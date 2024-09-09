@@ -1,62 +1,66 @@
 {
-	"name": "@matthiesenxyz/astro-feedback",
-	"version": "0.0.0",
-	"description": "TODO:",
-	"author": {
-		"email": "adam@matthiesen.xyz",
-		"name": "Adam Matthiesen",
-		"url": "https://matthiesen.xyz"
-	},
-	"license": "MIT",
-	"keywords": [
-		"astro-integration",
-		"astro-component",
-		"withastro",
-		"astro",
-		"feedback"
-	],
-	"homepage": "https://github.com/matthiesenxyz/astro-feedback",
-	"publishConfig": {
-		"access": "public"
-	},
-	"sideEffects": false,
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"default": "./dist/index.js"
-		},
-		"./schema": {
-			"types": "./dist/schemas/index.d.ts",
-			"default": "./dist/schemas/index.js"
-		},
-		"./types": {
-			"types": "./dist/types/index.d.ts",
-			"default": "./dist/types/index.js"
-		},
-		"./db/*": "./db/*",
-		"./routes/*": "./routes/*"
-	},
-	"files": ["db", "dist", "modules", "routes"],
-	"scripts": {
-		"dev": "tsup --watch",
-		"build": "tsup"
-	},
-	"type": "module",
-	"peerDependencies": {
-		"@astrojs/db": "catalog:astrojs",
-		"astro": "catalog:astrojs"
-	},
-	"dependencies": {
-		"@matthiesenxyz/integration-utils": "catalog:deps",
-		"astro-integration-kit": "catalog:deps",
-		"lucia": "catalog:deps",
-		"lucia-adapter-astrodb": "catalog:deps",
-		"micromatch": "catalog:deps"
-	},
-	"devDependencies": {
-		"@types/micromatch": "catalog:types",
-		"@types/node": "catalog:types",
-		"tsup": "catalog:",
-		"typescript": "catalog:"
-	}
+  "name": "@matthiesenxyz/astro-feedback",
+  "version": "0.0.0",
+  "description": "TODO:",
+  "author": {
+    "email": "adam@matthiesen.xyz",
+    "name": "Adam Matthiesen",
+    "url": "https://matthiesen.xyz"
+  },
+  "license": "MIT",
+  "keywords": ["astro-integration", "astro-component", "withastro", "astro", "feedback"],
+  "homepage": "https://github.com/matthiesenxyz/astro-feedback",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schema": {
+      "types": "./dist/schemas/index.d.ts",
+      "default": "./dist/schemas/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/types/index.js"
+    },
+    "./db/*": "./db/*",
+    "./routes/*": "./routes/*",
+    "./tailwindPlugin": {
+      "types": "./dist/tailwind.d.ts",
+      "default": "./dist/tailwind.js"
+    }
+  },
+  "files": ["db", "dist", "modules", "routes"],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@astrojs/db": "catalog:astrojs",
+    "astro": "catalog:astrojs"
+  },
+  "dependencies": {
+    "@astrojs/tailwind": "^5.1.0",
+    "@tailwindcss/typography": "^0.5.15",
+    "@matthiesenxyz/astrodtsbuilder": "^0.1.2",
+    "@matthiesenxyz/integration-utils": "catalog:deps",
+    "astro-integration-kit": "catalog:deps",
+    "daisyui": "^4.12.10",
+    "tailwindcss": "^3.4.10",
+    "lucia": "catalog:deps",
+    "lucia-adapter-astrodb": "catalog:deps",
+    "micromatch": "catalog:deps",
+    "rollup-plugin-copy": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/micromatch": "catalog:types",
+    "@types/node": "catalog:types",
+    "tsup": "catalog:",
+    "typescript": "catalog:"
+  }
 }
