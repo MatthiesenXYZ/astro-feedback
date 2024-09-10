@@ -1,18 +1,11 @@
 ---
-import b from 'astro-feedback:branding';
-import r from 'astro-feedback:routes';
+import branding from 'astro-feedback:branding';
 import HorizontalContainer from './components/HorizontalContainer.astro';
 import Heading from './components/headings/Heading.astro';
 import Landing from './components/landing/Landing.astro';
 import BaseLayout from './layouts/BaseLayout.astro';
 
-const { SITE_TITLE } = b;
-
-// get links
-const {
-	base: { feedback },
-	portal: { login },
-} = r;
+const { SITE_TITLE } = branding;
 ---
 
 <BaseLayout 
@@ -38,23 +31,3 @@ const {
     </HorizontalContainer>
 
 </BaseLayout>
-
-<script 
-    is:inline
-    data-login={login}
-    data-feedback={feedback}
-    >
-    const loginRoute = document.currentScript.getAttribute('data-login');
-    const feedbackRoute = document.currentScript.getAttribute('data-feedback');
-
-    const loginButton = document.getElementById('index-login');
-    const feedbackButton = document.getElementById('index-submit-feedback');
-
-    loginButton.addEventListener('click', () => {
-        window.location.href = loginRoute;
-    });
-
-    feedbackButton.addEventListener('click', () => {
-        window.location.href = feedbackRoute;
-    });
-</script>

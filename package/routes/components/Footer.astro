@@ -1,14 +1,15 @@
 ---
-import b from 'astro-feedback:branding';
+import branding from 'astro-feedback:branding';
 
-const { AUTHOR, GITHUB } = b;
+const { AUTHOR, GITHUB } = branding;
 ---
 
-<footer class="footer footer-center block mb-5 pt-10">
+<footer class="footer footer-center block pt-4 flex-col gap-4">
   <div class="pb-2 opacity-75">
     <span><a href={GITHUB.LICENSE}><strong>MIT Licensed</strong></a> ━ Astro Feedback</span>
   </div>
   <div class="inline opacity-75">
     <span>Developed by <a href={AUTHOR.url} target="_blank" class="font-bold">{AUTHOR.name}</a></span>
   </div>
+  <a class="mt-2" href="https://astro.build"><img src="https://astro.badg.es/v2/built-with-astro/tiny.svg" alt="Built with Astro" width="120" height="20"></a>
 </footer>

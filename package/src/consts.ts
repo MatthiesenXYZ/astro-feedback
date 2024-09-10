@@ -59,7 +59,7 @@ export const astroFeedbackViteConfig = (name: string): DeepPartial<AstroConfig> 
 const branding: Branding = {
 	SITE_TITLE: 'Astro Feedback Center',
 	SITE_DESCRIPTION:
-		'A feedback application built with Astro and AstroDB. It allows users to submit feedback from your projects and you can view them in the dashboard',
+		'Built using Astro and AstroDB. Effortlessly collect feedback on your projects, then monitor and manage submissions through a streamlined dashboard. Stay connected to your users and improve your work with real-time feedback.',
 	AUTHOR: author,
 	GITHUB: {
 		REPO: 'https://github.com/matthiesenxyz/astro-feedback',

@@ -1,15 +1,20 @@
+---
+import r from 'astro-feedback:routes';
+import RedirectButton from '../RedirectButton.astro';
+const {
+	base: { feedback },
+	portal: { login },
+} = r;
+---
+
 <div class="card bg-base-100 w-full shadow-xl text-center mt-2">
     <div class="card-body flex flex-row">
-        <button 
-            id="index-login" 
-            class="btn btn-primary btn-outline text-lg text-shadow shadow-black flex-grow"
-            >Sign In
-        </button>
+        <RedirectButton link={login}>
+            <span class="btn btn-outline btn-primary text-lg text-shadow shadow-black flex-grow">Sign in</span>
+        </RedirectButton>
             
-        <button 
-            id="index-submit-feedback" 
-            class="btn btn-outline btn-accent text-lg text-shadow shadow-black flex-grow"
-            >Submit Feedback
-        </button>
+        <RedirectButton link={feedback}>
+            <span class="btn btn-accent text-lg text-shadow shadow-black flex-grow">Submit Feedback</span>
+        </RedirectButton>
     </div>
 </div>

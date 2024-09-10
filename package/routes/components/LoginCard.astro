@@ -2,6 +2,7 @@
 import type { RouteMap } from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
 import Logo from '../assets/astrofeedback-logo.webp';
+import RedirectButton from './RedirectButton.astro';
 import Heading from './headings/Heading.astro';
 import Github from './icons/Github.astro';
 
@@ -29,21 +30,11 @@ style={'scale: 1.5;'}
 
 <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-xl text-center">
     <div class="card-body flex-col gap-4">
-		<form action={login} method="post">
-        	<button id="login-button" class="btn btn-outline" type="submit">Sign in with Github <Github height={24} /></button>
-		</form>
-        <button id="login-to-home" class="btn btn-ghost">Back to Homepage</button>
+		<RedirectButton link={login}>
+			<span class="btn btn-outline">Sign in with Github <Github height={24} /></span>
+		</RedirectButton>
+		<RedirectButton link={index}>
+			<span class="btn btn-ghost">Back to Homepage</span>
+		</RedirectButton>
     </div>
 </div>
-
-<script 
-	is:inline 
-	data-home={index}
-	>
-	const homeRoute = document.currentScript.getAttribute('data-home');
-	const backToHome = document.getElementById('login-to-home');
-
-	backToHome.addEventListener('click', () => {
-		window.location.href = homeRoute;
-	});
-</script>
