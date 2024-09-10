@@ -1,5 +1,5 @@
 /// <reference types="astro/client" />
-/// <reference types="../playground/.astro/types.d.ts" />
+/// <reference types="../../playground/.astro/types.d.ts" />
 
 declare namespace App {
 	interface Locals {

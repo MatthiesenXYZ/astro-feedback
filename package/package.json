@@ -29,9 +29,13 @@
     },
     "./db/*": "./db/*",
     "./routes/*": "./routes/*",
-    "./tailwindPlugin": {
+    "./tailwindcss-config": {
       "types": "./dist/tailwind.d.ts",
       "default": "./dist/tailwind.js"
+    },
+    "./twTextShadow": {
+      "types": "./dist/twPlugins/text-shadow.d.ts",
+      "default": "./dist/twPlugins/text-shadow.js"
     }
   },
   "files": ["db", "dist", "modules", "routes"],
@@ -48,10 +52,10 @@
     "@astrojs/tailwind": "^5.1.0",
     "@tailwindcss/typography": "^0.5.15",
     "@matthiesenxyz/astrodtsbuilder": "^0.1.2",
-    "@matthiesenxyz/integration-utils": "catalog:deps",
     "astro-integration-kit": "catalog:deps",
     "daisyui": "^4.12.10",
     "tailwindcss": "^3.4.10",
+    "tailwind-scrollbar": "^3.1.0",
     "lucia": "catalog:deps",
     "lucia-adapter-astrodb": "catalog:deps",
     "micromatch": "catalog:deps",

@@ -1,11 +1,15 @@
 ---
 import b from 'astro-feedback:branding';
-import c from 'astro-feedback:config';
+import config from 'astro-feedback:config';
 import r from 'astro-feedback:routes';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import SideBar from '../components/SideBar.astro';
+import ThemeManager from '../components/ThemeManager.astro';
+import ThemeSelect from '../components/ThemeSelect.astro';
+import ViewTransitions from '../components/ViewTransitions.astro';
+import '../styles/viewTransitions.css';
 
 const { SITE_TITLE, SITE_DESCRIPTION } = b;
 interface Props {
@@ -28,20 +32,20 @@ const {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scrollbar-thumb-rounded-full scrollbar scrollbar-thumb-accent scrollbar-track-transparent overflow-y-scroll">
   <head>
-    <BaseHead config={c} title={title} description={description} image={image} />
-    <style>
-      @view-transition {
-        navigation: auto; /* enabled! */
-      }
-    </style>
+    <BaseHead {config} {title} {description} {image} />
+    <ThemeManager />
   </head>
-  <body>
+  <body >
     <div class="bg-base-100 drawer lg:drawer-open">
       <input id="my-drawer" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content bg-base-100">
-        {includeHeader && <Header r={r} includeSidebar={includeSidebar} />}
+        {
+          includeHeader && (
+            <Header {r} {includeSidebar}/>
+            )
+        }
         <div class="md:flex md:justify-center">
           <main class="p-6 pt-10 lg:max-w-[1000px] max-w-[100vw]">
             <slot />
@@ -49,7 +53,13 @@ const {
         </div>
         <Footer/>
       </div>
-      {includeSidebar && <SideBar r={r} sideBarActiveItemID={sideBarActiveItemID} />}
+      {
+        includeSidebar && (
+          <SideBar {r} {sideBarActiveItemID} />
+          )
+      }
     </div>
+    <ThemeSelect lightTheme='emerald' />
+    <ViewTransitions />
   </body>
 </html>

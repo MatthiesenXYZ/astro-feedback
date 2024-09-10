@@ -15,9 +15,9 @@ const { sideBarActiveItemID, r } = Astro.props;
 
 <div class="drawer-side z-40">
   <label for="my-drawer" class="drawer-overlay"></label>
-  <aside class="px-2 pt-2 h-auto min-h-full w-[19rem] bg-base-200 text-base-content flex flex-col">
+  <aside class="px-2 pt-2 h-auto min-h-full w-[19rem] bg-base-300 text-base-content flex flex-col">
     <div class="w-fit mx-auto mt-5 mb-6">
-        <div class="text-2xl font-bold py-1">Astro Feedback  <Image src={Logo} height={48} width={48} alt="Logo" loading={'eager'}/></div>
+        <span class="text-2xl font-bold py-1 flex inline">Astro Feedback<Image src={Logo} height={40} width={40} alt="Logo" loading={'eager'}/></span>
     </div>
     <SideBarMenu sideBarActiveItemID={sideBarActiveItemID} r={r} />
     <SideBarFooter r={r} />

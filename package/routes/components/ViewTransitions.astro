@@ -1,0 +1,17 @@
+<script is:inline>
+    // Function to navigate between pages
+    async function navigateTo(pageId) {
+      if (!document.startViewTransition) {
+        // Fallback for browsers that don't support View Transitions API
+        document.querySelector('.page.active').classList.remove('active');
+        document.getElementById(pageId).classList.add('active');
+        return;
+      }
+
+      // Use the View Transitions API
+      await document.startViewTransition(() => {
+        document.querySelector('.page.active').classList.remove('active');
+        document.getElementById(pageId).classList.add('active');
+      });
+    }
+</script>

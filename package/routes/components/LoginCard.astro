@@ -1,5 +1,8 @@
 ---
 import type { RouteMap } from 'astro-feedback:routes';
+import { Image } from 'astro:assets';
+import Logo from '../assets/astrofeedback-logo.webp';
+import Heading from './headings/Heading.astro';
 import Github from './icons/Github.astro';
 
 interface Props {
@@ -13,9 +16,34 @@ const {
 	},
 } = Astro.props;
 ---
-<div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl text-center">
+<Image 
+src={Logo} 
+alt="Astro Feedback Center Logo" 
+height={300} 
+width={300} 
+loading={'eager'}
+style={'scale: 1.5;'}
+/>
+
+<Heading tag={'h3'}>Please Sign in to Continue</Heading>
+
+<div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-xl text-center">
     <div class="card-body flex-col gap-4">
-        <a href={login} class="btn btn-primary">Sign in with Github <Github height={32} /></a>
-        <a href={index}>Back to Homepage</a>
+		<form action={login} method="post">
+        	<button id="login-button" class="btn btn-outline" type="submit">Sign in with Github <Github height={24} /></button>
+		</form>
+        <button id="login-to-home" class="btn btn-ghost">Back to Homepage</button>
     </div>
 </div>
+
+<script 
+	is:inline 
+	data-home={index}
+	>
+	const homeRoute = document.currentScript.getAttribute('data-home');
+	const backToHome = document.getElementById('login-to-home');
+
+	backToHome.addEventListener('click', () => {
+		window.location.href = homeRoute;
+	});
+</script>

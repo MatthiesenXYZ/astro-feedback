@@ -1,0 +1,12 @@
+---
+import { twFontWeightMap, type twSpanProps, twTextVariantMap } from './utils';
+
+interface Props extends twSpanProps {}
+
+const { variant = 'primary', fontWeight = 'normal' } = Astro.props;
+
+const twFontWeightClass = twFontWeightMap[fontWeight];
+const twTextVariantClass = twTextVariantMap[variant];
+---
+
+<span class:list={[twTextVariantClass, twFontWeightClass]}><slot /></span>

@@ -1,0 +1,166 @@
+---
+import ThemeSelectButton from './raw/ThemeSelectButton.html?raw';
+
+type Props = {
+	lightTheme: string;
+	darkTheme?: string | undefined;
+	themeIconRelationship?: 'match' | 'opposite' | undefined;
+};
+
+const {
+	themeIconRelationship = 'opposite',
+	lightTheme = 'light',
+	darkTheme = 'dark',
+} = Astro.props;
+---
+
+<theme-toggle-button></theme-toggle-button>
+
+<script is:inline 
+    data-theme-icon-relationship={themeIconRelationship} 
+    data-theme-light={lightTheme} 
+    data-theme-dark={darkTheme}
+    data-theme-button={ThemeSelectButton}
+    >
+  if (!customElements.get("theme-toggle-button")) {
+    const themeIconRelationship = document.currentScript.getAttribute(
+      "data-theme-icon-relationship"
+    );
+    const ThemeSelectButton = document.currentScript.getAttribute(
+      "data-theme-button"
+    );
+    const lightTheme = document.currentScript.getAttribute("data-theme-light");
+    const darkTheme = document.currentScript.getAttribute("data-theme-dark");
+    class ThemeToggleButton extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: "open" });
+        this.toggleTheme = this.toggleTheme.bind(this);
+        this.updateThemeIconAndAriaLabel =
+          this.updateThemeIconAndAriaLabel.bind(this);
+      }
+
+      connectedCallback() {
+        this.render();
+        this.bindEvents();
+        this.updateThemeIconAndAriaLabel();
+      }
+
+      disconnectedCallback() {
+        this.removeEventListener("click", this.toggleTheme);
+        document.removeEventListener(
+          "theme-changed",
+          this.updateThemeIconAndAriaLabel
+        );
+      }
+
+      render() {
+        this.shadowRoot.innerHTML = ThemeSelectButton;
+        const displaybutton = this.shadowRoot.querySelector("#theme-display-button");
+        setTimeout(() => {
+            displaybutton.style.display = "block"; // Show button
+            setTimeout(() => (displaybutton.style.opacity = "1"), 100); // Fade in button
+        }, 200); 
+        this.updateThemeIconAndAriaLabel();
+      }
+
+      bindEvents() {
+        this.addEventListener("click", this.toggleTheme);
+        document.addEventListener("theme-changed", (e) =>
+          this.updateThemeIconAndAriaLabel(
+            e.detail.currentTheme,
+            e.detail.systemTheme
+          )
+        );
+      }
+
+      toggleTheme() {
+        const currentTheme = theme.getTheme();
+        const defaultTheme = theme.getDefaultTheme();
+        const systemTheme = theme.getSystemTheme();
+        let newTheme;
+
+        if (defaultTheme === "auto") {
+          newTheme =
+            currentTheme === "auto" || currentTheme === systemTheme
+              ? systemTheme === darkTheme
+                ? lightTheme
+                : darkTheme
+              : "auto";
+        } else {
+          newTheme =
+            currentTheme === defaultTheme
+              ? defaultTheme === darkTheme
+                ? lightTheme
+                : darkTheme
+              : currentTheme === "auto"
+                ? systemTheme === darkTheme
+                  ? lightTheme
+                  : darkTheme
+                : defaultTheme;
+        }
+
+        theme.setTheme(newTheme);
+        this.updateThemeIconAndAriaLabel(newTheme, systemTheme);
+      }
+
+      updateThemeIconAndAriaLabel(
+        currentTheme = theme.getTheme(),
+        systemTheme = theme.getSystemTheme()
+      ) {
+        // Update the icon based on the current theme
+        const sunIcon =
+          themeIconRelationship === "opposite"
+            ? this.shadowRoot.querySelector("#sun")
+            : this.shadowRoot.querySelector("#moon");
+        
+        // Update the icon based on the current theme
+        const moonIcon =
+          themeIconRelationship === "opposite"
+            ? this.shadowRoot.querySelector("#moon")
+            : this.shadowRoot.querySelector("#sun");
+
+        // CSS class with fade effect
+        sunIcon.style.transition = "opacity 0.5s ease";
+        moonIcon.style.transition = "opacity 0.5s ease";
+
+        // Update the icon based on the current theme
+        if ( 
+            currentTheme === darkTheme || 
+            ( currentTheme === "auto" && systemTheme === darkTheme ) 
+        ) {
+            moonIcon.style.opacity = "0"; // Fade out moon
+            setTimeout(() => {
+                moonIcon.style.display = "none"; // Hide moon
+                sunIcon.style.display = "block"; // Show sun
+                setTimeout(() => (sunIcon.style.opacity = "1"), 50); // Fade in sun
+            }, 100); // Wait for moon to fade out
+        } else {
+            sunIcon.style.opacity = "0"; // Fade out sun
+            setTimeout(() => {
+                sunIcon.style.display = "none"; // Hide after fade out
+                moonIcon.style.display = "block"; // Show moon
+                setTimeout(() => (moonIcon.style.opacity = "1"), 50); // Fade in moon
+            }, 100); // Delay the display:none until the fade out is complete
+        }
+        
+        // Set the mode
+        const newMode =
+          currentTheme === darkTheme ||
+          (currentTheme === "auto" && systemTheme === darkTheme)
+            ? lightTheme
+            : darkTheme;
+
+        // Update the aria-label
+        this.shadowRoot
+          .querySelector("button")
+          .setAttribute(
+            "aria-label",
+            `Theme toggle button: click to activate ${newMode} mode`
+          );
+      }
+    }
+
+    customElements.define("theme-toggle-button", ThemeToggleButton);
+  }
+</script>

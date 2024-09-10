@@ -1,27 +1,20 @@
 ---
 import r from 'astro-feedback:routes';
-import { Image } from 'astro:assets';
-import Logo from '../assets/astrofeedback-logo.webp';
 import LoginCard from '../components/LoginCard.astro';
+import VerticalContainer from '../components/VerticalContainer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout sideBarActiveItemID="home" includeSidebar={false} includeHeader={false}>
+<BaseLayout 
+  sideBarActiveItemID="login" 
+  includeSidebar={false} 
+  includeHeader={false}
+  >
 
-  <div class="pb-12 mt-5">
-    <div class="hero bg-base-300 drop-shadow-xl min-h-[70vh]">
-      <div class="hero-content flex-col lg:max-w-[60vw] gap-2 m-8">
+  <VerticalContainer>
 
-        <Image src={Logo} height={400} alt="Astro Feedback Center Logo" loading={'eager'}/>
-
-        <div class="text-center pb-4">
-          <h1 class="text-5xl font-bold text-accent">Login now!</h1>
-        </div>
-
-        <LoginCard r={r} />
-
-      </div>
-    </div>
-  </div>
+    <LoginCard {r} />
+  
+  </VerticalContainer>
 
 </BaseLayout>

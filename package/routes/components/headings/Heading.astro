@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { getAstroHeadingComponent, type htmlHeadings } from './templates';
+import { type FontWeight, type Variant, twFontWeightMap, twTextVariantMap } from './utils';
+
+interface Props extends HTMLAttributes<'h1'> {
+	tag: htmlHeadings;
+	variant?: Variant;
+	fontWeight?: FontWeight;
+}
+
+const { tag, variant, fontWeight, ...rest } = Astro.props;
+const Tag = getAstroHeadingComponent[tag];
+---
+
+{
+    tag && (
+        <Tag 
+            class:list={[
+                twTextVariantMap[variant || 'primary'], 
+                twFontWeightMap[fontWeight || 'normal']
+            ]} 
+            {...rest}
+            ><slot />
+        </Tag>
+        )
+}
+

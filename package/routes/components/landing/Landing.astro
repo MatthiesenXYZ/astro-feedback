@@ -1,0 +1,13 @@
+---
+import { type existingComponents, getLandingComponent } from '.';
+
+interface Props {
+	part: existingComponents;
+}
+
+const { part } = Astro.props;
+
+const Component = getLandingComponent(part);
+---
+
+<Component />

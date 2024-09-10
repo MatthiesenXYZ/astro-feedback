@@ -1,11 +1,12 @@
 ---
 import b from 'astro-feedback:branding';
 import r from 'astro-feedback:routes';
-import { Image } from 'astro:assets';
-import Logo from './assets/astrofeedback-logo.webp';
+import HorizontalContainer from './components/HorizontalContainer.astro';
+import Heading from './components/headings/Heading.astro';
+import Landing from './components/landing/Landing.astro';
 import BaseLayout from './layouts/BaseLayout.astro';
 
-const { SITE_TITLE, SITE_DESCRIPTION } = b;
+const { SITE_TITLE } = b;
 
 // get links
 const {
@@ -14,33 +15,46 @@ const {
 } = r;
 ---
 
-<BaseLayout sideBarActiveItemID="home" includeSidebar={false} includeHeader={false}>
+<BaseLayout 
+    sideBarActiveItemID="home" 
+    includeSidebar={false} 
+    includeHeader={false}
+    >
 
-    <div class="pb-12 mt-5">
-        <div class="hero bg-base-300 drop-shadow-xl min-h-[70vh]">
-            <div class="hero-content flex-col lg:flex-row">
+    <HorizontalContainer>
 
-                <Image src={Logo} class="max-w-sm rounded-lg md:scale-125" alt="Astro Feedback Center Logo" loading={'eager'}/>
-
-                <div>
-                    <div class="text-2xl py-1 text-secondary">Welcome to the</div>
-                    <h1 class="text-5xl font-bold text-primary">{SITE_TITLE}</h1>
-
-                    <p class="text-lg mt-5">{SITE_DESCRIPTION}</p>
-
-                    <div class="mt-8">
-                    
-                        <a href={login} class="btn btn-sm md:btn-md lg:btn-lg btn-primary btn-outline text-lg">Sign in</a>
-                    
-                        <a href={feedback} class="btn btn-sm md:btn-md lg:btn-lg btn-outline btn-accent ml-5 text-lg">
-                            Submit Feedback
-                        </a>
+        <Landing part={'logo'} />
             
-                    </div>
-                </div>
+        <div>
+            <Heading tag={'h2'}>Welcome to the</Heading>
 
-            </div>
+            <Heading tag={'h1'}>{SITE_TITLE}</Heading>
+            
+            <Landing part={'description'} />
+            
+            <Landing part={'buttoncard'} />
         </div>
-    </div>
+    
+    </HorizontalContainer>
 
 </BaseLayout>
+
+<script 
+    is:inline
+    data-login={login}
+    data-feedback={feedback}
+    >
+    const loginRoute = document.currentScript.getAttribute('data-login');
+    const feedbackRoute = document.currentScript.getAttribute('data-feedback');
+
+    const loginButton = document.getElementById('index-login');
+    const feedbackButton = document.getElementById('index-submit-feedback');
+
+    loginButton.addEventListener('click', () => {
+        window.location.href = loginRoute;
+    });
+
+    feedbackButton.addEventListener('click', () => {
+        window.location.href = feedbackRoute;
+    });
+</script>
