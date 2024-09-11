@@ -1,0 +1,7 @@
+.btn, 
+.textarea, 
+.input, 
+.select, 
+.card {
+    @apply rounded-none;
+}

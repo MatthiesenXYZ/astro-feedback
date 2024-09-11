@@ -1,11 +1,12 @@
-import { db } from "astro:db";
-import { Lucia } from "lucia";
-import { AstroDBAdapter } from "lucia-adapter-astrodb";
-import { tsSession, tsUser } from "../../db/tsTables.ts";
+import { db } from 'astro:db';
+import { Lucia, TimeSpan } from 'lucia';
+import { AstroDBAdapter } from 'lucia-adapter-astrodb';
+import { tsSession, tsUser } from '../../db/tsTables.ts';
 
 const astroDB = new AstroDBAdapter(db, tsSession, tsUser);
 
 export const lucia = new Lucia(astroDB, {
+	sessionExpiresIn: new TimeSpan(2, 'w'),
 	sessionCookie: {
 		attributes: {
 			secure: import.meta.env.PROD,
@@ -20,7 +21,7 @@ export const lucia = new Lucia(astroDB, {
 	},
 });
 
-declare module "lucia" {
+declare module 'lucia' {
 	interface Register {
 		Lucia: typeof lucia;
 		DatabaseUserAttributes: DatabaseUserAttributes;

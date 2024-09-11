@@ -1,5 +1,5 @@
 /// <Reference types="@astrojs/db" />
-import { NOW, column, defineTable } from "astro:db";
+import { NOW, column, defineTable } from 'astro:db';
 
 /**
  * Astro Feedback User table.
@@ -27,6 +27,7 @@ export const AstroFeedbackSession = defineTable({
 		expiresAt: column.date(),
 		userId: column.text({
 			references: () => AstroFeedbackUser.columns.id,
+			optional: false,
 		}),
 	},
 });
@@ -38,18 +39,7 @@ export const AstroFeedbackAdmin = defineTable({
 	columns: {
 		id: column.text({ primaryKey: true }),
 		userId: column.text({ references: () => AstroFeedbackUser.columns.id }),
-		name: column.text(),
-		username: column.text(),
 	},
-	foreignKeys: [
-		{
-			columns: ["name", "username"],
-			references: () => [
-				AstroFeedbackUser.columns.name,
-				AstroFeedbackUser.columns.username,
-			],
-		},
-	],
 });
 
 /**
@@ -75,6 +65,8 @@ export const AstroFeedbackProject = defineTable({
 		teamId: column.text({ references: () => AstroFeedbackTeam.columns.id }),
 		owner: column.text({ references: () => AstroFeedbackAdmin.columns.id }),
 		createdAt: column.date({ default: NOW }),
+		submissionsOpen: column.boolean({ default: true }),
+		defaultProject: column.boolean({ default: false }),
 	},
 });
 
@@ -94,7 +86,7 @@ export const AstroFeedbackSubmission = defineTable({
 		}),
 		email: column.text({ optional: true }),
 		// Feedback status
-		status: column.text({ default: "open" }),
+		status: column.text({ default: 'open' }),
 		createdAt: column.date({ default: NOW }),
 		updatedAt: column.date({ default: NOW, optional: true }),
 		// Feedback content

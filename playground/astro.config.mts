@@ -1,4 +1,5 @@
 import db from '@astrojs/db';
+import node from '@astrojs/node';
 import tailwind from '@astrojs/tailwind';
 import { createResolver } from 'astro-integration-kit';
 import { hmrIntegration } from 'astro-integration-kit/dev';
@@ -8,6 +9,8 @@ const { default: astroFeedback } = await import('@matthiesenxyz/astro-feedback')
 
 // https://astro.build/config
 export default defineConfig({
+	output: 'server',
+	adapter: node({ mode: 'standalone' }),
 	integrations: [
 		db(),
 		tailwind(),

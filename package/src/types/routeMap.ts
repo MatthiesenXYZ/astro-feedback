@@ -33,6 +33,7 @@ export type RouteMap = {
 	};
 	api: {
 		login: string;
+		callback: string;
 		logout: string;
 		users: string;
 		teams: string;

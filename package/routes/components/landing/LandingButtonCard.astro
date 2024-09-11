@@ -1,6 +1,8 @@
 ---
 import r from 'astro-feedback:routes';
 import RedirectButton from '../RedirectButton.astro';
+import GetIcon from '../icons/GetIcon.astro';
+
 const {
 	base: { feedback },
 	portal: { login },
@@ -10,11 +12,17 @@ const {
 <div class="card bg-base-100 w-full shadow-xl text-center mt-2">
     <div class="card-body flex flex-row">
         <RedirectButton link={login}>
-            <span class="btn btn-outline btn-primary text-lg text-shadow shadow-black flex-grow">Sign in</span>
+            <span class="btn btn-outline btn-primary text-lg text-shadow shadow-black flex items-center gap-2">
+                Sign in
+                <GetIcon icon={'login'} class='h-[1.2rem] w-[1.2rem]'/>
+            </span>
         </RedirectButton>
             
         <RedirectButton link={feedback}>
-            <span class="btn btn-accent text-lg text-shadow shadow-black flex-grow">Submit Feedback</span>
+            <span class="btn btn-accent text-lg text-shadow shadow-black flex items-center gap-2">
+                Submit Feedback
+                <GetIcon icon={'feedback'} class='h-[1.2rem] w-[1.2rem]'/>
+            </span>
         </RedirectButton>
     </div>
 </div>

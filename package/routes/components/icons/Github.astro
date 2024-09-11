@@ -1,6 +1,7 @@
 ---
+import type { HTMLAttributes } from 'astro/types';
 
-interface Props {
+interface Props extends HTMLAttributes<'svg'> {
 	height?: number;
 	width?: number;
 }

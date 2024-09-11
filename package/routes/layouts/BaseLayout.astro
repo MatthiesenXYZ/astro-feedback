@@ -3,13 +3,16 @@ import branding from 'astro-feedback:branding';
 import config from 'astro-feedback:config';
 import r from 'astro-feedback:routes';
 import BaseHead from '../components/BaseHead.astro';
+import ButtonShelf from '../components/ButtonShelf.astro';
 import ThemeManager from '../components/ThemeManager.astro';
 import ThemeSelect from '../components/ThemeSelect.astro';
 import ViewTransitions from '../components/ViewTransitions.astro';
-import '../styles/viewTransitions.css';
-import ButtonShelf from '../components/ButtonShelf.astro';
 import DrawerBox from './DrawerBox.astro';
 import DrawerContent from './DrawerContent.astro';
+
+// Import global styles
+import '../styles/viewTransitions.css';
+import '../styles/overrides.css';
 
 const { SITE_TITLE, SITE_DESCRIPTION } = branding;
 interface Props {

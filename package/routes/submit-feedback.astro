@@ -1,0 +1,54 @@
+---
+import r from 'astro-feedback:routes';
+import { Image } from 'astro:assets';
+import { db } from 'astro:db';
+import { tsProject } from '../db/tsTables';
+import Logo from './assets/astrofeedback-logo.webp';
+import PublicSubmissionForm from './components/PublicSubmissionForm.astro';
+import VerticalContainer from './components/VerticalContainer.astro';
+import Heading from './components/headings/Heading.astro';
+import BaseLayout from './layouts/BaseLayout.astro';
+import getUser from './lib/getUser';
+
+// Get the user data from the Astro locals
+const { user: UserData } = await getUser(Astro.locals);
+
+// Get the current projects from the database
+const currentProjects = await db.select().from(tsProject);
+
+// Check if there is a default project
+const defaultProject = currentProjects.filter(({ defaultProject }) => defaultProject).length > 0;
+---
+
+<BaseLayout 
+  sideBarActiveItemID="submit-feedback-public" 
+  includeSidebar={false} 
+  includeHeader={false}
+  >
+
+  <VerticalContainer>
+
+    <div class="flex flex-col w-full gap-2">
+
+        <div class="flex flex-row text-center">
+            <Heading tag={'h1'}>Submit New Feedback</Heading>
+            <Image src={Logo} alt="Logo" width={64} height={64} loading={'eager'}/>
+        </div>
+
+        <p class="text-center">
+            We appreciate your feedback. Please fill out the form below.
+        </p>
+
+        <div class="divider my-0" />
+
+        <div class="card bg-base-100 w-full shadow-xl">
+
+            <PublicSubmissionForm {r} {currentProjects} {UserData} {defaultProject} />
+
+        </div>
+
+    </div>
+
+  </VerticalContainer>
+
+</BaseLayout>

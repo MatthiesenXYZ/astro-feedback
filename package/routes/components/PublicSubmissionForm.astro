@@ -1,0 +1,138 @@
+---
+import type { RouteMap } from 'astro-feedback:routes';
+import type { tsProject, tsUser } from '../../db/tsTables';
+import RedirectButton from './RedirectButton.astro';
+import Heading from './headings/Heading.astro';
+import GetIcon from './icons/GetIcon.astro';
+
+interface Props {
+	r: RouteMap;
+	UserData: typeof tsUser.$inferSelect | undefined;
+	currentProjects: (typeof tsProject.$inferSelect)[];
+	defaultProject: boolean;
+}
+
+const {
+	UserData,
+	currentProjects,
+	defaultProject,
+	r: {
+		base: { index },
+	},
+} = Astro.props;
+---
+<form id="feedback-submissions" action="" method="post" class="card-body">
+
+    <div class="flex flex-col gap-4 pb-4">
+
+        <label for="project" class="form-control">
+
+            <span class="sr-only">Select a Project</span>
+            
+            <div class="label">
+                <Heading class="label-text" tag={'h3'}>
+                    <span class="text-secondary flex items-top">
+                        <span class="flex items-center gap-2">
+                            <GetIcon icon={'project'} class='h-[1.5rem] w-[1.5rem]'/>
+                            Select a Project
+                        </span>
+                        <GetIcon icon={'asterisk'} class='text-red-600 h-[0.7rem] w-[0.7rem]'/>
+                    </span>
+                </Heading>
+            </div>
+
+            <select 
+                name="projectId" 
+                form="feedback-submissions" 
+                class="select select-info select-bordered"
+                required
+                >
+                {
+                    defaultProject ? (
+                        <option disabled>Select a Project</option>
+                    ) : (
+                        <option disabled selected>Select a Project</option>
+                    )
+                }
+                {
+                    currentProjects.length > 0 ?
+                    currentProjects.map(({ 
+                        id, title, defaultProject, submissionsOpen 
+                    }) => submissionsOpen && (
+                         <option value={id} selected={defaultProject}>{title}</option>
+                    )) : (
+                        <option disabled>No projects currently available</option>
+                    )
+                }
+            </select>
+        </label>
+
+    </div>
+            
+    <div class="flex flex-col gap-4 pb-4">
+                    
+        <Heading tag={'h3'}>
+            <span class="text-secondary flex items-center gap-2">
+                <GetIcon icon={'mail'} class='h-[1.5rem] w-[1.5rem]'/>
+                Email
+            </span>
+        </Heading>
+                    
+        <label for="email" class="input input-bordered input-info flex items-center gap-2">
+
+            <span class="sr-only">Email Address</span>
+
+            <input 
+                name="email" 
+                form="feedback-submissions" 
+                type="text"  
+                placeholder="john.doe@google.com" 
+                class="w-full"
+                value={UserData?.email}
+                />
+
+        </label>
+    </div>
+            
+    <div class="flex flex-col gap-4 pb-4">
+        <Heading tag={'h3'}>
+            <span class="text-secondary flex items-top">
+                <span class="flex items-center gap-2">
+                    <GetIcon icon={'feedback'} class='h-[1.5rem] w-[1.5rem]'/>
+                    Feedback
+                </span>
+                <GetIcon icon={'asterisk'} class='text-red-600 h-[0.7rem] w-[0.7rem]'/>
+            </span>
+        </Heading>
+
+        <textarea 
+            name="body" 
+            form="feedback-submissions" 
+            class="textarea textarea-info h-32" 
+            placeholder="Some potentially helpful feedback"
+            required
+            />
+    </div>
+
+    <input type="hidden" name="userId" value={UserData?.id} />
+
+    <div class="flex flex-row pt-4">
+        <div class="flex-none">
+            <button class="btn btn-primary font-extrabold flex items-center" type="submit">
+                Submit
+                <GetIcon icon={'submit'} class='h-[1.2rem] w-[1.2rem]'/>
+            </button>
+        </div>
+
+        <div class="flex-2 grow"/>
+
+        <div class="flex-none">
+            <RedirectButton link={index}>
+                <span class="btn btn-error btn-outline flex items-center">
+                    <GetIcon icon={'back'} class='h-[1.2rem] w-[1.2rem]'/>
+                    Back to Homepage
+                </span>
+            </RedirectButton>
+        </div>
+    </div>
+</form>

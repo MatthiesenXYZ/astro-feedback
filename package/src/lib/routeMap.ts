@@ -34,6 +34,7 @@ export const routeMap: RouteMap = {
 	},
 	api: {
 		login: '/api/login',
+		callback: '/api/callback',
 		logout: '/api/logout',
 		users: '/api/users',
 		teams: '/api/teams',

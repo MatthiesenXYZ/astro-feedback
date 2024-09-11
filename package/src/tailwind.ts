@@ -5,7 +5,6 @@ export const tailwindConfig: Config = {
 	content: [
 		'./node_modules/@matthiesenxyz/astro-feedback/routes/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}',
 	],
-	darkMode: ['selector', '[data-mode="dark"]'],
 	theme: {
 		extend: {
 			fontFamily: {

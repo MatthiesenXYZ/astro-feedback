@@ -4,50 +4,59 @@ import { defineMiddlewareRouter } from './lib/middlewareRouter.ts';
 import type { Router } from './lib/types.ts';
 
 // Define a middleware router that routes requests to different handlers based on the request path.
-const router: Router = {
-	// Route all requests to the root path to set the `user` and `session` locals.
-	'/**': async (context, next) => {
-		if (context.request.method !== 'GET') {
-			const originHeader = context.request.headers.get('Origin');
-			const hostHeader = context.request.headers.get('Host');
-			if (!originHeader || !hostHeader || !verifyRequestOrigin(originHeader, [hostHeader])) {
-				return new Response(null, {
-					status: 403,
-				});
-			}
-		}
-		const sessionId = context.cookies.get(lucia.sessionCookieName)?.value ?? null;
-		if (!sessionId) {
-			context.locals.user = null;
-			context.locals.session = null;
-			return next();
-		}
+const router: Router = {};
 
-		const { session, user } = await lucia.validateSession(sessionId);
-		if (session?.fresh) {
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			context.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+// Route all requests to the root path to set the `user` and `session` locals.
+router['/**'] = async ({ request, cookies, locals }, next) => {
+	// If the request method is not `GET`, check if the request origin is allowed.
+	if (request.method !== 'GET') {
+		const originHeader = request.headers.get('Origin');
+		const hostHeader = request.headers.get('Host');
+		if (!originHeader || !hostHeader || !verifyRequestOrigin(originHeader, [hostHeader])) {
+			return new Response(null, {
+				status: 403,
+			});
 		}
-		if (!session) {
-			const sessionCookie = lucia.createBlankSessionCookie();
-			context.cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-		}
-		context.locals.user = user;
-		context.locals.session = session;
+	}
+	const sessionId = cookies.get(lucia.sessionCookieName)?.value ?? null;
+	if (!sessionId) {
+		locals.user = null;
+		locals.session = null;
 		return next();
-	},
-	// Route all requests to the `/portal` path and check if the user is authenticated.
-	'/portal/!(login)**': async (context, next) => {
-		if (!context.locals.user) {
-			return context.redirect('/portal/login');
-		}
+	}
+
+	const { session, user } = await lucia.validateSession(sessionId);
+
+	if (!session || session === null) {
+		const sessionCookie = lucia.createBlankSessionCookie();
+		cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 		return next();
-	},
+	}
+
+	const isSessionFresh = session.expiresAt.getTime() > new Date().getTime();
+	session.fresh = isSessionFresh;
+
+	if (session.fresh) {
+		const sessionCookie = lucia.createSessionCookie(session.id);
+		cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+	}
+
+	locals.user = user;
+	locals.session = session;
+	return next();
+};
+
+// Route all requests to the `/portal` path and check if the user is authenticated.
+router['/portal/!(login)**'] = async ({ locals, redirect }, next) => {
+	if (!locals.user) {
+		return redirect('/portal/login');
+	}
+	return next();
 };
 
 /**
  * Middleware router that routes requests to different handlers based on the request path.
  */
-const middlewareRouter = defineMiddlewareRouter(router);
+export const onRequest = defineMiddlewareRouter(router);
 
-export default middlewareRouter;
+export default onRequest;

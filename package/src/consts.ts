@@ -1,4 +1,5 @@
 import type { AstroConfig, AstroIntegrationMiddleware, InjectedRoute } from 'astro';
+import { envField } from 'astro/config';
 import copy from 'rollup-plugin-copy';
 import routeMap from '~lib/routeMap.ts';
 import type { AstroFeedbackOptions } from '~schemas/index.ts';
@@ -23,19 +24,61 @@ export const middlewareConfig = (name: string): AstroIntegrationMiddleware => {
 
 export const namedRoutes = (name: string): Record<string, InjectedRoute> => {
 	return {
-		Index: {
+		// Astro Pages (Public)
+		'Public: Index': {
 			pattern: routeMap.base.index,
 			entrypoint: `${name}/routes/index.astro`,
 		},
-		'Login Page': {
+		'Public: Feedback Page': {
+			pattern: routeMap.base.feedback,
+			entrypoint: `${name}/routes/submit-feedback.astro`,
+		},
+		// Astro Pages (Portal)
+		'Portal: Login Page': {
 			pattern: routeMap.portal.login,
 			entrypoint: `${name}/routes/portal/login.astro`,
+		},
+		'Portal: Logout': {
+			pattern: routeMap.portal.logout,
+			entrypoint: `${name}/routes/portal/logout.ts`,
+		},
+		// Astro API Routes
+		'API: GitHub Login': {
+			pattern: routeMap.api.login,
+			entrypoint: `${name}/routes/api/login.ts`,
+		},
+		'API: GitHub Callback': {
+			pattern: routeMap.api.callback,
+			entrypoint: `${name}/routes/api/callback.ts`,
+		},
+		'API: Logout': {
+			pattern: routeMap.api.logout,
+			entrypoint: `${name}/routes/api/logout.ts`,
 		},
 	};
 };
 
 export const astroFeedbackViteConfig = (name: string): DeepPartial<AstroConfig> => {
 	return {
+		security: {
+			checkOrigin: true,
+		},
+		experimental: {
+			env: {
+				schema: {
+					GITHUB_CLIENT_ID: envField.string({
+						context: 'server',
+						access: 'secret',
+						optional: false,
+					}),
+					GITHUB_CLIENT_SECRET: envField.string({
+						context: 'server',
+						access: 'secret',
+						optional: false,
+					}),
+				},
+			},
+		},
 		vite: {
 			optimizeDeps: {
 				exclude: ['astro:db'],
