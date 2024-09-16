@@ -24,36 +24,83 @@ export const middlewareConfig = (name: string): AstroIntegrationMiddleware => {
 
 export const namedRoutes = (name: string): Record<string, InjectedRoute> => {
 	return {
-		// Astro Pages (Public)
+		//// Astro Pages (Public)
 		'Public: Index': {
 			pattern: routeMap.base.index,
 			entrypoint: `${name}/routes/index.astro`,
+			prerender: true,
 		},
 		'Public: Feedback Page': {
 			pattern: routeMap.base.feedback,
 			entrypoint: `${name}/routes/submit-feedback.astro`,
+			prerender: true,
 		},
-		// Astro Pages (Portal)
+		//// Astro Pages (Portal)
 		'Portal: Login Page': {
 			pattern: routeMap.portal.login,
 			entrypoint: `${name}/routes/portal/login.astro`,
+			prerender: true,
 		},
 		'Portal: Logout': {
 			pattern: routeMap.portal.logout,
 			entrypoint: `${name}/routes/portal/logout.ts`,
+			prerender: false,
 		},
-		// Astro API Routes
+		// 'Portal: Index': {},
+		// 'Portal: Projects Index': {},
+		// 'Portal: New Project': {},
+		// 'Portal: Edit Project': {},
+		// 'Portal: View Project': {},
+		// 'Portal: Submissions Index': {},
+		// 'Portal: New Submission': {},
+		// 'Portal: View Submission': {},
+		// 'Portal: Teams Index': {},
+		// 'Portal: New Team': {},
+		// 'Portal: Edit Team': {},
+		// 'Portal: View Team': {},
+		// 'Portal: Users Index': {},
+		// 'Portal: Edit User': {},
+		// 'Portal: View User': {},
+		//// Astro API Routes
 		'API: GitHub Login': {
 			pattern: routeMap.api.login,
 			entrypoint: `${name}/routes/api/login.ts`,
+			prerender: false,
 		},
 		'API: GitHub Callback': {
 			pattern: routeMap.api.callback,
 			entrypoint: `${name}/routes/api/callback.ts`,
+			prerender: false,
 		},
 		'API: Logout': {
 			pattern: routeMap.api.logout,
 			entrypoint: `${name}/routes/api/logout.ts`,
+			prerender: false,
+		},
+		'API: Mailer': {
+			pattern: routeMap.api.mailer,
+			entrypoint: `${name}/routes/api/mailer.ts`,
+			prerender: false,
+		},
+		'API: Project': {
+			pattern: routeMap.api.projects,
+			entrypoint: `${name}/routes/api/project.ts`,
+			prerender: false,
+		},
+		'API: Submission': {
+			pattern: routeMap.api.submissions,
+			entrypoint: `${name}/routes/api/submission.ts`,
+			prerender: false,
+		},
+		'API: Team': {
+			pattern: routeMap.api.teams,
+			entrypoint: `${name}/routes/api/team.ts`,
+			prerender: false,
+		},
+		'API: User': {
+			pattern: routeMap.api.users,
+			entrypoint: `${name}/routes/api/user.ts`,
+			prerender: false,
 		},
 	};
 };
@@ -64,6 +111,7 @@ export const astroFeedbackViteConfig = (name: string): DeepPartial<AstroConfig> 
 			checkOrigin: true,
 		},
 		experimental: {
+			serverIslands: true,
 			env: {
 				schema: {
 					GITHUB_CLIENT_ID: envField.string({
@@ -72,6 +120,11 @@ export const astroFeedbackViteConfig = (name: string): DeepPartial<AstroConfig> 
 						optional: false,
 					}),
 					GITHUB_CLIENT_SECRET: envField.string({
+						context: 'server',
+						access: 'secret',
+						optional: false,
+					}),
+					MAILER_API_CRYPTO_KEY: envField.string({
 						context: 'server',
 						access: 'secret',
 						optional: false,

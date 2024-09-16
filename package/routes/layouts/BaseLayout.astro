@@ -6,6 +6,7 @@ import BaseHead from '../components/BaseHead.astro';
 import ButtonShelf from '../components/ButtonShelf.astro';
 import ThemeManager from '../components/ThemeManager.astro';
 import ThemeSelect from '../components/ThemeSelect.astro';
+import UserWidget from '../components/UserWidget.astro';
 import ViewTransitions from '../components/ViewTransitions.astro';
 import DrawerBox from './DrawerBox.astro';
 import DrawerContent from './DrawerContent.astro';
@@ -40,13 +41,14 @@ const {
     <BaseHead {config} {title} {description} {image} />
     <ThemeManager />
   </head>
-  <body >
+  <body>
     <DrawerBox>
       <DrawerContent {r} {includeHeader} {includeSidebar} {sideBarActiveItemID}>
         <slot />
       </DrawerContent>
     </DrawerBox>
     <ButtonShelf>
+      <UserWidget server:defer />
       <ThemeSelect lightTheme='emerald' />
     </ButtonShelf>
     <ViewTransitions />

@@ -23,7 +23,19 @@ export const AstroFeedbackOptionsSchema = z
 		 * Whether to enable verbose logging.
 		 */
 		verbose: z.boolean().optional().default(false),
+		/**
+		 * Custom HTML head configuration
+		 * @default []
+		 */
 		headers: HeadConfigSchema(),
+		/**
+		 * Access-Control-Allow-Origin header value(s) for the Submission system.
+		 *
+		 * If empty, the header will not be set and the Submission system will not be accessible from other domains.
+		 * @default []
+		 * @example ['https://example.com', 'https://example.org']
+		 */
+		accessControlAllowOrigin: z.array(z.string()).optional().default([]),
 	})
 	.optional()
 	.default({});

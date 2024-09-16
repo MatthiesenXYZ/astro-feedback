@@ -31,7 +31,7 @@ export default async function seed() {
 			id: '1',
 			name: 'Team 1',
 			description: 'Team 1 description',
-			users: { userIds: ['15655ac8-9b6d-48d6-91a0-1cca2f753305'] },
+			users: ['15655ac8-9b6d-48d6-91a0-1cca2f753305'],
 		},
 	]);
 	// Insert a project

@@ -1,27 +1,28 @@
 ---
-import type { RouteMap } from 'astro-feedback:routes';
-import type { tsProject, tsUser } from '../../db/tsTables';
+import r from 'astro-feedback:routes';
+import { db } from 'astro:db';
+import { TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { tsProject } from '../../db/tsTables';
+import getUser from '../lib/getUser';
 import RedirectButton from './RedirectButton.astro';
 import Heading from './headings/Heading.astro';
 import GetIcon from './icons/GetIcon.astro';
 
-interface Props {
-	r: RouteMap;
-	UserData: typeof tsUser.$inferSelect | undefined;
-	currentProjects: (typeof tsProject.$inferSelect)[];
-	defaultProject: boolean;
-}
-
 const {
-	UserData,
-	currentProjects,
-	defaultProject,
-	r: {
-		base: { index },
-	},
-} = Astro.props;
+	base: { index },
+	api: { captcha, submissions },
+} = r;
+
+// Get the user data from the Astro locals
+const { user: UserData } = await getUser(Astro);
+
+// Get the current projects from the database
+const currentProjects = await db.select().from(tsProject);
+
+// Check if there is a default project
+const defaultProject = currentProjects.filter(({ defaultProject }) => defaultProject).length > 0;
 ---
-<form id="feedback-submissions" action="" method="post" class="card-body">
+<form id="feedback-submissions" method="POST" class="card-body" action={submissions}>
 
     <div class="flex flex-col gap-4 pb-4">
 
@@ -29,7 +30,7 @@ const {
 
             <span class="sr-only">Select a Project</span>
             
-            <div class="label">
+            <div class="label gap-6 pb-6">
                 <Heading class="label-text" tag={'h3'}>
                     <span class="text-secondary flex items-top">
                         <span class="flex items-center gap-2">
@@ -69,7 +70,7 @@ const {
 
     </div>
             
-    <div class="flex flex-col gap-4 pb-4">
+    <div class="flex flex-col gap-6 pb-6">
                     
         <Heading tag={'h3'}>
             <span class="text-secondary flex items-center gap-2">
@@ -85,7 +86,7 @@ const {
             <input 
                 name="email" 
                 form="feedback-submissions" 
-                type="text"  
+                type="email"  
                 placeholder="john.doe@google.com" 
                 class="w-full"
                 value={UserData?.email}
@@ -94,7 +95,35 @@ const {
         </label>
     </div>
             
-    <div class="flex flex-col gap-4 pb-4">
+    <div class="flex flex-col gap-6 pb-6">
+                    
+        <Heading tag={'h3'}>
+            <span class="text-secondary flex items-top">
+                <span class="text-secondary flex items-center gap-2">
+                    <GetIcon icon={'subject'} class='h-[1.5rem] w-[1.5rem]'/>
+                    Subject
+                </span>
+                <GetIcon icon={'asterisk'} class='text-red-600 h-[0.7rem] w-[0.7rem]'/>
+            </span>
+        </Heading>
+                    
+        <label for="subject" class="input input-bordered input-info flex items-center gap-2">
+
+            <span class="sr-only">Feedback Subject</span>
+
+            <input 
+                name="subject" 
+                form="feedback-submissions" 
+                type="text"  
+                placeholder="New Feedback" 
+                class="w-full"
+                required
+                />
+
+        </label>
+    </div>
+            
+    <div class="flex flex-col gap-6 pb-6">
         <Heading tag={'h3'}>
             <span class="text-secondary flex items-top">
                 <span class="flex items-center gap-2">
@@ -114,13 +143,18 @@ const {
             />
     </div>
 
-    <input type="hidden" name="userId" value={UserData?.id} />
+    <input type="hidden" name="userId" value={UserData?.id}>
 
-    <div class="flex flex-row pt-4">
+    <div id="turnstile-container" class="h-[65px]" data-sitekey={TURNSTILE_SITE_KEY}>
+        <div class="sr-only">Turnstile Captcha</div>
+    </div>
+
+    <div class="flex flex-row pt-6">
         <div class="flex-none">
             <button class="btn btn-primary font-extrabold flex items-center" type="submit">
                 Submit
                 <GetIcon icon={'submit'} class='h-[1.2rem] w-[1.2rem]'/>
+                <span id="buttonloader" class="loading loading-bars loading-md"></span>
             </button>
         </div>
 
@@ -136,3 +170,145 @@ const {
         </div>
     </div>
 </form>
+
+<div style="display: none;" id="captchaPath" data-url={new URL(captcha, Astro.site).href}></div>
+
+<div id="form-error" role="alert" class="alert alert-error flex">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current inline"
+      fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span><strong>Error:</strong> <span id="error-placeholder">There was an Error!</span></span>
+</div>
+
+<div id="form-success" role="alert" class="alert alert-success flex">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current inline"
+      fill="none" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round" stroke-linejoin="round"
+        stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span><strong>Success:</strong> <span id="success-placeholder">There was an Error!</span></span>
+</div>
+
+<style>
+    #buttonloader {
+        display: none;
+    }
+
+    #form-error {
+        display: none;
+        position: fixed;
+        top: 5rem;
+        place-self: center;
+        width: max-content;
+        transition: fade 0.5s ease-in-out;
+    }
+
+    #form-success {
+        display: none;
+        position: fixed;
+        top: 5rem;
+        place-self: center;
+        width: max-content;
+        transition: fade 0.5s ease-in-out;
+    }
+</style>
+
+<script is:inline>
+    const form = document.getElementById('feedback-submissions');
+    const formError = document.getElementById('form-error');
+    const errorPlaceholder = document.getElementById('error-placeholder');
+    const buttonLoader = document.getElementById('buttonloader');
+    const successPlaceholder = document.getElementById('success-placeholder');
+    const formSuccess = document.getElementById('form-success');
+
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        buttonLoader.style.display = 'inline-block';
+
+        function timeout(resolve, ms, message, placeholder, button) {
+            setTimeout(() => { 
+                button.style.display = 'none';
+                placeholder.textContent = message;
+                resolve.style.display = 'block';
+            }, ms);
+            resolve.style.display = 'none';
+            placeholder.textContent = "There was an Error!";
+        }
+
+        const formData = new FormData(form);
+
+        const url = (document.getElementById('captchaPath')).dataset.url;
+
+        try {
+            const verifyData = await fetch(url, {
+                method: 'POST',
+                body: formData,
+            });
+
+            console.log("Verify Data:", verifyData);
+
+            if (verifyData.status !== 200) {
+                console.log("Captcha verification failed, please try again.");
+                timeout(formError, 4000, "Captcha verification failed, please try again.", errorPlaceholder, buttonLoader);
+                return;
+            }
+
+            const submission = await fetch(form.action, {
+                method: form.method,
+                body: formData,
+            });
+
+            console.log("Submission:", submission);
+
+            if (submission.status === 200) {
+                const response = await submission.json();
+
+                console.log("Response:", response);
+
+                timeout(formSuccess, 4000, response.message, successPlaceholder, buttonLoader);
+                form.reset();
+                if (response.isLoggedInUser) {
+                    setTimeout(() => {
+                        window.location.href = response.submissionPath;
+                    }, 6000);
+                }
+            } else {
+                timeout(formError, 4000, "Feedback submission failed, please try again.", errorPlaceholder, buttonLoader);
+            }
+
+        } catch (error) {
+            timeout(formError, 4000, "Captcha verification failed, please try again.", errorPlaceholder, buttonLoader);
+        }
+    });
+</script>
+
+<script is:inline>
+
+    const turnstileElement = document.getElementById('turnstile-container');
+    const sitekey = document.getElementById('turnstile-container').dataset.sitekey;
+
+    const turnstileElementID = '#turnstile-container';
+
+    const themeMap = {
+        'auto': 'auto',
+        'emerald': 'light',
+        'dark': 'dark'
+    }
+
+    function onloadTurnstileCallback() {
+        widgetId = turnstile.render(turnstileElementID, {
+            sitekey: sitekey,
+            size: 'normal',
+            theme: themeMap[window.theme.getTheme()],
+        })
+    }
+
+    document.addEventListener('theme-changed', () => {
+        turnstile.remove(turnstileElementID);
+        onloadTurnstileCallback();
+    })
+
+</script>

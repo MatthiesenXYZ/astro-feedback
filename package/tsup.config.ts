@@ -13,7 +13,11 @@ export default defineConfig((options) => {
 		clean: true,
 		splitting: false,
 		minify: !dev,
-		external: [...Object.keys(peerDependencies), '@matthiesenxyz/astro-feedback/twTextShadow'],
+		external: [
+			...Object.keys(peerDependencies),
+			'@matthiesenxyz/astro-feedback/twTextShadow',
+			'astro:env',
+		],
 		tsconfig: 'tsconfig.json',
 	};
 });

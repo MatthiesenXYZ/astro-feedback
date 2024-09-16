@@ -1,0 +1,358 @@
+---
+import routes from 'astro-feedback:routes';
+import { Image } from 'astro:assets';
+import { db, eq } from 'astro:db';
+import { tsProject, tsSubmission, tsTeam } from '../../db/tsTables';
+import getUser from '../lib/getUser';
+import type { Team } from '../lib/types';
+import RedirectButton from './RedirectButton.astro';
+import Heading from './headings/Heading.astro';
+import GetIcon, { type currentIcons } from './icons/GetIcon.astro';
+
+// Get the user data from the Astro locals
+const { isLoggedIn, user } = await getUser(Astro);
+
+// Define the default avatar
+const defaultAvatar = 'https://www.gravatar.com/avatar/?d=retro';
+const existingAvatar = user?.avatar ? user.avatar : defaultAvatar;
+const UserAvatar = user ? existingAvatar : defaultAvatar;
+
+// Get the teams from the database
+const userDBTeams = (await db.select().from(tsTeam)) as Team[];
+
+// Get the teams for the user
+const matchedTeams: Team[] = [];
+if (user) {
+	for (const team of userDBTeams) {
+		const teamData = team as Team;
+		for (const teamUser of Array.from(teamData.users)) {
+			if (teamUser === user.id) {
+				matchedTeams.push(teamData);
+			}
+		}
+	}
+}
+
+// Get the projects from the database
+const projects = await db.select().from(tsProject);
+
+// Get the projects for the matched teams
+const matchedProjects: (typeof tsProject.$inferSelect)[] = [];
+if (matchedTeams.length > 0) {
+	for (const team of matchedTeams) {
+		projects.find((project) => {
+			if (project.teamId === team.id) {
+				matchedProjects.push(project);
+			}
+		});
+	}
+}
+
+// Get the open submissions
+const submissions = await db.select().from(tsSubmission).where(eq(tsSubmission.status, 'open'));
+
+// Get the submissions for the matched projects
+const matchedSubmissions: (typeof tsSubmission.$inferSelect)[] = [];
+for (const project of matchedProjects) {
+	submissions.find((submission) => {
+		if (submission.projectId === project.id) {
+			matchedSubmissions.push(submission);
+		}
+	});
+}
+
+// Get the number of open submissions
+const submissionCount = matchedSubmissions.length;
+
+// Define the quick action buttons
+const quickActionButtons: Array<{
+	label: string;
+	link: string;
+	icon: currentIcons;
+	color: string;
+}> = [
+	{
+		label: 'Dashboard',
+		link: routes.portal.index,
+		icon: 'dashboard',
+		color: 'btn-primary',
+	},
+	{
+		label: 'View Profile',
+		link: `${routes.portal.users.index}/${user?.id}`,
+		icon: 'profile',
+		color: 'btn-secondary',
+	},
+	{
+		label: 'View Projects',
+		link: routes.portal.projects.index,
+		icon: 'project',
+		color: 'btn-accent',
+	},
+	{
+		label: 'Logout',
+		link: routes.portal.logout,
+		icon: 'logout',
+		color: 'btn-error',
+	},
+];
+---
+<div class="indicator">
+    <button 
+        class="avatar-button tooltip tooltip-bottom tooltip-accent font-bold mr-2" 
+        data-tip={`${user && user.name}`}
+        onclick="user_panel.showModal()"
+        data-isLoggedIn={isLoggedIn ? 'true' : 'false'}
+        >
+        <Image 
+            src={UserAvatar} 
+            height={128} 
+            width={128} 
+            loading={'eager'}
+            inferSize
+            alt={`${user && user.name}`}
+            class="w-full h-full object-cover rounded-full"
+            />
+            { submissionCount > 0 && <span class="open-submissions indicator-item indicator-bottom indicator-center badge badge-sm badge-info">{submissionCount}</span> }
+    </button>
+</div>
+
+<dialog 
+    id="user_panel" 
+    class="modal modal-bottom sm:modal-middle"
+    >
+    <div 
+        class="modal-box min-w-[100vw] sm:min-w-[80vw] max-w-5xl min-h-[40vh] max-h-[90vh]"
+        >
+        <div class="flex flex-row">
+            <div class="flex-non w-16 md:w-32">
+                <Image 
+                    src={UserAvatar} 
+                    height={512} 
+                    width={512} 
+                    loading={'eager'}
+                    inferSize
+                    alt={`${user && user.name}`}
+                    class="w-[3rem] rounded-full shadow-lg outline text-primary md:hidden"
+                    />
+            </div>
+            <div 
+                class="bg-base-300 flex-grow py-2"
+                >
+                <Heading tag={'h2'}>
+                    {user?.name}
+                    <Image 
+                        src={UserAvatar} 
+                        height={512} 
+                        width={512} 
+                        loading={'eager'}
+                        inferSize
+                        alt={`${user && user.name}`}
+                        class="w-[4rem] rounded-full shadow-lg outline text-primary max-sm:hidden md:inline ml-6"
+                        />
+                </Heading>
+            </div>
+            <div class="flex-none w-16 md:w-32 modal-action">
+                <form method="dialog">
+                    <button class="btn btn-circle btn-outline exit-button">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" 
+                                />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="divider my-4" />
+        {/* Dialog Content */}
+        <div 
+            class="flex flex-col md:flex-row w-full"
+            >
+            <div class="flex-none md:w-[25%] md:max-w-[28%] gap-2 text-center">
+                    <Heading tag={'h3'} class='min-w-[100%] flex text-center'>
+                        <span class="text-center w-full text-secondary px-8 md:px-2 lg:px-2 open-submissions-text">Open Submissions
+                            <span class="open-submissions-dialog badge badge-md badge-info font-bold text-shadow shadow-transparent">{submissionCount}
+                            </span>
+                        </span>
+                    </Heading>
+                <div class="divider my-2" />
+                { matchedSubmissions.length > 0 
+                    ? matchedSubmissions.map((sub) => (
+                        <div class="card bg-base-300 shadow-xl my-2 p-2">
+                            <div class="flex flex-row">
+                                <div class="flex-grow">
+                                    <h3 class="text-lg font-bold">
+                                        {sub.subject}
+                                    </h3>
+                                    <p class="text-sm">
+                                        {sub.body.slice(0, 10)}...
+                                    </p>
+                                </div>
+                                <div class="flex-none">
+                                    <RedirectButton 
+                                        link={`${routes.portal.projects}/${sub.projectId}/submissions/${sub.id}`} 
+                                        class="btn btn-primary"
+                                        >
+                                        <GetIcon icon={'view'} class='h-[1.5rem] w-[1.5rem]'/>
+                                    </RedirectButton>
+                                </div>
+                            </div>
+                        </div>
+                    )) : (
+                        <div class="card bg-base-300 shadow-xl my-2 py-6">
+                            <div class="flex flex-row">
+                                <div class="flex-grow">
+                                    <p class="text-sm">No open submissions</p>
+                                </div>
+                            </div>
+                        </div>
+                ) }
+            </div>
+            <div class="flex-none divider md:divider-horizontal mx-2" />
+            <div class="flex-grow flex flex-col md:w-[25%] text-center gap-2">
+                <Heading tag={'h3'}>
+                    <span class="text-secondary">Quick Actions</span>
+                </Heading>
+                <div class="divider my-0 pt-0" />
+                <div class="card bg-base-300 shadow-xl my-0 p-4">
+                    { quickActionButtons.map(({ link, color, icon, label }) => (
+                        <RedirectButton 
+                            link={link} 
+                            class:list={['btn', color, 'my-2', 'font-bold']}
+                            >{label}
+                            <GetIcon icon={icon} class='h-[1.2rem] w-[1.2rem]'/>
+                        </RedirectButton>
+                    )) }
+                </div>
+            </div>
+            <div class="flex-none divider md:divider-horizontal mx-2" />
+            <div class="flex-none md:w-[25%] md:max-w-[28%] gap-2">
+                <Heading tag={'h3'}>
+                    <span class="text-secondary">Your Projects</span>
+                </Heading>
+                <div class="divider my-2" />
+                { matchedProjects.length > 0 ? 
+                    matchedProjects.map((project) => (
+                        <div class="card bg-base-300 shadow-xl my-4 p-2">
+                            <div class="flex flex-row">
+                                <div class="flex-grow">
+                                    <h3 class="text-lg font-bold">
+                                        {project.title}
+                                    </h3>
+                                    <p class="text-sm">
+                                        {project.description.slice(0,10)}...
+                                    </p>
+                                </div>
+                                <div class="flex-none">
+                                    <RedirectButton 
+                                        link={`${routes.portal.projects}/${project.id}`} 
+                                        class="btn btn-primary font-bold"
+                                        >
+                                        <GetIcon icon={'view'} class='h-[1.5rem] w-[1.5rem]'/>
+                                    </RedirectButton>
+                                </div>
+                            </div>
+                        </div>
+                    )) : (
+                        <div class="card bg-base-300 shadow-xl my-2 py-6">
+                            <div class="flex flex-row">
+                                <div class="flex-grow">
+                                    <p class="text-sm">No projects found</p>
+                                </div>
+                            </div>
+                        </div>
+                ) }
+            </div>
+        </div>
+        {/* Dialog Content */}
+        <div class="divider my-4" />
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+    
+<script is:inline>
+    // Get the Avatar Button
+    const avatar = document.querySelector('.avatar-button');
+
+    // Check if the user is logged in
+    const isLoggedIn = avatar.getAttribute('data-isLoggedIn');
+
+    // Show the Avatar Button if the user is logged in
+    if (isLoggedIn === 'true') {
+        // Fade in the Avatar Button
+        setTimeout(() => {
+            avatar.style.display = 'block';
+            setTimeout(() => {
+                avatar.style.opacity = "1";
+            }, 250);
+        }, 200);
+    }
+</script>
+
+<style>
+    .open-submissions {
+        position: relative;
+        top: -25px;
+        left: 2px;
+        font-weight: 700;
+        height: 1.5rem;
+        width: 1.5rem;
+        border: 0.125rem solid;
+        z-index: 99999;
+    }
+
+    @media screen and (max-width: 765px) {
+        .open-submissions-dialog {
+            float: none;
+        }
+    }
+
+    @media screen and (min-width: 765px) {
+        .open-submissions-dialog {
+            float: inline-end;
+        }
+    }
+
+    .open-submissions-dialog {
+        position: relative;
+        top: -0.9rem;
+        left: 0.5rem;
+        font-weight: 700;
+        height: 1.5rem;
+        width: 1.5rem;
+        border: 0.05rem solid;
+        z-index: 99999;
+    }
+
+    .exit-button {
+        position: relative;
+        top: -1.5rem;
+        border-radius: 50%;
+        box-shadow: 2px 4px 4px 2px rgba(0, 0, 0, 0.216);
+    }
+
+    .avatar-button {
+        background-color: oklch(var(--b2));
+        border-radius: 50%;
+        border: 0.125rem solid;
+        border-color: oklch(var(--s));
+        width: 2.5rem;
+        height: 2.5rem;
+        cursor: pointer;
+        display: none;
+        opacity: 0;
+        z-index: 99998;
+        transition: opacity 1s ease;
+    }
+</style>

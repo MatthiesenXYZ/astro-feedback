@@ -90,6 +90,8 @@ export const AstroFeedbackSubmission = defineTable({
 		createdAt: column.date({ default: NOW }),
 		updatedAt: column.date({ default: NOW, optional: true }),
 		// Feedback content
+		subject: column.text(),
 		body: column.text({ multiline: true }),
+		responses: column.json({ default: [], optional: true }),
 	},
 });

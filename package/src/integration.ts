@@ -1,4 +1,6 @@
-import { addVirtualImports, defineIntegration } from 'astro-integration-kit';
+import { addIntegration, addVirtualImports, defineIntegration } from 'astro-integration-kit';
+import turnstile from 'astro-turnstile';
+import routeMap from '~lib/routeMap.ts';
 import { AstroFeedbackOptionsSchema as optionsSchema } from '~schemas/index.ts';
 import {
 	astroFeedbackAstroDBConfig,
@@ -29,12 +31,26 @@ export const astroFeedback = defineIntegration({
 				},
 				'astro:config:setup': async (params) => {
 					// Destructure the Astro params
-					const { logger, addMiddleware, injectRoute, updateConfig } = params;
+					const { logger, addMiddleware, injectRoute, injectScript, updateConfig } = params;
 
 					const fL = logger.fork(loggerLabel);
 
 					// Log a Setup message
 					verbose && fL.info('Setting up...');
+
+					// Add the Turnstile Integration
+					addIntegration(params, {
+						integration: turnstile({
+							verbose,
+							endpointPath: routeMap.api.captcha,
+							disableClientScript: true,
+							disableDevToolbar: false,
+						}),
+					});
+					injectScript(
+						'page',
+						'import "@matthiesenxyz/astro-feedback/modules/turnstile-client.js"'
+					);
 
 					// Update the Astro Config
 					verbose && fL.info('Updating Astro Config...');

@@ -1,0 +1,138 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+	link: string;
+}
+
+const { id, link, ...props } = Astro.props;
+---
+
+<external-redirect link={link} {...props}>
+    <slot />
+</external-redirect>
+
+<script>
+    // Function to remove http and https from the link display text
+    function removeHttpandHttps(url: string) {
+        return url.replace(/(^\w+:|^)\/\//, '');
+    }
+    // Check if the custom element is already defined (exists) before defining it
+    if (!customElements.get('external-redirect')) {
+        // Create the custom element class
+        class ExternalRedirectButton extends HTMLElement {
+            constructor() {
+                super();
+
+                // Get Attributes
+                const link = this.getAttribute('link');
+
+                // Create elements
+
+                //// Get the slot element
+                const slot = document.createElement('slot');
+
+                //// Dialog Elements
+                const dialog = document.createElement('dialog');
+                const dialogContent = document.createElement('div');
+                const heading = document.createElement('h3');
+                const linkSpan = document.createElement('span');
+                const question = document.createElement('p');
+                const linkElement = document.createElement('a');
+                const buttonContainer = document.createElement('div');
+                const cancel = document.createElement('form');
+                const cancelButton = document.createElement('button');
+                const continueButton = document.createElement('button');
+                const backdrop = document.createElement('form');
+                const backdropButton = document.createElement('button');
+
+                //// Styles
+                slot.style.cursor = 'pointer';
+                dialogContent.style.borderRadius = '1rem';
+                dialogContent.style.border = '1px solid oklch(var(--in))';
+                dialogContent.style.zIndex = '1000';
+                dialogContent.style.backgroundColor = 'oklch(var(--b3))';
+                dialogContent.style.position = 'fixed';
+                dialogContent.style.top = '50%';
+                dialogContent.style.left = '50%';
+                dialogContent.style.transform = 'translate(-50%, -50%)';
+                dialogContent.style.padding = '1rem';
+                heading.style.fontSize = '2rem';
+                heading.style.fontWeight = 'bold';
+                heading.style.color = "oklch(var(--s))";
+                question.style.fontSize = '1rem';
+                linkSpan.style.fontSize = '1rem';
+                linkElement.style.fontSize = '1rem';
+                linkElement.style.color = 'oklch(var(--in))';
+                linkElement.style.textDecoration = 'none';
+                buttonContainer.style.display = 'flex';
+                buttonContainer.style.justifyContent = 'center';
+                buttonContainer.style.marginTop = '1rem';
+                buttonContainer.style.marginBottom = '1rem';
+                cancelButton.style.marginRight = '1rem';
+                cancelButton.style.backgroundColor = 'oklch(var(--er))';
+                cancelButton.style.color = 'oklch(var(--erc))';
+                cancelButton.style.border = 'none';
+                cancelButton.style.borderRadius = '0.5rem';
+                cancelButton.style.padding = '0.5rem 1rem';
+                cancelButton.style.cursor = 'pointer';
+                cancelButton.style.fontSize = '1rem';
+                cancelButton.style.fontWeight = 'bold';
+                cancelButton.textContent = 'Cancel';
+                continueButton.style.backgroundColor = 'oklch(var(--su))';
+                continueButton.style.color = 'oklch(var(--suc))';
+                continueButton.style.border = 'none';
+                continueButton.style.borderRadius = '0.5rem';
+                continueButton.style.padding = '0.5rem 1rem';
+                continueButton.style.cursor = 'pointer';
+                continueButton.style.fontSize = '1rem';
+                continueButton.style.fontWeight = 'bold';
+                backdropButton.style.position = 'fixed';
+                backdropButton.style.top = '0';
+                backdropButton.style.left = '0';
+                backdropButton.style.width = '100vw';
+                backdropButton.style.height = '100vh';
+                backdropButton.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+                backdropButton.style.zIndex = '999';
+                backdropButton.style.border = 'none';
+
+                //// Content
+                heading.textContent = 'External Redirect Warning';
+                question.textContent = 'You are about to be redirected to an external website. Do you want to continue?';
+                linkSpan.textContent = 'You are about to be redirected to: ';
+                linkElement.textContent = removeHttpandHttps(link!);
+                continueButton.textContent = 'Continue';
+
+                //// Attributes
+                linkElement.href = link!;
+                linkElement.autofocus = false;
+                cancel.method = 'dialog';
+                backdrop.method = 'dialog';
+
+                // Append heading to the dialog content
+                dialogContent.appendChild(heading);
+                dialogContent.appendChild(question);
+                linkSpan.appendChild(linkElement);
+                dialogContent.appendChild(linkSpan);
+                cancel.appendChild(cancelButton);
+                buttonContainer.appendChild(cancel);
+                buttonContainer.appendChild(continueButton);
+                dialogContent.appendChild(buttonContainer);
+                backdrop.appendChild(dialogContent);
+                backdrop.appendChild(backdropButton);
+                dialog.appendChild(backdrop);
+
+                // Event Listeners
+                continueButton.addEventListener('click', () => window.location.href = link!);
+                this.addEventListener('click', () => dialog.showModal());
+
+                // Create a shadow root
+                const shadow = this.attachShadow({ mode: 'open' });
+                shadow.appendChild(dialog);
+                shadow.appendChild(slot);
+            }
+        }
+        // "Define" (add) the custom element to the window
+        customElements.define('external-redirect', ExternalRedirectButton);
+    }
+</script>

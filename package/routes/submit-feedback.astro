@@ -1,23 +1,10 @@
 ---
-import r from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
-import { db } from 'astro:db';
-import { tsProject } from '../db/tsTables';
 import Logo from './assets/astrofeedback-logo.webp';
 import PublicSubmissionForm from './components/PublicSubmissionForm.astro';
 import VerticalContainer from './components/VerticalContainer.astro';
 import Heading from './components/headings/Heading.astro';
 import BaseLayout from './layouts/BaseLayout.astro';
-import getUser from './lib/getUser';
-
-// Get the user data from the Astro locals
-const { user: UserData } = await getUser(Astro.locals);
-
-// Get the current projects from the database
-const currentProjects = await db.select().from(tsProject);
-
-// Check if there is a default project
-const defaultProject = currentProjects.filter(({ defaultProject }) => defaultProject).length > 0;
 ---
 
 <BaseLayout 
@@ -43,7 +30,13 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
 
         <div class="card bg-base-100 w-full shadow-xl">
 
-            <PublicSubmissionForm {r} {currentProjects} {UserData} {defaultProject} />
+            <PublicSubmissionForm server:defer>
+                <slot name="fallback">
+                    <div class="p-4">
+                        <p class="text-center">Loading form...</p>
+                    </div>
+                </slot>
+            </PublicSubmissionForm>
 
         </div>
 

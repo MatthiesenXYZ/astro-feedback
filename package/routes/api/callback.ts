@@ -6,6 +6,8 @@ import type { APIContext, APIRoute } from 'astro';
 import { tsUser } from '../../db/tsTables';
 import { lucia } from '../lib/auth';
 
+export const prerender = false;
+
 const convertGithubUserType = ({
 	avatar_url,
 	login,
@@ -145,10 +147,28 @@ export const GET: APIRoute = async ({ url, cookies, redirect }: APIContext) => {
 
 		// If the user exists, create a new session and set the session cookie
 		if (existingUser) {
-			console.log('existingUser', existingUser);
+			// Create a new session for the existing user
+			console.log('[Existing User]: ', existingUser.username);
 			const session = await lucia.createSession(existingUser.id, {});
+
+			// Create a new session cookie for the existing user
 			const sessionCookie = lucia.createSessionCookie(session.id);
+
+			// Set the session cookie in the response
 			cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+
+			// Update the user's data in the database if needed
+			if (existingUser.avatar !== avatar_url) {
+				const updatedUser = await db
+					.update(tsUser)
+					.set({ avatar: avatar_url, updatedAt: new Date() })
+					.where(eq(tsUser.id, existingUser.id))
+					.returning({ username: tsUser.username })
+					.get();
+
+				console.log('[Avatar Updated]: ', updatedUser.username);
+			}
+			// Redirect the user to the home page after login
 			return redirect(redirectAfterLogin);
 		}
 
@@ -172,14 +192,14 @@ export const GET: APIRoute = async ({ url, cookies, redirect }: APIContext) => {
 		);
 
 		// Redirect the user to the home page after login
-		console.log('newUser', newUser);
+		console.log('[New User]: ', newUser.username);
 		return redirect(redirectAfterLogin);
 	} catch (error) {
 		// If the error is an OAuth2RequestError, log the error and return a 400 error
 		if (error instanceof OAuth2RequestError) {
 			const { message, description, request, cause } = error;
 
-			console.error('OAuth2RequestError:', { message, description, request, cause });
+			console.error('[OAuth2RequestError]: ', { message, description, request, cause });
 
 			return new Response(`Error: ${message}`, {
 				status: 400,
@@ -192,59 +212,15 @@ export const GET: APIRoute = async ({ url, cookies, redirect }: APIContext) => {
 	}
 };
 
-export const POST: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const HEAD: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const PUT: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const DELETE: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const CONNECT: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const TRACE: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const PATCH: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, GET',
+			Date: new Date().toUTCString(),
+			'Cache-Control': 'public, max-age=604800, immutable',
+		},
 	});
 };
 

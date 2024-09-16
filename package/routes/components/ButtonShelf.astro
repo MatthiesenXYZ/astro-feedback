@@ -3,7 +3,9 @@
 ---
 
 <div class="button-shelf">
-    <slot />
+    <div class="flex flex-row inline align-center text-center p-[0.15rem]">
+        <slot />
+    </div>
 </div>
 
 <style>
@@ -12,21 +14,16 @@
     }
     .button-shelf {
         background-color: oklch(var(--b2));
-        border-radius: 10px;
+        border-radius: 0.25rem;
         border: 0.125rem solid;
         border-color: oklch(var(--p));
-        height: 2.5rem;
+        height: 3rem;
+        min-width: 3rem;
         position: fixed;
         top: 1.5vw;
         right: 1.5vw;
         z-index: 99998;
         transition: opacity 1s ease;
-        flex-direction: row;
-        min-width: 2.5rem;
-        justify-items: right;
-        place-items: right;
-        align-items: center;
-        row-gap: 0.5rem;
         display: none;
         opacity: 0;
     }
@@ -35,7 +32,7 @@
 <script>
     const buttonShelf = document.querySelector('.button-shelf') as HTMLDivElement;
     setTimeout(() => {
-        buttonShelf.style.display = 'flex';
+        buttonShelf.style.display = 'block';
         setTimeout(() => {
             buttonShelf.style.opacity = "1";
         }, 100);

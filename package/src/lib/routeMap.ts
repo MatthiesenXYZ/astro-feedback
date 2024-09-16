@@ -41,6 +41,7 @@ export const routeMap: RouteMap = {
 		projects: '/api/projects',
 		submissions: '/api/submissions',
 		mailer: '/api/mailer',
+		captcha: '/api/verify-captcha',
 	},
 };
 

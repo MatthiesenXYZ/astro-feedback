@@ -1,15 +1,5 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
-import Asterisk from './Asterisk.astro';
-import Back from './Back.astro';
-import Feedback from './Feedback.astro';
-import Github from './Github.astro';
-import Login from './Login.astro';
-import Mail from './Mail.astro';
-import Menu from './Menu.astro';
-import Project from './Project.astro';
-import Separator from './Separator.astro';
-import Submit from './Submit.astro';
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 type AstroComponent = (_props: Record<string, any>) => any;
@@ -24,20 +14,32 @@ type currentIcons =
 	| 'menu'
 	| 'project'
 	| 'separator'
-	| 'submit';
+	| 'submit'
+	| 'dashboard'
+	| 'profile'
+	| 'logout'
+	| 'view'
+	| 'subject';
+
+export type { currentIcons };
 
 // Map of icon names to Astro components
 const Components: Record<currentIcons, AstroComponent> = {
-	asterisk: Asterisk,
-	back: Back,
-	feedback: Feedback,
-	github: Github,
-	login: Login,
-	mail: Mail,
-	menu: Menu,
-	project: Project,
-	separator: Separator,
-	submit: Submit,
+	asterisk: (await import('./Asterisk.astro')).default,
+	back: (await import('./Back.astro')).default,
+	feedback: (await import('./Feedback.astro')).default,
+	github: (await import('./Github.astro')).default,
+	login: (await import('./Login.astro')).default,
+	mail: (await import('./Mail.astro')).default,
+	menu: (await import('./Menu.astro')).default,
+	project: (await import('./Project.astro')).default,
+	separator: (await import('./Separator.astro')).default,
+	submit: (await import('./Submit.astro')).default,
+	dashboard: (await import('./Dashboard.astro')).default,
+	profile: (await import('./Profile.astro')).default,
+	logout: (await import('./Logout.astro')).default,
+	view: (await import('./View.astro')).default,
+	subject: (await import('./Subject.astro')).default,
 };
 
 interface Props extends HTMLAttributes<'svg'> {
@@ -50,4 +52,4 @@ const { icon, width = 128, height = width, ...props } = Astro.props;
 
 const Tag = Components[icon];
 ---
-{ Tag && <Tag width={width} height={height} {...props} /> }
+<Tag width={width} height={height} {...props} />

@@ -40,5 +40,6 @@ export type RouteMap = {
 		projects: string;
 		submissions: string;
 		mailer: string;
+		captcha: string;
 	};
 };

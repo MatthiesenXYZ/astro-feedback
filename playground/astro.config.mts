@@ -9,7 +9,8 @@ const { default: astroFeedback } = await import('@matthiesenxyz/astro-feedback')
 
 // https://astro.build/config
 export default defineConfig({
-	output: 'server',
+	site: 'http://localhost:4321',
+	output: 'hybrid',
 	adapter: node({ mode: 'standalone' }),
 	integrations: [
 		db(),

@@ -3,6 +3,8 @@ import { generateState } from 'arctic';
 import { GitHub } from 'arctic';
 import type { APIContext, APIRoute } from 'astro';
 
+export const prerender = false;
+
 export const GET: APIRoute = async ({ redirect, cookies }: APIContext) => {
 	// Create a new instance of the GitHub Client
 	const github = new GitHub(GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET);
@@ -28,59 +30,15 @@ export const GET: APIRoute = async ({ redirect, cookies }: APIContext) => {
 	return redirect(url.toString());
 };
 
-export const POST: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const HEAD: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const PUT: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const DELETE: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const CONNECT: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
 export const OPTIONS: APIRoute = async () => {
 	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const TRACE: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
-	});
-};
-
-export const PATCH: APIRoute = async () => {
-	return new Response(null, {
-		status: 405,
-		statusText: 'Method Not Supported',
+		status: 204,
+		statusText: 'No Content',
+		headers: {
+			Allow: 'OPTIONS, GET',
+			Date: new Date().toUTCString(),
+			'Cache-Control': 'public, max-age=604800, immutable',
+		},
 	});
 };
 

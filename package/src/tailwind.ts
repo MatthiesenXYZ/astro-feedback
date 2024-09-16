@@ -13,10 +13,10 @@ export const tailwindConfig: Config = {
 		},
 	},
 	plugins: [
-		require('@tailwindcss/typography'),
-		require('daisyui'),
 		require('@matthiesenxyz/astro-feedback/twTextShadow'),
 		require('tailwind-scrollbar')({ nocompatible: true }),
+		require('@tailwindcss/typography'),
+		require('daisyui'),
 	],
 	daisyui: {
 		themes: ['emerald', 'forest'],

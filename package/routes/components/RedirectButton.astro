@@ -1,12 +1,14 @@
 ---
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'button'> {
 	link: string;
 }
 
-const { link } = Astro.props;
+const { link, ...props } = Astro.props;
 ---
 
-<redirect-button link={link}>
+<redirect-button link={link} {...props}>
     <slot></slot>
 </redirect-button>
 
@@ -19,36 +21,19 @@ const { link } = Astro.props;
                 super();
                 // Create a shadow root
                 const shadow = this.attachShadow({ mode: 'open' });
-
-                // Create elements
-                const button = document.createElement('button');
-                const slot = document.createElement('slot');
-                const style = document.createElement('style');
-
-                // Add styles
-                style.textContent = `
-                    button {
-                        background-color: transparent;
-                        border: none;
-                        width: full;
-                    }
-                `;
-    
-                // Append slotted children to the button
-                button.appendChild(slot);
-
-                // Append styles and button to the shadow root
-                shadow.appendChild(style);
-                shadow.appendChild(button);
-    
                 // Get link attribute value
                 const link = this.getAttribute('link');
 
+                // Create elements
+                const slot = document.createElement('slot');
+    
+                // Append slotted children to the button
+                shadow.appendChild(slot);
+
                 // Add event listener to button
-                button.addEventListener('click', () => window.location.href = link!);
+                this.addEventListener('click', () => window.location.href = link!);
             }
         }
-        
         // "Define" (add) the custom element to the window
         customElements.define('redirect-button', RedirectButton);
     }
