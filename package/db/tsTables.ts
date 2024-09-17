@@ -69,3 +69,5 @@ export type SubmissionTableType = {
 		createdAt: Date;
 	}>;
 };
+
+export type allowedSubmissionStatuses = 'open' | 'closed' | 'in-progress' | 'resolved';

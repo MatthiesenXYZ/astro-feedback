@@ -1,0 +1,72 @@
+---
+import { Image } from 'astro:assets';
+import Heading from '../headings/Heading.astro';
+
+interface Props {
+	UserAvatar: string;
+	user:
+		| {
+				name: string;
+		  }
+		| undefined;
+}
+
+const { UserAvatar, user } = Astro.props;
+---
+<div class="flex flex-row">
+    <div class="flex-non w-16 md:w-32">
+        <Image 
+            src={UserAvatar} 
+            height={512} 
+            width={512} 
+            loading={'eager'}
+            inferSize
+            alt={`${user && user.name}`}
+            class="w-[3rem] rounded-full shadow-lg outline text-primary md:hidden"
+            />
+    </div>
+    <div 
+        class="bg-base-300 flex-grow py-2"
+        >
+        <Heading tag={'h2'}>
+            {user && user.name}
+            <Image 
+                src={UserAvatar} 
+                height={512} 
+                width={512} 
+                loading={'eager'}
+                inferSize
+                alt={`${user && user.name}`}
+                class="w-[4rem] rounded-full shadow-lg outline text-primary max-sm:hidden md:inline ml-6"
+                />
+        </Heading>
+    </div>
+    <div class="flex-none w-16 md:w-32 modal-action">
+        <form method="dialog">
+            <button class="btn btn-circle btn-outline exit-button">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" 
+                        />
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .exit-button {
+        position: relative;
+        top: -1.5rem;
+        border-radius: 50%;
+        box-shadow: 2px 4px 4px 2px rgba(0, 0, 0, 0.216);
+    }
+</style>

@@ -1,0 +1,33 @@
+---
+import type { RouteMap } from 'astro-feedback:routes';
+import type { tsProject } from '../../../db/tsTables';
+import RedirectButton from '../RedirectButton.astro';
+import GetIcon from '../icons/GetIcon.astro';
+
+interface Props {
+	project: typeof tsProject.$inferSelect;
+	routes: RouteMap;
+}
+
+const { project, routes } = Astro.props;
+---
+<div class="card bg-base-300 shadow-xl my-4 p-2">
+    <div class="flex flex-row">
+        <div class="flex-grow">
+            <h3 class="text-md font-bold">
+                {project.title}
+            </h3>
+            <p class="text-sm">
+                {project.description.slice(0, 25)}...
+            </p>
+        </div>
+        <div class="flex-none">
+            <RedirectButton 
+                link={`${routes.portal.projects}/${project.id}`} 
+                class="btn btn-primary font-bold"
+                >
+                <GetIcon icon={'view'} class='h-[1.5rem] w-[1.5rem]'/>
+            </RedirectButton>
+        </div>
+    </div>
+</div>

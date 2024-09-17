@@ -1,0 +1,179 @@
+---
+import routes from 'astro-feedback:routes';
+import { db, eq } from 'astro:db';
+import { tsSubmission } from '../../db/tsTables';
+import RedirectButton from '../components/RedirectButton.astro';
+import Heading from '../components/headings/Heading.astro';
+import GetIcon from '../components/icons/GetIcon.astro';
+import { getUserMetadata } from '../components/userWidgetParts/GetMeta';
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import getUser from '../lib/getUser';
+
+export const prerender = false;
+
+const { isLoggedIn, user } = await getUser(Astro);
+
+if (!isLoggedIn || !user) {
+	return Astro.redirect(routes.base.index);
+}
+
+const userSubmissions = await db
+	.select()
+	.from(tsSubmission)
+	.where(eq(tsSubmission.userId, user.id));
+
+const { matchedProjects, matchedTeams } = await getUserMetadata(user);
+
+function convertStatusString(str: string) {
+	return str
+		.split('-')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+}
+
+function getSubmissionStatusColor(status: string) {
+	switch (status) {
+		case 'open':
+			return 'text-info';
+		case 'in-progress':
+			return 'text-warning';
+		case 'closed':
+			return 'text-error';
+		case 'resolved':
+			return 'text-success';
+		default:
+			return undefined;
+	}
+}
+---
+
+<DashboardLayout 
+    sideBarActiveItemID="dashboard" 
+    includeSidebar={true} 
+    includeHeader={true}
+    >
+
+    <div class="container lg:min-w-[70vw] max-w-[100vw] pt-10">
+        
+        <div class="flex flex-col h-full w-full">
+            <Heading tag={'h1'}>Dashboard</Heading>
+        </div>
+
+        <div class="divider my-4"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full auto-cols-auto">
+
+            <div class="md:col-span-2">
+                <div class="flex flex-col items-center rounded-lg bg-base-300 gap-2 p-4 h-full">
+                    <span class="p-0 text-2xl font-bold text-accent text-shadow-md shadow-black">Your Submissions</span>
+
+                    <div class="divider my-0"></div>
+
+                    { userSubmissions.length > 0 ?
+                        userSubmissions.map((submission) => (
+                            <div class="flex flex-row items-center justify-between p-4 w-full bg-base-200 rounded-lg shadow-lg relative">
+                                <div class="flex flex-col">
+                                    <div class="flex flex-row items-center gap-2 pb-2">
+                                        <span
+                                            class:list={['text-sm', 'font-bold', 'submission-status', 'shadow-md', getSubmissionStatusColor(submission.status)]}>{convertStatusString(submission.status)}</span>
+                                        <span class="text-lg font-bold text-secondary">{submission.subject}</span>
+                                    </div>
+                                    <span class="text-sm">{submission.body.slice(0, 50)}...</span>
+                                </div>
+                                <RedirectButton 
+                                    link={`${routes.portal.projects.index}/${submission.projectId}/submissions/${submission.id}`}
+                                    class="btn btn-sm btn-outline btn-accent shadow-md absolute bottom-4 right-4"
+                                    >
+                                    <GetIcon icon={'view'} class='h-[1rem] w-[1rem]'/>
+                                </RedirectButton>
+                            </div>
+                        )) : (
+                            <div class="flex flex-col items-center">
+                                <span class="text-lg font-bold text-accent">No Submissions found.</span>
+                                <span class="text-sm">You have no submissions at this time.</span>
+                            </div>
+                        )
+                    }                    
+                </div>
+            </div>
+
+            { matchedProjects.length > 0 && (
+                <div class="col-span-1">
+                    <div class="flex flex-col items-center rounded-lg bg-base-300 gap-2 p-4 h-full">
+                        <span class="p-0 text-2xl font-bold text-accent text-shadow-md shadow-black">Your Projects</span>
+                        
+                        <div class="divider my-0"></div>
+    
+                        {
+                            matchedProjects.map((project) => (
+                                <div class="flex flex-row items-center justify-between p-4 w-full bg-base-200 rounded-lg shadow-lg">
+                                    <div class="flex flex-col w-full relative">
+                                        <span class="text-md font-bold text-secondary pb-2">{project.title}</span>
+                                        <span class="text-sm">{project.description.slice(0, 25)}...</span>
+                                        <div class="absolute bottom-0 right-0">
+                                            <RedirectButton 
+                                                link={`${routes.portal.projects.index}/${project.id}`} 
+                                                class="btn btn-sm btn-outline btn-accent shadow-md"
+                                                >
+                                                <GetIcon icon={'view'} class='h-[1rem] w-[1rem]'/>
+                                            </RedirectButton>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+            )}
+
+            { matchedTeams.length > 0 && (
+                <div class="col-span-1">
+                    <div class="flex flex-col items-center rounded-lg bg-base-300 gap-2 p-4 h-full">
+                        <span class="p-0 text-2xl font-bold text-accent text-shadow-md shadow-black">Your Teams</span>
+                        
+                        <div class="divider my-0"></div>
+    
+                        {   
+                            matchedTeams.map((team) => {
+                                if (!team) return;
+                                return (
+                                    <div class="flex flex-row items-center justify-between p-4 w-full bg-base-200 rounded-lg shadow-lg">
+                                        <div class="flex flex-col w-full relative">
+                                            <span class="text-md font-bold text-secondary">{team.name}</span>
+                                            <span class="text-sm">{team.description.slice(0, 25)}...</span>
+                                            <div class="absolute bottom-0 right-0">
+                                                <RedirectButton 
+                                                    link={`${routes.portal.teams.index}/${team.id}`} 
+                                                    class="btn btn-sm btn-outline btn-accent shadow-md"
+                                                    >
+                                                    <GetIcon icon={'view'} class='h-[1rem] w-[1rem]'/>
+                                                </RedirectButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            )}
+
+        </div>
+
+    </div>
+
+</DashboardLayout>
+
+<style>
+    .submission-status {
+        background-color: oklch(var(--b1));
+        border-radius: 0.25rem;
+        padding-inline: 0.5rem;
+        padding-top: 0.125rem;
+        padding-bottom: 0.125rem;
+        border-left: 2px solid;
+        border-right: 2px solid;
+        border-top: 0.125px solid;
+        border-bottom: 0.125px solid;
+    }
+</style>

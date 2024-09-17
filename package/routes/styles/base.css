@@ -1,0 +1,7 @@
+html {
+    @apply scrollbar-thumb-rounded-full scrollbar scrollbar-thumb-accent scrollbar-track-transparent overflow-y-scroll;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}

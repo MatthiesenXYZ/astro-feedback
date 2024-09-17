@@ -47,7 +47,7 @@ interface GitHubUserEmailResponseType {
 }
 
 const loginPage = r.portal.login;
-const redirectAfterLogin = r.base.index;
+const redirectAfterLogin = r.portal.index;
 
 export const GET: APIRoute = async ({ url, cookies, redirect }: APIContext) => {
 	// Create a new instance of the GitHub Client

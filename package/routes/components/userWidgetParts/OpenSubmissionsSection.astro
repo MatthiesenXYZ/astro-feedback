@@ -1,0 +1,59 @@
+---
+import type { RouteMap } from 'astro-feedback:routes';
+import type { tsSubmission } from '../../../db/tsTables';
+import Heading from '../headings/Heading.astro';
+import MatchedSubmissions from './MatchedSubmissions.astro';
+import NoSubmissions from './NoSubmissions.astro';
+
+interface Props {
+	matchedSubmissions: (typeof tsSubmission.$inferSelect)[];
+	routes: RouteMap;
+}
+
+const { matchedSubmissions, routes } = Astro.props;
+
+// Get the count of open submissions
+const submissionCount = matchedSubmissions.length;
+---
+<div class="flex-none md:w-[25%] md:max-w-[28%] gap-2 text-center">
+    <Heading tag={'h4'} class='min-w-[100%] flex text-center'>
+        <span class="text-center w-full text-secondary px-8 md:px-2 lg:px-2 open-submissions-text">Open Submissions
+            <span class="open-submissions-dialog badge badge-md badge-info font-bold text-shadow shadow-transparent">{submissionCount}
+            </span>
+        </span>
+    </Heading>
+
+    <div class="divider my-2" />
+
+    { 
+        matchedSubmissions.length > 0 
+        ? matchedSubmissions.map((submission) => 
+        ( <MatchedSubmissions {submission} {routes} /> )) 
+        : <NoSubmissions /> 
+    }
+</div>
+
+<style>
+@media screen and (max-width: 765px) {
+    .open-submissions-dialog {
+        float: none;
+    }
+}
+
+@media screen and (min-width: 765px) {
+    .open-submissions-dialog {
+        float: inline-end;
+    }
+}
+
+.open-submissions-dialog {
+    position: relative;
+    top: -0.9rem;
+    left: 0.5rem;
+    font-weight: 700;
+    height: 1.5rem;
+    width: 1.5rem;
+    border: 0.05rem solid;
+    z-index: 99999;
+}
+</style>

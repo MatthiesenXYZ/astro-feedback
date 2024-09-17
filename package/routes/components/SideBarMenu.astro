@@ -1,5 +1,6 @@
 ---
 import type { RouteMap } from 'astro-feedback:routes';
+import GetIcon, { type currentIcons } from './icons/GetIcon.astro';
 
 interface Props {
 	r: RouteMap;
@@ -8,26 +9,75 @@ interface Props {
 const {
 	sideBarActiveItemID,
 	r: {
-		base: { index },
+		base: { index: homePage },
+		portal: { index: dashboardIndex },
 	},
 } = Astro.props;
-const activeClass = 'bg-base-300'; // For primary color replace with `active` class
+
+const links: {
+	[key: string]: {
+		id: string;
+		label: string;
+		icon: currentIcons;
+		href: string;
+	}[];
+} = {
+	main: [
+		{
+			id: 'home',
+			label: 'Home Page',
+			icon: 'back',
+			href: homePage,
+		},
+	],
+	portal_users: [
+		{
+			id: 'dashboard',
+			label: 'Dashboard',
+			icon: 'dashboard',
+			href: dashboardIndex,
+		},
+	],
+};
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
-    <li><a class="py-3 text-base" id="home" href={index}>Home Page</a></li>
+
+	{ 
+		links.main && (
+			<div class="divider mt-0 mb-2">Main Site</div>
+		) 
+	}
+
+	{
+		links.main && links.main.map(({ id, href, icon, label }) => (
+			<li><a class="btn shadow-md" {id} {href}><GetIcon {icon} class='h-[1.2rem] w-[1.2rem]'/>{label}</a></li>
+		))
+	}
+
+	{ 
+		links.portal_users && (
+			<div class="divider my-2">Portal</div>
+		) 
+	}
+
+	{
+		links.portal_users && links.portal_users.map(({ id, href, icon, label }) => (
+			<li><a class="btn shadow-md" {id} {href}><GetIcon {icon} class='h-[1.2rem] w-[1.2rem]'/>{label}</a></li>
+		))
+	}
+
 </ul>
 
 <script 
 	is:inline 
-	data-sidebar-active-item-id={sideBarActiveItemID}
-	data-active-class={activeClass}>
+	data-sidebar-active-item-id={sideBarActiveItemID}>
 
 const sideBarActiveItemID = document.currentScript.getAttribute('data-sidebar-active-item-id');
 const activeClass = document.currentScript.getAttribute('data-active-class');
 
 const activeItemElem = document.getElementById(sideBarActiveItemID);
 
-activeItemElem && activeItemElem.classList.add(activeClass);
+activeItemElem && activeItemElem.classList.add('bg-neutral', 'text-neutral-content');
 
 </script>

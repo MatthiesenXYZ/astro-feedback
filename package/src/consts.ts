@@ -22,7 +22,7 @@ export const middlewareConfig = (name: string): AstroIntegrationMiddleware => {
 	};
 };
 
-export const namedRoutes = (name: string): Record<string, InjectedRoute> => {
+export const optionalRoutes = (name: string): Record<string, InjectedRoute> => {
 	return {
 		//// Astro Pages (Public)
 		'Public: Index': {
@@ -35,6 +35,11 @@ export const namedRoutes = (name: string): Record<string, InjectedRoute> => {
 			entrypoint: `${name}/routes/submit-feedback.astro`,
 			prerender: true,
 		},
+	};
+};
+
+export const namedRoutes = (name: string): Record<string, InjectedRoute> => {
+	return {
 		//// Astro Pages (Portal)
 		'Portal: Login Page': {
 			pattern: routeMap.portal.login,
@@ -46,7 +51,11 @@ export const namedRoutes = (name: string): Record<string, InjectedRoute> => {
 			entrypoint: `${name}/routes/portal/logout.ts`,
 			prerender: false,
 		},
-		// 'Portal: Index': {},
+		'Portal: Index': {
+			pattern: routeMap.portal.index,
+			entrypoint: `${name}/routes/portal/index.astro`,
+			prerender: false,
+		},
 		// 'Portal: Projects Index': {},
 		// 'Portal: New Project': {},
 		// 'Portal: Edit Project': {},

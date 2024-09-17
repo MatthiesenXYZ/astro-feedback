@@ -8,7 +8,7 @@ export const tailwindConfig: Config = {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['Inter Variable', 'Inter', ..._fontFamily.sans],
+				sans: ['Poppins', ..._fontFamily.sans],
 			},
 		},
 	},

@@ -9,6 +9,7 @@ import {
 	loggerLabel,
 	middlewareConfig,
 	namedRoutes,
+	optionalRoutes,
 } from '~src/consts.ts';
 import BrandingDTS from '~stubs/branding.ts';
 import configDts from '~stubs/config.ts';
@@ -22,7 +23,7 @@ import { name as packageName } from '../package.json';
 export const astroFeedback = defineIntegration({
 	name: packageName,
 	optionsSchema,
-	setup({ name, options, options: { verbose } }) {
+	setup({ name, options, options: { verbose, dashboardOnly } }) {
 		return {
 			hooks: {
 				'astro:db:setup': ({ extendDb }: AstroDBIntegrationParams) => {
@@ -66,6 +67,20 @@ export const astroFeedback = defineIntegration({
 
 					// Inject the Astro Feedback Routes
 					verbose && fL.info('injecting Routes...');
+
+					// Inject the Optional Routes
+					dashboardOnly &&
+						verbose &&
+						fL.info('Dashboard Only Mode Enabled! Skipping `/` and `/submit-feedback` routes.');
+
+					if (!dashboardOnly) {
+						const OptionalRoutes = optionalRoutes(name);
+						for (const [name, route] of Object.entries(OptionalRoutes)) {
+							verbose && fL.info(`Route Injected: ["${name}" - "${route.pattern}"]`);
+							injectRoute(route);
+						}
+					}
+
 					const routes = namedRoutes(name);
 					for (const [name, route] of Object.entries(routes)) {
 						verbose && fL.info(`Route Injected: ["${name}" - "${route.pattern}"]`);

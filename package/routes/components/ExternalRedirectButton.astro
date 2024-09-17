@@ -13,9 +13,19 @@ const { id, link, ...props } = Astro.props;
 </external-redirect>
 
 <script>
+    // Function to convert the first letter of a word to uppercase
+    function toPascal(str: string) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     // Function to remove http and https from the link display text
     function removeHttpandHttps(url: string) {
-        return url.replace(/(^\w+:|^)\/\//, '');
+        return url
+            .replace(/(^\w+:|^)\/\//, '')
+            .split('/')[0]!
+            .split('.')
+            .map((p, i) => i === 0 ? toPascal(p) : p)
+            .join('.');
     }
     // Check if the custom element is already defined (exists) before defining it
     if (!customElements.get('external-redirect')) {
@@ -27,12 +37,10 @@ const { id, link, ...props } = Astro.props;
                 // Get Attributes
                 const link = this.getAttribute('link');
 
-                // Create elements
-
-                //// Get the slot element
+                // Get the slot element
                 const slot = document.createElement('slot');
 
-                //// Dialog Elements
+                // Dialog Elements
                 const dialog = document.createElement('dialog');
                 const dialogContent = document.createElement('div');
                 const heading = document.createElement('h3');
@@ -46,7 +54,7 @@ const { id, link, ...props } = Astro.props;
                 const backdrop = document.createElement('form');
                 const backdropButton = document.createElement('button');
 
-                //// Styles
+                // Styles
                 slot.style.cursor = 'pointer';
                 dialogContent.style.borderRadius = '1rem';
                 dialogContent.style.border = '1px solid oklch(var(--in))';
@@ -96,14 +104,14 @@ const { id, link, ...props } = Astro.props;
                 backdropButton.style.zIndex = '999';
                 backdropButton.style.border = 'none';
 
-                //// Content
+                // Content
                 heading.textContent = 'External Redirect Warning';
                 question.textContent = 'You are about to be redirected to an external website. Do you want to continue?';
                 linkSpan.textContent = 'You are about to be redirected to: ';
                 linkElement.textContent = removeHttpandHttps(link!);
                 continueButton.textContent = 'Continue';
 
-                //// Attributes
+                // Attributes
                 linkElement.href = link!;
                 linkElement.autofocus = false;
                 cancel.method = 'dialog';

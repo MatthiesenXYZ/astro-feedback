@@ -4,12 +4,13 @@ import config from 'astro-feedback:config';
 import r from 'astro-feedback:routes';
 import BaseHead from '../components/BaseHead.astro';
 import ButtonShelf from '../components/ButtonShelf.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import SideBar from '../components/SideBar.astro';
 import ThemeManager from '../components/ThemeManager.astro';
 import ThemeSelect from '../components/ThemeSelect.astro';
 import UserWidget from '../components/UserWidget.astro';
 import ViewTransitions from '../components/ViewTransitions.astro';
-import DrawerBox from './DrawerBox.astro';
-import DrawerContent from './DrawerContent.astro';
 
 // Import global styles
 import '../styles/viewTransitions.css';
@@ -43,11 +44,26 @@ const {
     <ThemeManager />
   </head>
   <body>
-    <DrawerBox>
-      <DrawerContent {r} {includeHeader} {includeSidebar} {sideBarActiveItemID}>
-        <slot />
-      </DrawerContent>
-    </DrawerBox>
+    <div class="bg-base-100 drawer lg:drawer-open">
+      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content bg-base-100">
+          { includeHeader &&  <Header {r} {includeSidebar}/> }
+      
+          <div class="md:flex md:justify-center">
+          
+              <main class="sm:p-6 pt-10 lg:min-w-[70vw] max-w-[100vw]">
+          
+                  <slot />
+          
+              </main>
+          
+          </div>
+      
+          <Footer />
+      
+      </div>
+      { includeSidebar && <SideBar {r} {sideBarActiveItemID} /> }
+    </div>
     <ButtonShelf>
       <UserWidget server:defer />
       <ThemeSelect lightTheme='emerald' />

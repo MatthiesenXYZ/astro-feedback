@@ -1,6 +1,7 @@
 ---
 import r from 'astro-feedback:routes';
 import LoginCard from '../components/LoginCard.astro';
+import StaticPageLoginCheck from '../components/StaticPageLoginCheck.astro';
 import VerticalContainer from '../components/VerticalContainer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
@@ -17,4 +18,5 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   
   </VerticalContainer>
 
+  <StaticPageLoginCheck server:defer />
 </BaseLayout>

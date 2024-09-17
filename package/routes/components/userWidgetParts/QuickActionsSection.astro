@@ -1,0 +1,25 @@
+---
+import Heading from '../headings/Heading.astro';
+import QuickActionButtons, { type Props as QuickActionsProps } from './QuickActionButtons.astro';
+
+interface Props {
+	quickActionButtons: QuickActionsProps['quickAction'][];
+}
+
+const { quickActionButtons } = Astro.props;
+---
+<div class="flex-grow flex flex-col md:w-[25%] text-center gap-2">
+    <Heading tag={'h4'}>
+        <span class="text-secondary">Quick Actions</span>
+    </Heading>
+
+    <div class="divider my-0 pt-0" />
+
+    <div class="card bg-base-300 shadow-xl my-0 p-4">
+        { 
+            quickActionButtons.map((quickAction) => (
+                <QuickActionButtons quickAction={quickAction} />
+            )) 
+        }
+    </div>
+</div>
