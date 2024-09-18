@@ -15,7 +15,7 @@ const { sideBarActiveItemID, r } = Astro.props;
 
 <div class="drawer-side z-40">
   <label for="my-drawer" class="drawer-overlay">
-    <div class="sr-only">Sidebar Drawer</div>
+    <div class="sr-only" id="ui-components-side-bar-sr-label">Sidebar Navigation Drawer</div>
   </label>
   <aside class="px-2 pt-2 h-auto min-h-full w-[19rem] bg-base-200 text-base-content flex flex-col">
     <div class="w-fit mx-auto my-2 p-2 px-4 rounded-lg bg-neutral flex items-center">
@@ -26,3 +26,17 @@ const { sideBarActiveItemID, r } = Astro.props;
     <SideBarFooter r={r} />
   </aside>
 </div>
+
+<script>
+import { $i18n, updateUiString } from "../store/i18n.ts";
+import enJson from '../store/translations/en.json';
+    
+    const i18n = $i18n('components/side-bar', enJson['components/side-bar']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: "ui-components-side-bar-sr-label",
+            translation: t['sr-label']
+        })
+    });
+</script>

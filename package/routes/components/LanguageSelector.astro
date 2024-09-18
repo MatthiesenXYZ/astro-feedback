@@ -1,0 +1,124 @@
+---
+
+---
+
+<button
+    id="language-selector"
+    class="language-selector mr-2"
+    >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-[80%]" width="1.5rem" height="1.5rem" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M4 5h7M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c0 2.144 2.952 3.908 6.7 4m.3 7l4-9l4 9m-.9-2h-6.2"/></g></svg>
+</button>
+
+<menu id="language-sector-menu" type="context" class="bg-neutral rounded-md p-2">
+    <button 
+        id="language-sector-menu-en" 
+        class="btn btn-primary" 
+        type="button">
+        <span>English</span>
+    </button>
+    <button 
+        id="language-sector-menu-es" 
+        class="btn btn-primary" 
+        type="button">
+        <span>Español</span>
+    </button>
+    {/* Cancel Button */}
+    <div class="flex flex-row-reverse">
+        <button 
+            id="language-sector-menu-cancel" 
+            class="btn btn-sm btn-circle btn-outline text-neutral-content" 
+            type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    </div>
+</menu>
+
+<style>
+.language-selector {
+        background-color: oklch(var(--b2));
+        border-radius: 50%;
+        border: 0.125rem solid;
+        border-color: oklch(var(--s));
+        box-shadow: 0 0 0.25rem 0.015rem rgba(0, 0, 0, 0.694);
+        width: 2.5rem;
+        height: 2.5rem;
+        cursor: pointer;
+        display: none;
+        opacity: 0;
+        z-index: 99998;
+        transition: opacity 1s ease;
+    }
+    #language-sector-menu {
+        position: absolute;
+        display: none;
+        flex-direction: column;
+        gap: 0.5rem;
+        left: -4rem;
+        top: 3rem;
+        width: 10rem;
+        z-index: 99999;
+    }
+
+    #language-sector-menu-cancel {
+        border-radius: 50%;
+    }
+</style>
+
+<script is:inline>
+    const LanguageSelector = document.getElementById('language-selector');
+    const LanguageSectorMenu = document.getElementById('language-sector-menu');
+    const LanguageSectorMenuCancel = document.getElementById('language-sector-menu-cancel');
+
+    setTimeout(() => {
+        LanguageSelector.style.display = 'block';
+            setTimeout(() => {
+                LanguageSelector.style.opacity = "1";
+            }, 250);
+    }, 200);
+
+    function toggleLanguageSelector(element) {
+        if (
+            !element.style.display 
+            || element.style.display === 'none'
+        ) {
+            element.style.display = 'flex';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+
+    LanguageSelector.addEventListener('click', () => toggleLanguageSelector(LanguageSectorMenu));
+    LanguageSectorMenuCancel.addEventListener('click', () => toggleLanguageSelector(LanguageSectorMenu));
+
+</script>
+
+<script>
+import { $localeSettings } from "../store/i18n.ts";
+const LanguageSectorMenu = document.getElementById('language-sector-menu');
+const LanguageSectorMenuEn = document.getElementById('language-sector-menu-en');
+const LanguageSectorMenuEs = document.getElementById('language-sector-menu-es');
+
+    function toggleLanguageSelector(element) {
+        if (
+            !element.style.display 
+            || element.style.display === 'none'
+        ) {
+            element.style.display = 'flex';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+
+    LanguageSectorMenuEn.addEventListener('click', () => {
+        toggleLanguageSelector(LanguageSectorMenu);
+        // Set Language to English
+        $localeSettings.set('en');
+    });
+    LanguageSectorMenuEs.addEventListener('click', () => {
+        toggleLanguageSelector(LanguageSectorMenu);
+        // Set Language to Español
+        $localeSettings.set('es');
+    });
+</script>

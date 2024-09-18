@@ -1,4 +1,37 @@
 {
+  "components/external-link": {
+    "heading": "Advertencia de redireccionamiento externo",
+    "question": "Está a punto de ser redirigido a un sitio web externo. ¿Quieres continuar?",
+    "link-span": "Estás a punto de ser redirigido a: ",
+    "continue": "Continuar",
+    "cancel": "Cancelar"
+  },
+  "components/footer": {
+    "license": "Licencia MIT",
+    "developer": "Desarrollado por"
+  },
+  "components/user-widget": {
+    "contextmenu-open-panel": "Abrir panel de usuario",
+    "contextmenu-dashboard": "Panel",
+    "contextmenu-logout": "Cerrar sesión",
+    "matched-projects": "Tus proyectos",
+    "no-projects": "No se encontraron proyectos",
+    "no-submissions": "No hay presentaciones abiertas",
+    "open-submissions": "Envíos Abiertos",
+    "quick-actions": "Acciones rápidas",
+    "quick-actions-dashboard": "Panel",
+    "quick-actions-profile": "Ver perfil",
+    "quick-actions-projects": "Ver proyectos",
+    "quick-actions-logout": "Cerrar sesión",
+    "dialog-close": "Cerca"
+  },
+  "components/side-bar": {
+    "sr-label": "Cajón de navegación de la barra lateral",
+    "main": "Sitio principal",
+    "portal": "Portal",
+    "homepage": "Página de inicio",
+    "dashboard": "Panel"
+  },
   "public/index": {
     "greeting": "Bienvenido a la",
     "collect-manage": "¡Recopile y administre los comentarios de los usuarios con facilidad!",
@@ -8,26 +41,26 @@
     "submit-feedback": "Enviar comentarios"
   },
   "public/submit-feedback": {
-    "title": "",
-    "description": "",
-    "form-preload": ""
+    "title": "Enviar nuevos comentarios",
+    "description": "¡Apreciamos sus comentarios! Por favor complete el formulario a continuación.",
+    "form-preload": "Cargando formulario..."
   },
   "public/submit-feedback:components": {
-    "select-project-title": "",
-    "select-project-unavailable": "",
-    "email": "",
-    "subject": "",
-    "subject-sr": "",
-    "feedback-body": "",
-    "captcha": "",
-    "submit": "",
-    "back": "",
-    "alert-error-title": "",
-    "alert-error-placeholder": "",
-    "alert-success-title": "",
-    "alert-success-placeholder": "",
-    "error-captcha-failed": "",
-    "error-feedback-failed": ""
+    "select-project-title": "Seleccione un proyecto",
+    "select-project-unavailable": "No hay proyectos disponibles actualmente.",
+    "email": "Dirección de correo electrónico",
+    "subject": "Sujeto",
+    "subject-sr": "Sujeto de comentarios",
+    "feedback-body": "Tus comentarios",
+    "captcha": "Captcha de verificación de Turnstile",
+    "submit": "Entregar",
+    "back": "Volver a la página de inicio",
+    "alert-error-title": "Error:",
+    "alert-error-placeholder": "Hubo un error",
+    "alert-success-title": "Éxito:",
+    "alert-success-placeholder": "¡Comentarios enviados exitosamente!",
+    "error-captcha-failed": "La verificación del captcha falló, inténtalo de nuevo.",
+    "error-feedback-failed": "Error al enviar el comentario, inténtelo de nuevo."
   },
   "dashboard/index": {
     "title": "Panel",
@@ -39,40 +72,8 @@
     "admin-tools": "Herramientas de administración"
   },
   "dashboard/login": {
-    "title": "",
-    "github": "",
-    "back": ""
-  },
-  "components/external-link": {
-    "heading": "",
-    "question": "",
-    "link-span": " ",
-    "continue": "",
-    "cancel": ""
-  },
-  "components/footer": {
-    "license": "",
-    "developer": ""
-  },
-  "components/user-widget": {
-    "contextmenu-open-panel": "",
-    "contextmenu-dashboard": "",
-    "contextmenu-logout": "",
-    "matched-projects": "",
-    "no-projects": "",
-    "no-submissions": "",
-    "open-submissions": "",
-    "quick-actions": "",
-    "quick-actions-dashboard": "",
-    "quick-actions-profile": "",
-    "quick-actions-projects": "",
-    "quick-actions-logout": "",
-    "dialog-close": ""
-  },
-  "components/side-bar": {
-    "main": "",
-    "portal": "",
-    "homepage": "",
-    "dashboard": ""
+    "title": "Inicie sesión para continuar.",
+    "github": "Iniciar sesión con GitHub",
+    "back": "Volver a la página de inicio"
   }
 }

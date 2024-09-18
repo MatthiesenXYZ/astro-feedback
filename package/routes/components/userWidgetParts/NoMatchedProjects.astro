@@ -13,7 +13,7 @@
 import { $i18n, updateUiString } from "../../store/i18n.ts";
 import enJson from '../../store/translations/en.json';
     
-    const i18n = $i18n('components/footer', enJson['components/user-widget']);
+    const i18n = $i18n('components/user-widget', enJson['components/user-widget']);
     
     i18n.subscribe(t => {
         updateUiString({

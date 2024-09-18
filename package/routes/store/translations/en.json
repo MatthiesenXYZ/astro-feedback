@@ -1,4 +1,37 @@
 {
+  "components/external-link": {
+    "heading": "External Redirect Warning",
+    "question": "You are about to be redirected to an external website. Do you want to continue?",
+    "link-span": "You are about to be redirected to: ",
+    "continue": "Continue",
+    "cancel": "Cancel"
+  },
+  "components/footer": {
+    "license": "MIT Licensed",
+    "developer": "Developed by"
+  },
+  "components/user-widget": {
+    "contextmenu-open-panel": "Open User Panel",
+    "contextmenu-dashboard": "Dashboard",
+    "contextmenu-logout": "Logout",
+    "matched-projects": "Your Projects",
+    "no-projects": "No Projects Found",
+    "no-submissions": "No open submissions",
+    "open-submissions": "Open Submissions",
+    "quick-actions": "Quick Actions",
+    "quick-actions-dashboard": "Dashboard",
+    "quick-actions-profile": "View Profile",
+    "quick-actions-projects": "View Projects",
+    "quick-actions-logout": "Logout",
+    "dialog-close": "Close"
+  },
+  "components/side-bar": {
+    "sr-label": "Sidebar Navigation Drawer",
+    "main": "Main Site",
+    "portal": "Portal",
+    "homepage": "Home Page",
+    "dashboard": "Dashboard"
+  },
   "public/index": {
     "greeting": "Welcome to the",
     "collect-manage": "Collect & manage User Feedback with ease!",
@@ -42,37 +75,5 @@
     "title": "Please Sign in to Continue.",
     "github": "Sign in with GitHub",
     "back": "Back to Homepage"
-  },
-  "components/external-link": {
-    "heading": "External Redirect Warning",
-    "question": "You are about to be redirected to an external website. Do you want to continue?",
-    "link-span": "You are about to be redirected to: ",
-    "continue": "Continue",
-    "cancel": "Cancel"
-  },
-  "components/footer": {
-    "license": "MIT Licensed",
-    "developer": "Developed by"
-  },
-  "components/user-widget": {
-    "contextmenu-open-panel": "Open User Panel",
-    "contextmenu-dashboard": "Dashboard",
-    "contextmenu-logout": "Logout",
-    "matched-projects": "Your Projects",
-    "no-projects": "No Projects Found",
-    "no-submissions": "No open submissions",
-    "open-submissions": "Open Submissions",
-    "quick-actions": "Quick Actions",
-    "quick-actions-dashboard": "Dashboard",
-    "quick-actions-profile": "View Profile",
-    "quick-actions-projects": "View Projects",
-    "quick-actions-logout": "Logout",
-    "dialog-close": "Close"
-  },
-  "components/side-bar": {
-    "main": "Main Site",
-    "portal": "Portal",
-    "homepage": "Home Page",
-    "dashboard": "Dashboard"
   }
 }

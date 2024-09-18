@@ -74,21 +74,13 @@ if (v) return v;
             </span>
         </AdminTools>
 
-        <!-- <button id="testttttt">Test</button> -->
-
     </div>
 
 </DashboardLayout>
 
 <script>
-import { $i18n, /*$localeSettings,*/ updateUiString } from "../store/i18n.ts";
+import { $i18n, updateUiString } from "../store/i18n.ts";
 import enJson from '../store/translations/en.json';
-
-    // document.getElementById('testttttt')!.addEventListener('click', () => {
-    //     $localeSettings.set('en');
-    // });
-    // console.log('$localeSettings', $localeSettings.get());
-
 
     const i18n = $i18n('dashboard/index', enJson['dashboard/index']);
 

@@ -6,6 +6,7 @@ import BaseHead from '../components/BaseHead.astro';
 import ButtonShelf from '../components/ButtonShelf.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import LanguageSelector from '../components/LanguageSelector.astro';
 import SideBar from '../components/SideBar.astro';
 import ThemeManager from '../components/ThemeManager.astro';
 import ThemeSelect from '../components/ThemeSelect.astro';
@@ -51,7 +52,7 @@ const {
       
           <div class="md:flex md:justify-center">
           
-              <main class="sm:p-6 pt-10 lg:max-w-[1000px] max-w-[100vw]">
+              <main class="sm:p-6 pt-10 lg:mt-10 lg:max-w-[75vw] max-w-[100vw]">
           
                   <slot />
           
@@ -66,6 +67,7 @@ const {
     </div>
     <ButtonShelf>
       <UserWidget server:defer />
+      <LanguageSelector />
       <ThemeSelect lightTheme='emerald' />
     </ButtonShelf>
     <ViewTransitions />
