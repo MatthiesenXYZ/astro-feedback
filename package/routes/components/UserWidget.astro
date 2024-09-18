@@ -1,55 +1,25 @@
 ---
 import routes from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
-import getUser from '../lib/getUser';
+import { getUserMetadata } from '../lib/GetMeta';
 import GetIcon from './icons/GetIcon.astro';
 import DialogHeader from './userWidgetParts/DialogHeader.astro';
-import { getUserMetadata } from './userWidgetParts/GetMeta';
 import MatchedProjectsSection from './userWidgetParts/MatchedProjectsSection.astro';
 import OpenSubmissionsSection from './userWidgetParts/OpenSubmissionsSection.astro';
-import type { Props as QuickActionsProps } from './userWidgetParts/QuickActionButtons.astro';
 import QuickActionsSection from './userWidgetParts/QuickActionsSection.astro';
 
-// Get the user data from the Astro locals
-const { isLoggedIn, user } = await getUser(Astro);
-
 // Get the user metadata
-const { matchedProjects, matchedSubmissions, userAvatar } = await getUserMetadata(user);
-
-// Define the quick action buttons
-const quickActionButtons: Array<QuickActionsProps['quickAction']> = [
-	{
-		label: 'Dashboard',
-		link: routes.portal.index,
-		icon: 'dashboard',
-		color: 'btn-primary',
-	},
-	{
-		label: 'View Profile',
-		link: `${routes.portal.users.index}/${user?.id}`,
-		icon: 'profile',
-		color: 'btn-secondary',
-	},
-	{
-		label: 'View Projects',
-		link: routes.portal.projects.index,
-		icon: 'project',
-		color: 'btn-accent',
-	},
-	{
-		label: 'Logout',
-		link: routes.portal.logout,
-		icon: 'logout',
-		color: 'btn-error',
-	},
-];
+const { matchedProjects, matchedSubmissions, userAvatar, userData, isLoggedIn } =
+	await getUserMetadata(Astro);
 ---
 <div class="indicator">
     <button 
         id="avatar_button"
         class="avatar-button tooltip tooltip-bottom tooltip-accent font-bold mr-2" 
-        data-tip={`${user && user.name}`}
+        data-tip={`${userData && userData.name}`}
         data-isloggedin={isLoggedIn ? 'true' : 'false'}
+        onclick="openUserPanel()"
+        contextmenu="user_panel_menu"
         >
         <Image 
             src={userAvatar} 
@@ -57,7 +27,7 @@ const quickActionButtons: Array<QuickActionsProps['quickAction']> = [
             width={128} 
             loading={'eager'}
             inferSize
-            alt={`${user && user.name}`}
+            alt={`${userData && userData.name}`}
             class="w-full h-full object-cover rounded-full"
             />
             { matchedSubmissions.length > 0 && 
@@ -74,32 +44,39 @@ const quickActionButtons: Array<QuickActionsProps['quickAction']> = [
     <button 
         id="user_panel_menu_open" 
         class="btn btn-primary" 
-        type="button">
+        type="button"
+        onclick="openUserPanel()">
         <GetIcon icon={'profile'} class='h-[1.2rem] w-[1.2rem] inline'/>    
-        Open User Panel
+        <span id="ui-components-user-widget-contextmenu-open-panel">Open User Panel</span>
     </button>
     
     <button 
         id="user_panel_menu_dashboard" 
         class="btn btn-secondary" 
         type="button" 
-        data-route={routes.portal.index}>
+        data-route={routes.portal.index}
+        onclick="redirectTo(this)">
         <GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem] inline'/>
-        Dashboard
+        <span id="ui-components-user-widget-contextmenu-dashboard">Dashboard</span>
     </button>
     
     <button 
         id="user_panel_menu_logout" 
         class="btn btn-error" 
         type="button" 
-        data-route={routes.portal.logout}>
+        data-route={routes.portal.logout}
+        onclick="redirectTo(this)">
         <GetIcon icon={'logout'} class='h-[1.2rem] w-[1.2rem] inline'/>    
-        Logout
+        <span id="ui-components-user-widget-contextmenu-logout">Logout</span>
     </button>
 
     {/* Cancel Button */}
     <div class="flex flex-row-reverse">
-        <button id="user_panel_menu_cancel" class="btn btn-sm btn-circle btn-outline text-neutral-content" type="button">
+        <button 
+            id="user_panel_menu_cancel" 
+            class="btn btn-sm btn-circle btn-outline text-neutral-content" 
+            type="button"
+            onclick="closeUserPanelContextMenu()">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -110,7 +87,7 @@ const quickActionButtons: Array<QuickActionsProps['quickAction']> = [
 <dialog id="user_panel" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box min-w-[100vw] sm:min-w-[80vw] max-w-5xl min-h-[40vh] max-h-[90vh]">
 
-        <DialogHeader UserAvatar={userAvatar} user={user} />
+        <DialogHeader UserAvatar={userAvatar} user={userData} />
 
         <div class="divider my-4" />
 
@@ -120,7 +97,7 @@ const quickActionButtons: Array<QuickActionsProps['quickAction']> = [
 
             <div class="flex-none divider md:divider-horizontal mx-2" />
 
-            <QuickActionsSection quickActionButtons={quickActionButtons} />
+            <QuickActionsSection userId={userData?.id} />
 
             <div class="flex-none divider md:divider-horizontal mx-2" />
 
@@ -134,24 +111,42 @@ const quickActionButtons: Array<QuickActionsProps['quickAction']> = [
 
     </div>
     <form method="dialog" class="modal-backdrop">
-        <button>close</button>
+        <button><span id="ui-components-user-widget-close">Close</span></button>
     </form>
 </dialog>
+
+<script>
+import { $i18n, updateUiString } from "../store/i18n.ts";
+import enJson from '../store/translations/en.json';
+    
+    const i18n = $i18n('components/footer', enJson['components/user-widget']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: "ui-components-user-widget-close",
+            translation: t['dialog-close']
+        })
+        updateUiString({
+            element: "ui-components-user-widget-contextmenu-open-panel",
+            translation: t['contextmenu-open-panel']
+        })
+        updateUiString({
+            element: "ui-components-user-widget-contextmenu-dashboard",
+            translation: t['contextmenu-dashboard']
+        })
+        updateUiString({
+            element: "ui-components-user-widget-contextmenu-logout",
+            translation: t['contextmenu-logout']
+        })
+    });
+</script>
     
 <script is:inline>
-    // Ensure the state of the menu element
-    function ensureState(element, state) {
-        element.style.display = state;
-    }
 
     // Get the Avatar Button
     const avatar = document.getElementById('avatar_button');
     const userPanel = document.getElementById('user_panel');
     const userPanelMenu = document.getElementById('user_panel_menu');
-    const userPanelOpen = document.getElementById('user_panel_menu_open');
-    const userPanelDashboard = document.getElementById('user_panel_menu_dashboard');
-    const userPanelLogout = document.getElementById('user_panel_menu_logout');
-    const userPanelCancel = document.getElementById('user_panel_menu_cancel');
 
     // Check if the user is logged in
     const isLoggedIn = avatar.dataset.isloggedin;
@@ -167,38 +162,37 @@ const quickActionButtons: Array<QuickActionsProps['quickAction']> = [
         }, 200);
     }
 
-    avatar.addEventListener('click', () => {
+    function closeUserPanelContextMenu() {
+        if (userPanelMenu.style.display === 'flex')
         userPanelMenu.style.display = 'none';
-        userPanel.showModal();
-    });
+    }
 
-    avatar.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        if (userPanelMenu.style.display === 'none') {
-            userPanelMenu.style.display = 'flex';
+    function toggleUserPanelContextMenu(event, element) {
+        event.preventDefault();
+        if (
+            !element.style.display 
+            || element.style.display === 'none'
+        ) {
+            element.style.display = 'flex';
         } else {
-            userPanelMenu.style.display = 'none';
+            element.style.display = 'none';
         }
-    });
+        
+    }
 
-    userPanelOpen.addEventListener('click', () => {
-        userPanelMenu.style.display = 'none';
+    function openUserPanel() {
+        closeUserPanelContextMenu();
         userPanel.showModal();
-    });
+    };
 
-    userPanelDashboard.addEventListener('click', () => {
-        userPanelMenu.style.display = 'none';
-        window.location.href = userPanelDashboard.dataset.route;
-    });
+    function redirectTo(ele) {
+        closeUserPanelContextMenu();
+        window.location.href = ele.dataset.route;
+    };
 
-    userPanelLogout.addEventListener('click', () => {
-        userPanelMenu.style.display = 'none';
-        window.location.href = userPanelLogout.dataset.route;
-    });
-
-    userPanelCancel.addEventListener('click', () => {
-        userPanelMenu.style.display = 'none';
-    });
+    avatar.addEventListener('contextmenu', (event) => 
+        toggleUserPanelContextMenu(event, userPanelMenu)
+    );
 </script>
 
 <style>

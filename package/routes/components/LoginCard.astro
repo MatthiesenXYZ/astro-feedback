@@ -26,21 +26,43 @@ loading={'eager'}
 style={'scale: 1.2;'}
 />
 
-<Heading tag={'h3'}>Please Sign in to Continue</Heading>
+<Heading tag={'h3'}><span id='ui-dashboard-login-title'>Please Sign in to Continue</span></Heading>
 
 <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-xl text-center">
     <div class="card-body flex-col gap-4">
 		<RedirectButton link={login}>
 			<span class="btn btn-outline btn-info flex items-center">
-				Sign in with Github
+				<span id='ui-dashboard-login-github'>Sign in with Github</span>
 				<GetIcon icon={'github'} class='h-[1.2rem] w-[1.2rem]'/>
 			</span>
 		</RedirectButton>
 		<RedirectButton link={index}>
 			<span class="btn btn-ghost flex items-center">
 				<GetIcon icon={'back'} class='h-[1.2rem] w-[1.2rem]'/>
-				Back to Homepage
+				<span id='ui-dashboard-login-back'>Back to Homepage</span>
 			</span>
 		</RedirectButton>
     </div>
 </div>
+
+<script>
+import { $i18n, updateUiString } from "../store/i18n.ts";
+import enJson from '../store/translations/en.json';
+    
+    const i18n = $i18n('dashboard/login', enJson['dashboard/login']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: "ui-dashboard-login-title",
+            translation: t['title']
+        })
+        updateUiString({
+            element: "ui-dashboard-login-github",
+            translation: t['github']
+        })
+        updateUiString({
+            element: "ui-dashboard-login-back",
+            translation: t['back']
+        })
+    });
+</script>

@@ -14,7 +14,7 @@ const { matchedProjects, routes } = Astro.props;
 ---
 <div class="flex-none md:w-[25%] md:max-w-[28%] gap-2">
     <Heading tag={'h4'}>
-        <span class="text-secondary">Your Projects</span>
+        <span class="text-secondary" id="ui-components-user-widget-matched-projects">Your Projects</span>
     </Heading>
     
     <div class="divider my-2" />
@@ -26,3 +26,17 @@ const { matchedProjects, routes } = Astro.props;
         : <NoMatchedProjects /> 
     }
 </div>
+
+<script>
+import { $i18n, updateUiString } from "../../store/i18n.ts";
+import enJson from '../../store/translations/en.json';
+    
+    const i18n = $i18n('components/footer', enJson['components/user-widget']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: "ui-components-user-widget-matched-projects",
+            translation: t['matched-projects']
+        })
+    });
+</script>

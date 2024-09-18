@@ -13,61 +13,54 @@ const {
 		portal: { index: dashboardIndex },
 	},
 } = Astro.props;
-
-const links: {
-	[key: string]: {
-		id: string;
-		label: string;
-		icon: currentIcons;
-		href: string;
-	}[];
-} = {
-	main: [
-		{
-			id: 'home',
-			label: 'Home Page',
-			icon: 'back',
-			href: homePage,
-		},
-	],
-	portal_users: [
-		{
-			id: 'dashboard',
-			label: 'Dashboard',
-			icon: 'dashboard',
-			href: dashboardIndex,
-		},
-	],
-};
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
 
-	{ 
-		links.main && (
-			<div class="divider mt-0 mb-2">Main Site</div>
-		) 
-	}
-
-	{
-		links.main && links.main.map(({ id, href, icon, label }) => (
-			<li><a class="btn shadow-md" {id} {href}><GetIcon {icon} class='h-[1.2rem] w-[1.2rem]'/>{label}</a></li>
-		))
-	}
-
-	{ 
-		links.portal_users && (
-			<div class="divider my-2">Portal</div>
-		) 
-	}
-
-	{
-		links.portal_users && links.portal_users.map(({ id, href, icon, label }) => (
-			<li><a class="btn shadow-md" {id} {href}><GetIcon {icon} class='h-[1.2rem] w-[1.2rem]'/>{label}</a></li>
-		))
-	}
+	<div class="divider mt-0 mb-2" id="ui-components-side-bar-main">Main Site</div>
+	<li>
+		<a class="btn shadow-md" id="home" href={homePage}>
+			<GetIcon icon={'back'} class='h-[1.2rem] w-[1.2rem]'/>
+			<span id="ui-components-side-bar-homepage">Home Page</span>
+		</a>
+	</li>
+	
+	<div class="divider my-2" id="ui-components-side-bar-portal">Portal</div>
+	
+	<li>
+		<a class="btn shadow-md" id='dashboard' href={dashboardIndex}>
+			<GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem]'/>
+			<span id="ui-components-side-bar-dashboard">Dashboard</span>
+		</a>
+	</li>
 
 </ul>
+
+<script>
+import { $i18n, updateUiString } from "../store/i18n.ts";
+import enJson from '../store/translations/en.json';
+    
+    const i18n = $i18n('components/side-bar', enJson['components/side-bar']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: "ui-components-side-bar-main",
+            translation: t['main']
+        })
+        updateUiString({
+            element: "ui-components-side-bar-homepage",
+            translation: t['homepage']
+        })
+		updateUiString({
+			element: "ui-components-side-bar-portal",
+			translation: t['portal']
+		})
+		updateUiString({
+			element: "ui-components-side-bar-dashboard",
+			translation: t['dashboard']
+		})
+    });
+</script>
 
 <script 
 	is:inline 

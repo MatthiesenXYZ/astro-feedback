@@ -1,0 +1,49 @@
+---
+import routes from 'astro-feedback:routes';
+import type { tsSubmission } from '../../../../db/tsTables';
+import { convertStatusString, getSubmissionStatusColor } from '../../../lib/statusHelpers';
+import RedirectButton from '../../RedirectButton.astro';
+import GetIcon from '../../icons/GetIcon.astro';
+
+interface Props {
+	userSubmissions: (typeof tsSubmission.$inferSelect)[];
+}
+
+const { userSubmissions } = Astro.props;
+---
+{ 
+    userSubmissions.length > 0 ?
+    userSubmissions.map(({ status, subject, body, projectId, id }) => (
+        <div class="flex flex-row items-center justify-between p-4 w-full bg-base-200 rounded-lg shadow-lg relative">
+            <div class="flex flex-col">
+                <div class="flex flex-row items-center gap-2 pb-2">
+                    <span
+                        class:list={['text-sm', 'font-bold', 'submission-status', 'shadow-md', getSubmissionStatusColor(status)]}>{convertStatusString(status)}</span>
+                    <span class="text-lg font-bold text-secondary">{subject}</span>
+                </div>
+                <p class="text-sm mr-8 md:mr-10 line-clamp-2">{body}</p>
+            </div>
+            <RedirectButton 
+                link={`${routes.portal.projects.index}/${projectId}/submissions/${id}`}
+                class="btn btn-sm btn-outline btn-accent shadow-md absolute bottom-2 right-2"
+                >
+                <GetIcon icon={'view'} class='h-[1rem] w-[1rem]'/>
+            </RedirectButton>
+        </div>
+    )) : <slot />
+}   
+
+
+<style>
+    .submission-status {
+        background-color: oklch(var(--b1));
+        border-radius: 0.25rem;
+        padding-inline: 0.5rem;
+        padding-top: 0.125rem;
+        padding-bottom: 0.125rem;
+        border-left: 2px solid;
+        border-right: 2px solid;
+        border-top: 0.125px solid;
+        border-bottom: 0.125px solid;
+    }
+</style>

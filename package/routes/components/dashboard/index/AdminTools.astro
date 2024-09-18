@@ -1,0 +1,20 @@
+---
+
+interface Props {
+	isAdmin: boolean;
+}
+
+const { isAdmin } = Astro.props;
+---
+{ isAdmin && (
+    <div class="col-span-1 md:col-span-2">
+        <div class="flex flex-col items-center rounded-lg bg-base-300 gap-2 p-4 h-full">
+            <slot />
+
+            <div class="divider my-0"></div>
+
+            <p class="text-center">Admin tools will be available here.</p>
+
+        </div>
+    </div>
+) }

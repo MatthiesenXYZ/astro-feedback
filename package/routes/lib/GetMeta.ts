@@ -1,33 +1,46 @@
 import { db, eq } from 'astro:db';
+import type { AstroGlobal } from 'astro';
 import {
 	type TeamTableTyped,
+	tsAdmin,
 	tsProject,
 	tsSubmission,
 	tsTeam,
 	type tsUser,
-} from '../../../db/tsTables';
+} from '../../db/tsTables';
+import getUser from './getUser';
 
 type UserMetadata = {
+	userData: typeof tsUser.$inferSelect | undefined;
 	userAvatar: string;
 	matchedProjects: (typeof tsProject.$inferSelect)[];
 	matchedSubmissions: (typeof tsSubmission.$inferSelect)[];
 	matchedTeams: TeamTableTyped[];
+	allUserSubmissions: (typeof tsSubmission.$inferSelect)[];
+	isLoggedIn: boolean;
+	isAdmin: boolean;
 };
 
-export async function getUserMetadata(
-	user: typeof tsUser.$inferSelect | undefined
-): Promise<UserMetadata> {
+export async function getUserMetadata(Astro: AstroGlobal): Promise<UserMetadata> {
 	let userAvatar = 'https://www.gravatar.com/avatar/?d=retro';
 	const matchedTeams: TeamTableTyped[] = [];
 	const matchedProjects: (typeof tsProject.$inferSelect)[] = [];
 	const matchedSubmissions: (typeof tsSubmission.$inferSelect)[] = [];
+	const allUserSubmissions: (typeof tsSubmission.$inferSelect)[] = [];
+	let isAdmin = false;
+
+	const { user, isLoggedIn } = await getUser(Astro);
 
 	if (!user) {
 		return {
 			userAvatar,
 			matchedProjects,
 			matchedSubmissions,
+			allUserSubmissions,
 			matchedTeams,
+			isAdmin,
+			isLoggedIn,
+			userData: user,
 		};
 	}
 
@@ -47,11 +60,12 @@ export async function getUserMetadata(
 
 	if (matchedTeams.length > 0) {
 		for (const team of matchedTeams) {
-			existingProjects.find((project) => {
-				if (project && project.teamId === team?.id) {
-					matchedProjects.push(project);
-				}
-			});
+			team &&
+				existingProjects.find((project) => {
+					if (project && project.teamId === team.id) {
+						matchedProjects.push(project);
+					}
+				});
 		}
 	}
 
@@ -70,10 +84,33 @@ export async function getUserMetadata(
 		}
 	}
 
+	const existingAdminCheck = await db
+		.select()
+		.from(tsAdmin)
+		.where(eq(tsAdmin.userId, user.id))
+		.get();
+
+	if (existingAdminCheck) {
+		isAdmin = true;
+	}
+
+	const userSubmissions = await db
+		.select()
+		.from(tsSubmission)
+		.where(eq(tsSubmission.userId, user.id));
+
+	if (userSubmissions.length > 0) {
+		allUserSubmissions.push(...userSubmissions);
+	}
+
 	return {
 		userAvatar,
 		matchedProjects,
 		matchedSubmissions,
+		allUserSubmissions,
 		matchedTeams,
+		isAdmin,
+		isLoggedIn,
+		userData: user,
 	};
 }

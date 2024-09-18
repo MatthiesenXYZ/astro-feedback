@@ -7,22 +7,18 @@ import Heading from './components/headings/Heading.astro';
 import BaseLayout from './layouts/BaseLayout.astro';
 ---
 
-<BaseLayout 
-  sideBarActiveItemID="submit-feedback-public" 
-  includeSidebar={false} 
-  includeHeader={false}
-  >
+<BaseLayout sideBarActiveItemID="submit-feedback-public">
 
   <VerticalContainer>
 
     <div class="flex flex-col w-full gap-2">
 
         <div class="flex flex-row text-center">
-            <Heading tag={'h1'}>Submit New Feedback</Heading>
+            <Heading tag={'h1'}><span id="ui-submit-feedback-title">Submit New Feedback</span></Heading>
             <Image src={Logo} alt="Logo" width={64} height={64} loading={'eager'}/>
         </div>
 
-        <p class="text-center">
+        <p class="text-center" id="ui-submit-feedback-description">
             We appreciate your feedback. Please fill out the form below.
         </p>
 
@@ -33,7 +29,7 @@ import BaseLayout from './layouts/BaseLayout.astro';
             <PublicSubmissionForm server:defer>
                 <slot name="fallback">
                     <div class="p-4">
-                        <p class="text-center">Loading form...</p>
+                        <p class="text-center" id="ui-submit-feedback-form-preload">Loading form...</p>
                     </div>
                 </slot>
             </PublicSubmissionForm>
@@ -45,3 +41,25 @@ import BaseLayout from './layouts/BaseLayout.astro';
   </VerticalContainer>
 
 </BaseLayout>
+
+<script>
+import { $i18n, updateUiString } from "./store/i18n.ts";
+import enJson from './store/translations/en.json';
+    
+    const i18n = $i18n('public/submit-feedback', enJson['public/submit-feedback']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: 'ui-submit-feedback-title', 
+            translation: t['title']
+        })
+        updateUiString({
+            element: 'ui-submit-feedback-description', 
+            translation: t['description']
+        })
+        updateUiString({
+            element: 'ui-submit-feedback-form-preload', 
+            translation: t['form-preload']
+        })
+    });
+</script>

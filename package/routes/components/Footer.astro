@@ -11,13 +11,13 @@ const { AUTHOR, GITHUB, SITE_TITLE } = branding;
   <div class="opacity-75">
     <span>
       <ExternalRedirectButton link={GITHUB.LICENSE}>
-        <strong>MIT Licensed</strong>
+        <strong id="ui-components-footer-license">MIT Licensed</strong>
       </ExternalRedirectButton>
        ━ {SITE_TITLE}</span>
   </div>
 
   <div class="opacity-75">
-    <span>Developed by 
+    <span><span id="ui-components-footer-developer">Developed by</span> 
       <ExternalRedirectButton link={AUTHOR.url} class="font-bold">
         {AUTHOR.name}
       </ExternalRedirectButton>
@@ -29,3 +29,21 @@ const { AUTHOR, GITHUB, SITE_TITLE } = branding;
   </ExternalRedirectButton>
   
 </footer>
+
+<script>
+import { $i18n, updateUiString } from "../store/i18n.ts";
+import enJson from '../store/translations/en.json';
+    
+    const i18n = $i18n('components/footer', enJson['components/footer']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: "ui-components-footer-license",
+            translation: t['license']
+        })
+        updateUiString({
+            element: "ui-components-footer-developer",
+            translation: t['developer']
+        })
+    });
+</script>

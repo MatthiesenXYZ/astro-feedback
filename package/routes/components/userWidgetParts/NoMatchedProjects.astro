@@ -4,7 +4,21 @@
 <div class="card bg-base-300 shadow-xl my-2 py-6">
     <div class="flex flex-row">
         <div class="flex-grow">
-            <p class="text-sm">No projects found</p>
+            <p class="text-sm" id="ui-components-user-widget-no-projects">No projects found</p>
         </div>
     </div>
 </div>
+
+<script>
+import { $i18n, updateUiString } from "../../store/i18n.ts";
+import enJson from '../../store/translations/en.json';
+    
+    const i18n = $i18n('components/footer', enJson['components/user-widget']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: "ui-components-user-widget-no-projects",
+            translation: t['no-projects']
+        })
+    });
+</script>

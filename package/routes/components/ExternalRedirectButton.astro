@@ -13,6 +13,24 @@ const { id, link, ...props } = Astro.props;
 </external-redirect>
 
 <script>
+import { $i18n } from "../store/i18n.ts";
+import enJson from '../store/translations/en.json';
+    
+    const i18n = $i18n('components/external-link', enJson['components/external-link']);
+
+    let uiHeadingString: string = "External Redirect Warning";
+    let uiQuestionString: string = "You are about to be redirected to an external website. Do you want to continue?";
+    let uiLinkSpanString: string = "You are about to be redirected to: ";
+    let uiContinueButtonString: string = "Continue";
+    let uiCancelButtonString: string = "Cancel";
+    
+    i18n.subscribe(t => {
+        uiHeadingString = t['heading'];
+        uiQuestionString = t['question'];
+        uiLinkSpanString = t['link-span'];
+        uiContinueButtonString = t['continue'];
+        uiCancelButtonString = t['cancel'];
+    });
     // Function to convert the first letter of a word to uppercase
     function toPascal(str: string) {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -86,7 +104,6 @@ const { id, link, ...props } = Astro.props;
                 cancelButton.style.cursor = 'pointer';
                 cancelButton.style.fontSize = '1rem';
                 cancelButton.style.fontWeight = 'bold';
-                cancelButton.textContent = 'Cancel';
                 continueButton.style.backgroundColor = 'oklch(var(--su))';
                 continueButton.style.color = 'oklch(var(--suc))';
                 continueButton.style.border = 'none';
@@ -105,11 +122,12 @@ const { id, link, ...props } = Astro.props;
                 backdropButton.style.border = 'none';
 
                 // Content
-                heading.textContent = 'External Redirect Warning';
-                question.textContent = 'You are about to be redirected to an external website. Do you want to continue?';
-                linkSpan.textContent = 'You are about to be redirected to: ';
+                heading.textContent = uiHeadingString;
+                question.textContent = uiQuestionString;
+                linkSpan.textContent = uiLinkSpanString;
+                continueButton.textContent = uiContinueButtonString;
+                cancelButton.textContent = uiCancelButtonString;
                 linkElement.textContent = removeHttpandHttps(link!);
-                continueButton.textContent = 'Continue';
 
                 // Attributes
                 linkElement.href = link!;

@@ -1,0 +1,78 @@
+{
+  "public/index": {
+    "greeting": "Bienvenido a la",
+    "collect-manage": "¡Recopile y administre los comentarios de los usuarios con facilidad!",
+    "description": "Recopile comentarios sobre sus proyectos sin esfuerzo y luego supervise y administre los envíos a través de un panel optimizado.",
+    "description.color": "Manténgase conectado con sus usuarios y mejore su trabajo con comentarios en tiempo real.",
+    "signin": "Iniciar sesión",
+    "submit-feedback": "Enviar comentarios"
+  },
+  "public/submit-feedback": {
+    "title": "",
+    "description": "",
+    "form-preload": ""
+  },
+  "public/submit-feedback:components": {
+    "select-project-title": "",
+    "select-project-unavailable": "",
+    "email": "",
+    "subject": "",
+    "subject-sr": "",
+    "feedback-body": "",
+    "captcha": "",
+    "submit": "",
+    "back": "",
+    "alert-error-title": "",
+    "alert-error-placeholder": "",
+    "alert-success-title": "",
+    "alert-success-placeholder": "",
+    "error-captcha-failed": "",
+    "error-feedback-failed": ""
+  },
+  "dashboard/index": {
+    "title": "Panel",
+    "submission": "Tus envíos",
+    "submission.notfound": "No se encontraron envíos.",
+    "submission.notfound.description": "No tienes envíos en este momento.",
+    "projects": "Tus proyectos",
+    "teams": "Tus equipos",
+    "admin-tools": "Herramientas de administración"
+  },
+  "dashboard/login": {
+    "title": "",
+    "github": "",
+    "back": ""
+  },
+  "components/external-link": {
+    "heading": "",
+    "question": "",
+    "link-span": " ",
+    "continue": "",
+    "cancel": ""
+  },
+  "components/footer": {
+    "license": "",
+    "developer": ""
+  },
+  "components/user-widget": {
+    "contextmenu-open-panel": "",
+    "contextmenu-dashboard": "",
+    "contextmenu-logout": "",
+    "matched-projects": "",
+    "no-projects": "",
+    "no-submissions": "",
+    "open-submissions": "",
+    "quick-actions": "",
+    "quick-actions-dashboard": "",
+    "quick-actions-profile": "",
+    "quick-actions-projects": "",
+    "quick-actions-logout": "",
+    "dialog-close": ""
+  },
+  "components/side-bar": {
+    "main": "",
+    "portal": "",
+    "homepage": "",
+    "dashboard": ""
+  }
+}

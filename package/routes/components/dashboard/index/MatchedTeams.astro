@@ -1,0 +1,44 @@
+---
+import routes from 'astro-feedback:routes';
+import type { TeamTableTyped } from '../../../../db/tsTables';
+import RedirectButton from '../../RedirectButton.astro';
+import GetIcon from '../../icons/GetIcon.astro';
+
+interface Props {
+	matchedTeams: TeamTableTyped[];
+}
+
+const { matchedTeams } = Astro.props;
+---
+{ matchedTeams.length > 0 && (
+    <div class="col-span-1">
+        <div class="flex flex-col items-center rounded-lg bg-base-300 gap-2 p-4 h-full">
+            <slot />
+            
+            <div class="divider my-0"></div>
+
+            {   
+                matchedTeams.map((team) => {
+                    if (!team) return;
+                    const { name, description, id } = team;
+                    return (
+                        <div class="flex flex-row items-center justify-between p-4 w-full bg-base-200 rounded-lg shadow-lg">
+                            <div class="flex flex-col w-full relative">
+                                <span class="text-md font-bold text-secondary">{name}</span>
+                                <p class="text-sm mr-8 md:mr-10 line-clamp-2">{description}</p>
+                                <div class="absolute bottom-0 right-0">
+                                    <RedirectButton 
+                                        link={`${routes.portal.teams.index}/${id}`} 
+                                        class="btn btn-sm btn-outline btn-accent shadow-md"
+                                        >
+                                        <GetIcon icon={'view'} class='h-[1rem] w-[1rem]'/>
+                                    </RedirectButton>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })
+            }
+        </div>
+    </div>
+)}

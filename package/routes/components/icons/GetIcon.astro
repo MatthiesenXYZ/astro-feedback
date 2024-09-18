@@ -19,7 +19,8 @@ type currentIcons =
 	| 'profile'
 	| 'logout'
 	| 'view'
-	| 'subject';
+	| 'subject'
+	| 'link';
 
 export type { currentIcons };
 
@@ -40,6 +41,7 @@ const Components: Record<currentIcons, AstroComponent> = {
 	logout: (await import('./Logout.astro')).default,
 	view: (await import('./View.astro')).default,
 	subject: (await import('./Subject.astro')).default,
+	link: (await import('./Link.astro')).default,
 };
 
 interface Props extends HTMLAttributes<'svg'> {

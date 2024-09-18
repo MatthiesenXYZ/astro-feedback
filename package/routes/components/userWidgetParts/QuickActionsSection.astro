@@ -1,25 +1,76 @@
 ---
+import routes from 'astro-feedback:routes';
+import RedirectButton from '../RedirectButton.astro';
 import Heading from '../headings/Heading.astro';
-import QuickActionButtons, { type Props as QuickActionsProps } from './QuickActionButtons.astro';
+import GetIcon from '../icons/GetIcon.astro';
 
 interface Props {
-	quickActionButtons: QuickActionsProps['quickAction'][];
+	userId: string | undefined;
 }
 
-const { quickActionButtons } = Astro.props;
+const { userId } = Astro.props;
 ---
 <div class="flex-grow flex flex-col md:w-[25%] text-center gap-2">
     <Heading tag={'h4'}>
-        <span class="text-secondary">Quick Actions</span>
+        <span class="text-secondary" id="ui-components-user-widget-quick-actions">Quick Actions</span>
     </Heading>
 
     <div class="divider my-0 pt-0" />
 
     <div class="card bg-base-300 shadow-xl my-0 p-4">
-        { 
-            quickActionButtons.map((quickAction) => (
-                <QuickActionButtons quickAction={quickAction} />
-            )) 
-        }
+        <RedirectButton 
+            link={routes.portal.index} 
+            class:list={['btn', 'btn-primary', 'my-2', 'font-bold']}
+            ><span id="ui-components-user-widget-quick-actions-dashboard">Dashboard</span>
+            <GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem]'/>
+        </RedirectButton>
+        <RedirectButton 
+            link={`${routes.portal.users.index}/${userId}`} 
+            class:list={['btn', 'btn-secondary', 'my-2', 'font-bold']}
+            ><span id="ui-components-user-widget-quick-actions-profile">View Profile</span>
+            <GetIcon icon={'profile'} class='h-[1.2rem] w-[1.2rem]'/>
+        </RedirectButton>
+        <RedirectButton 
+            link={routes.portal.projects.index} 
+            class:list={['btn', 'btn-accent', 'my-2', 'font-bold']}
+            ><span id="ui-components-user-widget-quick-actions-projects">View Projects</span>
+            <GetIcon icon={'project'} class='h-[1.2rem] w-[1.2rem]'/>
+        </RedirectButton>
+        <RedirectButton 
+            link={routes.portal.logout} 
+            class:list={['btn', 'btn-error', 'my-2', 'font-bold']}
+            ><span id="ui-components-user-widget-quick-actions-logout">Logout</span>
+            <GetIcon icon={'logout'} class='h-[1.2rem] w-[1.2rem]'/>
+        </RedirectButton>
     </div>
 </div>
+
+<script>
+import { $i18n, updateUiString } from "../../store/i18n.ts";
+import enJson from '../../store/translations/en.json';
+    
+    const i18n = $i18n('components/footer', enJson['components/user-widget']);
+    
+    i18n.subscribe(t => {
+        updateUiString({
+            element: "ui-components-user-widget-quick-actions",
+            translation: t['quick-actions']
+        })
+        updateUiString({
+            element: "ui-components-user-widget-quick-actions-dashboard",
+            translation: t['quick-actions-dashboard']
+        })
+        updateUiString({
+            element: "ui-components-user-widget-quick-actions-profile",
+            translation: t['quick-actions-profile']
+        })
+        updateUiString({
+            element: "ui-components-user-widget-quick-actions-projects",
+            translation: t['quick-actions-projects']
+        })
+        updateUiString({
+            element: "ui-components-user-widget-quick-actions-logout",
+            translation: t['quick-actions-logout']
+        })
+    });
+</script>

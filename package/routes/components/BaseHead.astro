@@ -3,7 +3,6 @@ import type { AstroFeedbackOptions } from 'astro-feedback:config';
 import { type HeadUserConfig, createHead, headDefaults } from '../lib/header.ts';
 import '@fontsource/poppins';
 import poppinsNormalWoff2 from '@fontsource/poppins/files/poppins-latin-400-normal.woff2?url';
-import poppinsBoldWoff2 from '@fontsource/poppins/files/poppins-latin-700-normal.woff2?url';
 
 export interface Props {
 	title: string;
@@ -32,16 +31,6 @@ const fonts: HeadUserConfig = [
 			type: 'font/woff2',
 			crossorigin: 'anonymous',
 			href: poppinsNormalWoff2,
-		},
-	},
-	{
-		tag: 'link',
-		attrs: {
-			rel: 'preload',
-			as: 'font',
-			type: 'font/woff2',
-			crossorigin: 'anonymous',
-			href: poppinsBoldWoff2,
 		},
 	},
 ];
