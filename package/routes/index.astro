@@ -7,6 +7,7 @@ import Heading from './components/headings/Heading.astro';
 import Span from './components/headings/Span.astro';
 import GetIcon from './components/icons/GetIcon.astro';
 import LandingLogo from './components/landing/LandingLogo.astro';
+import { getLangFromUrl, useTranslations } from './i18n';
 import BaseLayout from './layouts/BaseLayout.astro';
 
 const {
@@ -15,6 +16,16 @@ const {
 } = r;
 
 const { SITE_TITLE } = branding;
+
+export async function getStaticPaths() {
+	return [
+		{ params: { locale: undefined } },
+		{ params: { locale: 'en' } },
+		{ params: { locale: 'es' } },
+	];
+}
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'public/index');
 ---
 
 <BaseLayout 
@@ -28,33 +39,31 @@ const { SITE_TITLE } = branding;
         <LandingLogo />
             
         <div>
-            <span id="ui-index-greeting"
-                class="text-4xl font-bold text-accent text-shadow-md shadow-black"
-                >Welcome to the
+            <span class="text-4xl font-bold text-accent text-shadow-md shadow-black">{t('greeting')}
             </span>
 
             <Heading tag={'h1'}>{SITE_TITLE}</Heading>
             
-            <p class="mt-2" id="ui-index-collect-manage">
-                Collect & manage User Feedback with ease!
+            <p class="mt-2">
+                {t('collect-manage')}
             </p>
             
             <p class="mt-2">
-                <span id="ui-index-description">Effortlessly collect feedback on your projects, then monitor and manage submissions through a streamlined dashboard.</span> <Span variant={'primary'} fontWeight={'bold'}><span id="ui-index-description-color">Stay connected to your users and improve your work with real-time feedback.</span></Span>
+                {t('description')} <Span variant={'primary'} fontWeight={'bold'}>{t('description-color')}</Span>
             </p>
             
             <div class="card bg-base-100 w-full shadow-xl text-center mt-2">
                 <div class="card-body flex flex-row">
                     <RedirectButton link={login}>
                         <span class="btn btn-outline btn-primary text-lg text-shadow shadow-black flex items-center gap-2">
-                            <span id="ui-index-signin" class="inline">Sign in</span>
+                            {t('signin')}
                             <GetIcon icon={'login'} class='h-[1.2rem] w-[1.2rem] inline'/>
                         </span>
                     </RedirectButton>
                         
                     <RedirectButton link={feedback}>
                         <span class="btn btn-accent text-lg text-shadow shadow-black flex items-center gap-2">
-                            <span id="ui-index-submit-feedback" class="inline">Submit Feedback</span>
+                            {t('submit-feedback')}
                             <GetIcon icon={'feedback'} class='h-[1.2rem] w-[1.2rem] inline'/>
                         </span>
                     </RedirectButton>
@@ -65,37 +74,3 @@ const { SITE_TITLE } = branding;
     </HorizontalContainer>
 
 </BaseLayout>
-
-<script>
-import { $i18n, updateUiString } from "./store/i18n.ts";
-import enJson from './store/translations/en.json';
-    
-    const i18n = $i18n('public/index', enJson['public/index']);
-    
-    i18n.subscribe(t => {
-        updateUiString({
-            element: 'ui-index-greeting', 
-            translation: t['greeting']
-        })
-        updateUiString({
-            element: 'ui-index-collect-manage', 
-            translation: t['collect-manage']
-        })
-        updateUiString({
-            element: 'ui-index-description', 
-            translation: t['description']
-        })
-        updateUiString({
-            element: 'ui-index-description-color', 
-            translation: t['description-color']
-        })
-        updateUiString({
-            element: 'ui-index-signin', 
-            translation: t['signin']
-        })
-        updateUiString({
-            element: 'ui-index-submit-feedback', 
-            translation: t['submit-feedback']
-        })
-    });
-</script>

@@ -4,6 +4,14 @@ import LoginCard from '../components/LoginCard.astro';
 import StaticPageLoginCheck from '../components/StaticPageLoginCheck.astro';
 import VerticalContainer from '../components/VerticalContainer.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+	return [
+		{ params: { locale: undefined } },
+		{ params: { locale: 'en' } },
+		{ params: { locale: 'es' } },
+	];
+}
 ---
 
 <BaseLayout sideBarActiveItemID="login">

@@ -1,9 +1,13 @@
 ---
 import type { RouteMap } from 'astro-feedback:routes';
 import type { tsProject } from '../../../db/tsTables';
+import { getLangFromUrl, useTranslations } from '../../i18n';
 import Heading from '../headings/Heading.astro';
 import MatchedProjects from './MatchedProjects.astro';
 import NoMatchedProjects from './NoMatchedProjects.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'components/user-widget');
 
 interface Props {
 	matchedProjects: (typeof tsProject.$inferSelect)[];
@@ -14,7 +18,7 @@ const { matchedProjects, routes } = Astro.props;
 ---
 <div class="flex-none md:w-[25%] md:max-w-[28%] gap-2">
     <Heading tag={'h4'}>
-        <span class="text-secondary" id="ui-components-user-widget-matched-projects">Your Projects</span>
+        <span class="text-secondary">{t('matched-projects')}</span>
     </Heading>
     
     <div class="divider my-2" />
@@ -26,17 +30,3 @@ const { matchedProjects, routes } = Astro.props;
         : <NoMatchedProjects /> 
     }
 </div>
-
-<script>
-import { $i18n, updateUiString } from "../../store/i18n.ts";
-import enJson from '../../store/translations/en.json';
-    
-    const i18n = $i18n('components/user-widget', enJson['components/user-widget']);
-    
-    i18n.subscribe(t => {
-        updateUiString({
-            element: "ui-components-user-widget-matched-projects",
-            translation: t['matched-projects']
-        })
-    });
-</script>

@@ -3,6 +3,7 @@ import r from 'astro-feedback:routes';
 import { db } from 'astro:db';
 import { TURNSTILE_SITE_KEY } from 'astro:env/client';
 import { tsProject } from '../../db/tsTables';
+import { getLangFromUrl, useTranslations } from '../i18n';
 import getUser from '../lib/getUser';
 import RedirectButton from './RedirectButton.astro';
 import Heading from './headings/Heading.astro';
@@ -21,6 +22,9 @@ const currentProjects = await db.select().from(tsProject);
 
 // Check if there is a default project
 const defaultProject = currentProjects.filter(({ defaultProject }) => defaultProject).length > 0;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'public/submit-feedback');
 ---
 <form id="feedback-submissions" method="POST" class="card-body" action={submissions}>
 
@@ -28,14 +32,14 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
 
         <label for="project" class="form-control">
 
-            <span class="sr-only" id="ui-components-feedback-form-select-project-title">Select a Project</span>
+            <span class="sr-only">{t('select-project-title')}</span>
             
             <div class="label gap-6 pb-6">
                 <Heading class="label-text" tag={'h3'}>
                     <span class="text-secondary flex items-top">
                         <span class="flex items-center gap-2">
                             <GetIcon icon={'project'} class='h-[1.5rem] w-[1.5rem]'/>
-                            <span id="ui-components-feedback-form-select-project-title">Select a Project</span>
+                            {t('select-project-title')}
                         </span>
                         <GetIcon icon={'asterisk'} class='text-red-600 h-[0.7rem] w-[0.7rem]'/>
                     </span>
@@ -50,9 +54,9 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
                 >
                 {
                     defaultProject ? (
-                        <option disabled id="ui-components-feedback-form-select-project-title">Select a Project</option>
+                        <option disabled>{t('select-project-title')}</option>
                     ) : (
-                        <option disabled selected id="ui-components-feedback-form-select-project-title">Select a Project</option>
+                        <option disabled selected>{t('select-project-title')}</option>
                     )
                 }
                 {
@@ -62,7 +66,7 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
                     }) => submissionsOpen && (
                          <option value={id} selected={defaultProject}>{title}</option>
                     )) : (
-                        <option disabled id="ui-components-feedback-form-select-project-unavailable">No projects currently available</option>
+                        <option disabled>{t('select-project-unavailble')}</option>
                     )
                 }
             </select>
@@ -75,13 +79,13 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
         <Heading tag={'h3'}>
             <span class="text-secondary flex items-center gap-2">
                 <GetIcon icon={'mail'} class='h-[1.5rem] w-[1.5rem]'/>
-                <span id="ui-components-feedback-form-email">Email Address</span>
+                {t('email')}
             </span>
         </Heading>
                     
         <label for="email" class="input input-bordered input-info flex items-center gap-2">
 
-            <span class="sr-only" id="ui-components-feedback-form-email">Email Address</span>
+            <span class="sr-only">{t('email')}</span>
 
             <input 
                 name="email" 
@@ -100,7 +104,7 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
             <span class="text-secondary flex items-top">
                 <span class="text-secondary flex items-center gap-2">
                     <GetIcon icon={'subject'} class='h-[1.5rem] w-[1.5rem]'/>
-                    <span id="ui-components-feedback-form-subject">Subject</span>
+                    {t('subject')}
                 </span>
                 <GetIcon icon={'asterisk'} class='text-red-600 h-[0.7rem] w-[0.7rem]'/>
             </span>
@@ -108,7 +112,7 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
                     
         <label for="subject" class="input input-bordered input-info flex items-center gap-2">
 
-            <span class="sr-only" id="ui-components-feedback-form-subject-sr">Feedback Subject</span>
+            <span class="sr-only">{t('subject-sr')}</span>
 
             <input 
                 name="subject" 
@@ -126,7 +130,7 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
             <span class="text-secondary flex items-top">
                 <span class="flex items-center gap-2">
                     <GetIcon icon={'feedback'} class='h-[1.5rem] w-[1.5rem]'/>
-                    <span id="ui-components-feedback-form-feedback-body">Feedback</span>
+                    {t('feedback-body')}
                 </span>
                 <GetIcon icon={'asterisk'} class='text-red-600 h-[0.7rem] w-[0.7rem]'/>
             </span>
@@ -143,13 +147,13 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
     <input type="hidden" name="userId" value={UserData?.id}>
 
     <div id="turnstile-container" class="h-[65px]" data-sitekey={TURNSTILE_SITE_KEY}>
-        <div class="sr-only" id="ui-components-feedback-form-captcha">Turnstile Captcha</div>
+        <div class="sr-only">{t('captcha')}</div>
     </div>
 
     <div class="flex flex-row pt-6">
         <div class="flex-none">
             <button class="btn btn-primary font-extrabold flex items-center" type="submit">
-                <span id="ui-components-feedback-form-submit">Submit</span>
+                <span>{t('submit')}</span>
                 <GetIcon icon={'submit'} class='h-[1.2rem] w-[1.2rem]'/>
                 <span id="buttonloader" class="loading loading-bars loading-md"></span>
             </button>
@@ -161,7 +165,7 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
             <RedirectButton link={index}>
                 <span class="btn btn-error btn-outline flex items-center">
                     <GetIcon icon={'back'} class='h-[1.2rem] w-[1.2rem]'/>
-                    <span id="ui-components-feedback-form-back">Back to Homepage</span>
+                    <span>{t('back')}</span>
                 </span>
             </RedirectButton>
         </div>
@@ -175,7 +179,7 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
       fill="none" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
-    <span><strong id="ui-components-feedback-form-alert-error-title" style="display: none;">Error:</div> <span id="error-placeholder">There was an Error!</span></span>
+    <span><strong>{t('alert-error-title')}</div> <span>{t('alert-error-placeholder')}</span></span>
 </div>
 
 <div id="form-success" role="alert" class="alert alert-success flex">
@@ -185,21 +189,21 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
         stroke-linecap="round" stroke-linejoin="round"
         stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
-    <span><strong id="ui-components-feedback-form-alert-success-title" style="display: none;">Success:</strong> <span id="ui-components-feedback-form-alert-success-placeholder" style="display: none;">Feedback Submitted Successfully!</span></span>
+    <span><strong>{t('alert-success-title')}</strong> <span>{t('alert-success-placeholder')}</span></span>
 </div>
 
 <div 
     id="ui-components-feedback-form-alert-error-placeholder" 
     style="display: none;"
-    >There was an Error</div>
+    >{t('alert-error-placeholder')}</div>
 <div 
     id="ui-components-feedback-form-error-captcha-failed" 
     style="display: none;"
-    >Captcha verification failed, please try again.</div>
+    >{t('alert-captcha-failed')}</div>
 <div 
     id="ui-components-feedback-form-error-feedback-failed" 
     style="display: none;"
-    >Feedback submission failed, please try again.</div>
+    >{t('error-feedback-failed')}</div>
 
 <style>
     #buttonloader {
@@ -325,75 +329,4 @@ const defaultProject = currentProjects.filter(({ defaultProject }) => defaultPro
         onloadTurnstileCallback();
     })
 
-</script>
-
-<script>
-    import { $i18n, updateUiString, updateUiStringsMutipleById } from "../store/i18n.ts";
-    import enJson from '../store/translations/en.json';
-    
-    const i18n = $i18n('public/submit-feedback:components', 
-    enJson['public/submit-feedback:components']);
-    
-    i18n.subscribe(t => {
-        updateUiStringsMutipleById({
-            element: "ui-components-feedback-form-select-project-title",
-            translation: t['select-project-title']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-select-project-unavailable",
-            translation: t['select-project-unavailable']
-        })
-        updateUiStringsMutipleById({
-            element: "ui-components-feedback-form-email",
-            translation: t['email']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-subject",
-            translation: t['subject']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-subject-sr",
-            translation: t['subject-sr']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-feedback-body",
-            translation: t['feedback-body']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-captcha",
-            translation: t['captcha']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-submit",
-            translation: t['submit']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-back",
-            translation: t['back']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-alert-error-title",
-            translation: t['alert-error-title']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-alert-success-title",
-            translation: t['alert-success-title']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-alert-success-placeholder",
-            translation: t['alert-success-placeholder']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-alert-error-placeholder",
-            translation: t['alert-error-placeholder']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-error-captcha-failed",
-            translation: t['error-captcha-failed']
-        })
-        updateUiString({
-            element: "ui-components-feedback-form-error-feedback-failed",
-            translation: t['error-feedback-failed']
-        })
-    });
 </script>

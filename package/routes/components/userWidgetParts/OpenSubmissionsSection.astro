@@ -1,6 +1,7 @@
 ---
 import type { RouteMap } from 'astro-feedback:routes';
 import type { tsSubmission } from '../../../db/tsTables';
+import { getLangFromUrl, useTranslations } from '../../i18n';
 import Heading from '../headings/Heading.astro';
 import MatchedSubmissions from './MatchedSubmissions.astro';
 import NoSubmissions from './NoSubmissions.astro';
@@ -14,10 +15,12 @@ const { matchedSubmissions, routes } = Astro.props;
 
 // Get the count of open submissions
 const submissionCount = matchedSubmissions.length;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'components/user-widget');
 ---
 <div class="flex-none md:w-[25%] md:max-w-[28%] gap-2 text-center">
     <Heading tag={'h4'} class='min-w-[100%] flex text-center'>
-        <span class="text-center w-full text-secondary px-8 md:px-2 lg:px-2 open-submissions-text"><span id="ui-components-user-widget-open-submissions">Open Submissions</span>
+        <span class="text-center w-full text-secondary px-8 md:px-2 lg:px-2 open-submissions-text"><span>{t('open-submissions')}</span>
             <span class="open-submissions-dialog badge badge-md badge-info font-bold text-shadow shadow-transparent">{submissionCount}
             </span>
         </span>
@@ -32,20 +35,6 @@ const submissionCount = matchedSubmissions.length;
         : <NoSubmissions /> 
     }
 </div>
-
-<script>
-import { $i18n, updateUiString } from "../../store/i18n.ts";
-import enJson from '../../store/translations/en.json';
-    
-    const i18n = $i18n('components/user-widget', enJson['components/user-widget']);
-    
-    i18n.subscribe(t => {
-        updateUiString({
-            element: "ui-components-user-widget-open-submissions",
-            translation: t['open-submissions']
-        })
-    });
-</script>
 
 <style>
 @media screen and (max-width: 765px) {

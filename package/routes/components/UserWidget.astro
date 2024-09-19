@@ -1,6 +1,7 @@
 ---
 import routes from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
+import { getLangFromUrl, useTranslations } from '../i18n';
 import { getUserMetadata } from '../lib/GetMeta';
 import GetIcon from './icons/GetIcon.astro';
 import DialogHeader from './userWidgetParts/DialogHeader.astro';
@@ -11,6 +12,8 @@ import QuickActionsSection from './userWidgetParts/QuickActionsSection.astro';
 // Get the user metadata
 const { matchedProjects, matchedSubmissions, userAvatar, userData, isLoggedIn } =
 	await getUserMetadata(Astro);
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'components/user-widget');
 ---
 <div class="indicator">
     <button 
@@ -47,7 +50,7 @@ const { matchedProjects, matchedSubmissions, userAvatar, userData, isLoggedIn } 
         type="button"
         onclick="openUserPanel()">
         <GetIcon icon={'profile'} class='h-[1.2rem] w-[1.2rem] inline'/>    
-        <span id="ui-components-user-widget-contextmenu-open-panel">Open User Panel</span>
+        <span id="ui-components-user-widget-contextmenu-open-panel">{t('contextmenu-open-panel')}</span>
     </button>
     
     <button 
@@ -57,7 +60,7 @@ const { matchedProjects, matchedSubmissions, userAvatar, userData, isLoggedIn } 
         data-route={routes.portal.index}
         onclick="redirectTo(this)">
         <GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem] inline'/>
-        <span id="ui-components-user-widget-contextmenu-dashboard">Dashboard</span>
+        <span id="ui-components-user-widget-contextmenu-dashboard">{t('contextmenu-dashboard')}</span>
     </button>
     
     <button 
@@ -67,7 +70,7 @@ const { matchedProjects, matchedSubmissions, userAvatar, userData, isLoggedIn } 
         data-route={routes.portal.logout}
         onclick="redirectTo(this)">
         <GetIcon icon={'logout'} class='h-[1.2rem] w-[1.2rem] inline'/>    
-        <span id="ui-components-user-widget-contextmenu-logout">Logout</span>
+        <span id="ui-components-user-widget-contextmenu-logout">{t('contextmenu-logout')}</span>
     </button>
 
     {/* Cancel Button */}
@@ -111,35 +114,9 @@ const { matchedProjects, matchedSubmissions, userAvatar, userData, isLoggedIn } 
 
     </div>
     <form method="dialog" class="modal-backdrop">
-        <button><span id="ui-components-user-widget-close">Close</span></button>
+        <button><span id="ui-components-user-widget-close">{t('dialog-close')}</span></button>
     </form>
 </dialog>
-
-<script>
-import { $i18n, updateUiString } from "../store/i18n.ts";
-import enJson from '../store/translations/en.json';
-    
-    const i18n = $i18n('components/footer', enJson['components/user-widget']);
-    
-    i18n.subscribe(t => {
-        updateUiString({
-            element: "ui-components-user-widget-close",
-            translation: t['dialog-close']
-        })
-        updateUiString({
-            element: "ui-components-user-widget-contextmenu-open-panel",
-            translation: t['contextmenu-open-panel']
-        })
-        updateUiString({
-            element: "ui-components-user-widget-contextmenu-dashboard",
-            translation: t['contextmenu-dashboard']
-        })
-        updateUiString({
-            element: "ui-components-user-widget-contextmenu-logout",
-            translation: t['contextmenu-logout']
-        })
-    });
-</script>
     
 <script is:inline>
 

@@ -52,6 +52,7 @@
   "dependencies": {
     "@astrojs/tailwind": "^5.1.0",
     "@fontsource/poppins": "^5.1.0",
+    "@inox-tools/request-nanostores": "^0.1.1",
     "@tailwindcss/typography": "^0.5.15",
     "@matthiesenxyz/astrodtsbuilder": "^0.1.2",
     "astro-integration-kit": "catalog:deps",

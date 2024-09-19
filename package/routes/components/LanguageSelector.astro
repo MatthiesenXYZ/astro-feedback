@@ -95,12 +95,11 @@
 </script>
 
 <script>
-import { $localeSettings } from "../store/i18n.ts";
-const LanguageSectorMenu = document.getElementById('language-sector-menu');
-const LanguageSectorMenuEn = document.getElementById('language-sector-menu-en');
-const LanguageSectorMenuEs = document.getElementById('language-sector-menu-es');
+const LanguageSectorMenu = document.getElementById('language-sector-menu') as HTMLMenuElement;
+const LanguageSectorMenuEn = document.getElementById('language-sector-menu-en') as HTMLButtonElement;
+const LanguageSectorMenuEs = document.getElementById('language-sector-menu-es') as HTMLButtonElement;
 
-    function toggleLanguageSelector(element) {
+    function toggleLanguageSelector(element: HTMLMenuElement) {
         if (
             !element.style.display 
             || element.style.display === 'none'
@@ -111,14 +110,27 @@ const LanguageSectorMenuEs = document.getElementById('language-sector-menu-es');
         }
     }
 
+    function getCurrentPath() {
+        return window.location.pathname;
+    }
+
+    function stripLocaleFromPath(path: string) {
+        return path.replace(/\/(en|es)/, '');
+    }
+
+    function setLanguage(lang: string, path: string) {
+        const strippedPath = stripLocaleFromPath(path);
+        window.location.href = `/${lang}${strippedPath}`;
+    }
+
     LanguageSectorMenuEn.addEventListener('click', () => {
         toggleLanguageSelector(LanguageSectorMenu);
         // Set Language to English
-        $localeSettings.set('en');
+        setLanguage('en', getCurrentPath());
     });
     LanguageSectorMenuEs.addEventListener('click', () => {
         toggleLanguageSelector(LanguageSectorMenu);
         // Set Language to Español
-        $localeSettings.set('es');
+        setLanguage('es', getCurrentPath());
     });
 </script>

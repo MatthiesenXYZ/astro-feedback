@@ -7,6 +7,7 @@ import MatchedTeams from '../components/dashboard/index/MatchedTeams.astro';
 import UserSubmissionsCard from '../components/dashboard/index/UserSubmissionsCard.astro';
 import Heading from '../components/headings/Heading.astro';
 import GetIcon from '../components/icons/GetIcon.astro';
+import { getLangFromUrl, useTranslations } from '../i18n';
 import DashboardLayout from '../layouts/DashboardLayout.astro';
 import { getUserMetadata } from '../lib/GetMeta';
 import { validateUser } from '../lib/validateUser';
@@ -17,12 +18,15 @@ const userMetaData = await getUserMetadata(Astro);
 
 const v = await validateUser(Astro);
 if (v) return v;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'dashboard/index');
 ---
 
 <DashboardLayout sideBarActiveItemID="dashboard">
         
     <div class="flex flex-col w-full">
-        <Heading tag={'h1'}><span id="ui-dashboard-index-title">Dashboard</span></Heading>
+        <Heading tag={'h1'}>{t('title')}</Heading>
     </div>
 
     <div class="divider my-4"></div>
@@ -32,15 +36,15 @@ if (v) return v;
         <div class="col-span-1 md:col-span-2">
             <div class="flex flex-col items-center rounded-lg bg-base-300 gap-2 p-4 h-full">
                 <span id="ui-dashboard-index-submission" class="p-0 text-2xl font-bold text-accent text-shadow-md shadow-black">
-                    Your Submissions
+                    {t('submission')}
                 </span>
 
                 <div class="divider my-0"></div>
 
                 <UserSubmissionsCard userSubmissions={userMetaData.allUserSubmissions}>
                     <div class="flex flex-col items-center">
-                        <span id="ui-dashboard-index-submission-notfound" class="text-lg font-bold text-accent">No Submissions found.</span>
-                        <span id="ui-dashboard-index-submission-notfound-description" class="text-sm">You have no submissions at this time.</span>
+                        <span id="ui-dashboard-index-submission-notfound" class="text-lg font-bold text-accent">{t('submission-notfound')}</span>
+                        <span id="ui-dashboard-index-submission-notfound-description" class="text-sm">{t('submission-notfound-description')}</span>
                     </div>
                 </UserSubmissionsCard>
             </div>
@@ -48,7 +52,7 @@ if (v) return v;
 
         <MatchedProjects matchedProjects={userMetaData.matchedProjects}>
             <span class="p-0 text-2xl font-bold text-accent text-shadow-md shadow-black">
-                <span id="ui-dashboard-index-projects">Your Projects</span>
+                <span id="ui-dashboard-index-projects">{t('projects')}</span>
                 <RedirectButton
                     link={routes.portal.projects.index}
                     class="btn btn-sm btn-ghost text-secondary shadow-md lg:hidden">
@@ -59,7 +63,7 @@ if (v) return v;
 
         <MatchedTeams matchedTeams={userMetaData.matchedTeams}>
             <span class="p-0 text-2xl font-bold text-accent text-shadow-md shadow-black">
-                <span id="ui-dashboard-index-teams">Your Teams</span>
+                <span id="ui-dashboard-index-teams">{t('teams')}</span>
                 <RedirectButton
                     link={routes.portal.teams.index}
                     class="btn btn-sm btn-ghost text-secondary shadow-md lg:hidden">
@@ -70,48 +74,10 @@ if (v) return v;
 
         <AdminTools isAdmin={userMetaData.isAdmin}>
             <span id="ui-dashboard-index-admin-tools" class="p-0 text-2xl font-bold text-accent text-shadow-md shadow-black">
-                Administration Tools
+                {t('admin-tools')}
             </span>
         </AdminTools>
 
     </div>
 
 </DashboardLayout>
-
-<script>
-import { $i18n, updateUiString } from "../store/i18n.ts";
-import enJson from '../store/translations/en.json';
-
-    const i18n = $i18n('dashboard/index', enJson['dashboard/index']);
-
-    i18n.subscribe(t => {
-        updateUiString({
-            element: 'ui-dashboard-index-title', 
-            translation: t['title']
-        })
-        updateUiString({
-            element: 'ui-dashboard-index-submission', 
-            translation: t['submission']
-        })
-        updateUiString({
-            element: 'ui-dashboard-index-projects', 
-            translation: t['projects']
-        })
-        updateUiString({
-            element: 'ui-dashboard-index-teams', 
-            translation: t['teams']
-        })
-        updateUiString({
-            element: 'ui-dashboard-index-admin-tools', 
-            translation: t['admin-tools']
-        })
-        updateUiString({
-            element: 'ui-dashboard-index-submission-notfound', 
-            translation: t['submission-notfound']
-        })
-        updateUiString({
-            element: 'ui-dashboard-index-submission-notfound-description', 
-            translation: t['submission-notfound-description']
-        })
-    });
-</script>

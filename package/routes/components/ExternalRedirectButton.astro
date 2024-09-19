@@ -1,36 +1,30 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import { getLangFromUrl, useTranslations } from '../i18n';
 
 interface Props extends HTMLAttributes<'div'> {
 	link: string;
 }
 
 const { id, link, ...props } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'components/external-link');
 ---
 
-<external-redirect link={link} {...props}>
+<external-redirect 
+    link={link} 
+    {...props} 
+    data-uiheadingstring={t('heading')}
+    data-uiquestionstring={t('question')}
+    data-uilinkspanstring={t('link-span')}
+    data-uicontinuebuttonstring={t('continue')}
+    data-uicancelbuttonstring={t('cancel')}
+    >
     <slot />
 </external-redirect>
 
 <script>
-import { $i18n } from "../store/i18n.ts";
-import enJson from '../store/translations/en.json';
-    
-    const i18n = $i18n('components/external-link', enJson['components/external-link']);
-
-    let uiHeadingString: string = "External Redirect Warning";
-    let uiQuestionString: string = "You are about to be redirected to an external website. Do you want to continue?";
-    let uiLinkSpanString: string = "You are about to be redirected to: ";
-    let uiContinueButtonString: string = "Continue";
-    let uiCancelButtonString: string = "Cancel";
-    
-    i18n.subscribe(t => {
-        uiHeadingString = t['heading'];
-        uiQuestionString = t['question'];
-        uiLinkSpanString = t['link-span'];
-        uiContinueButtonString = t['continue'];
-        uiCancelButtonString = t['cancel'];
-    });
     // Function to convert the first letter of a word to uppercase
     function toPascal(str: string) {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -54,6 +48,11 @@ import enJson from '../store/translations/en.json';
 
                 // Get Attributes
                 const link = this.getAttribute('link');
+                const uiHeadingString = this.getAttribute('data-uiheadingstring');
+                const uiQuestionString = this.getAttribute('data-uiquestionstring');
+                const uiLinkSpanString = this.getAttribute('data-uilinkspanstring');
+                const uiContinueButtonString = this.getAttribute('data-uicontinuebuttonstring');
+                const uiCancelButtonString = this.getAttribute('data-uicancelbuttonstring');
 
                 // Get the slot element
                 const slot = document.createElement('slot');

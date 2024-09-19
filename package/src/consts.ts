@@ -26,12 +26,12 @@ export const optionalRoutes = (name: string): Record<string, InjectedRoute> => {
 	return {
 		//// Astro Pages (Public)
 		'Public: Index': {
-			pattern: routeMap.base.index,
+			pattern: `[...locale]${routeMap.base.index}`,
 			entrypoint: `${name}/routes/index.astro`,
 			prerender: true,
 		},
 		'Public: Feedback Page': {
-			pattern: routeMap.base.feedback,
+			pattern: `[...locale]${routeMap.base.feedback}`,
 			entrypoint: `${name}/routes/submit-feedback.astro`,
 			prerender: true,
 		},
@@ -42,17 +42,17 @@ export const namedRoutes = (name: string): Record<string, InjectedRoute> => {
 	return {
 		//// Astro Pages (Portal)
 		'Portal: Login Page': {
-			pattern: routeMap.portal.login,
+			pattern: `[...locale]${routeMap.portal.login}`,
 			entrypoint: `${name}/routes/portal/login.astro`,
 			prerender: true,
 		},
 		'Portal: Logout': {
-			pattern: routeMap.portal.logout,
+			pattern: `[...locale]${routeMap.portal.logout}`,
 			entrypoint: `${name}/routes/portal/logout.ts`,
 			prerender: false,
 		},
 		'Portal: Index': {
-			pattern: routeMap.portal.index,
+			pattern: `[...locale]${routeMap.portal.index}`,
 			entrypoint: `${name}/routes/portal/index.astro`,
 			prerender: false,
 		},
