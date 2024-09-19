@@ -1,6 +1,7 @@
 ---
 import routes from 'astro-feedback:routes';
 import type { tsSubmission } from '../../../../db/tsTables';
+import { getLangFromUrl } from '../../../i18n';
 import { convertStatusString, getSubmissionStatusColor } from '../../../lib/statusHelpers';
 import RedirectButton from '../../RedirectButton.astro';
 import GetIcon from '../../icons/GetIcon.astro';
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const { userSubmissions } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
 ---
 { 
     userSubmissions.length > 0 ?
@@ -18,7 +20,7 @@ const { userSubmissions } = Astro.props;
             <div class="flex flex-col">
                 <div class="flex flex-row items-center gap-2 pb-2">
                     <span
-                        class:list={['text-sm', 'font-bold', 'submission-status', 'shadow-md', getSubmissionStatusColor(status)]}>{convertStatusString(status)}</span>
+                        class:list={['text-sm', 'font-bold', 'submission-status', 'shadow-md', getSubmissionStatusColor(status)]}>{convertStatusString(status, lang)}</span>
                     <span class="text-lg font-bold text-secondary">{subject}</span>
                 </div>
                 <p class="text-sm mr-8 md:mr-10 line-clamp-2">{body}</p>

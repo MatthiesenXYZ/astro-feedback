@@ -2,7 +2,7 @@
 import type { RouteMap } from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
 import Logo from '../assets/astrofeedback-logo.webp';
-import { getLangFromUrl, useTranslations } from '../i18n';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n';
 import RedirectButton from './RedirectButton.astro';
 import Heading from './headings/Heading.astro';
 import GetIcon from './icons/GetIcon.astro';
@@ -20,6 +20,7 @@ const {
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, 'dashboard/login');
+const translatePath = useTranslatedPath(lang);
 ---
 <Image 
 src={Logo} 
@@ -34,13 +35,13 @@ style={'scale: 1.2;'}
 
 <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-xl text-center">
     <div class="card-body flex-col gap-4">
-		<RedirectButton link={login}>
+		<RedirectButton link={translatePath(login)}>
 			<span class="btn btn-outline btn-info flex items-center">
 				<span>{t('github')}</span>
 				<GetIcon icon={'github'} class='h-[1.2rem] w-[1.2rem]'/>
 			</span>
 		</RedirectButton>
-		<RedirectButton link={index}>
+		<RedirectButton link={translatePath(index)}>
 			<span class="btn btn-ghost flex items-center">
 				<GetIcon icon={'back'} class='h-[1.2rem] w-[1.2rem]'/>
 				<span>{t('back')}</span>

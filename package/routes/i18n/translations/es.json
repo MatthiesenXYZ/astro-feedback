@@ -32,6 +32,12 @@
     "homepage": "Página de inicio",
     "dashboard": "Panel"
   },
+  "components/open-submission-status": {
+    "open": "Abierto",
+    "in-progress": "En progreso",
+    "closed": "Cerrado",
+    "resolved": "Resuelto"
+  },
   "public/index": {
     "greeting": "Bienvenido a la",
     "collect-manage": "¡Recopile y administre los comentarios de los usuarios con facilidad!",

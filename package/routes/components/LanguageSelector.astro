@@ -66,11 +66,15 @@
     }
 </style>
 
-<script is:inline>
-    const LanguageSelector = document.getElementById('language-selector');
-    const LanguageSectorMenu = document.getElementById('language-sector-menu');
-    const LanguageSectorMenuCancel = document.getElementById('language-sector-menu-cancel');
+<script>
+import { getLangFromUrl, ui, useTranslatedPath } from "../i18n";
 
+    // Get the Language Selector elements
+    const LanguageSelector = document.getElementById('language-selector') as HTMLButtonElement;
+    const LanguageSectorMenuCancel = document.getElementById('language-sector-menu-cancel') as HTMLButtonElement;
+    const LanguageSectorMenu = document.getElementById('language-sector-menu') as HTMLMenuElement;
+
+    // Show the Language Selector on page load
     setTimeout(() => {
         LanguageSelector.style.display = 'block';
             setTimeout(() => {
@@ -78,27 +82,7 @@
             }, 250);
     }, 200);
 
-    function toggleLanguageSelector(element) {
-        if (
-            !element.style.display 
-            || element.style.display === 'none'
-        ) {
-            element.style.display = 'flex';
-        } else {
-            element.style.display = 'none';
-        }
-    }
-
-    LanguageSelector.addEventListener('click', () => toggleLanguageSelector(LanguageSectorMenu));
-    LanguageSectorMenuCancel.addEventListener('click', () => toggleLanguageSelector(LanguageSectorMenu));
-
-</script>
-
-<script>
-const LanguageSectorMenu = document.getElementById('language-sector-menu') as HTMLMenuElement;
-const LanguageSectorMenuEn = document.getElementById('language-sector-menu-en') as HTMLButtonElement;
-const LanguageSectorMenuEs = document.getElementById('language-sector-menu-es') as HTMLButtonElement;
-
+    // Toggle the Language Selector
     function toggleLanguageSelector(element: HTMLMenuElement) {
         if (
             !element.style.display 
@@ -110,27 +94,35 @@ const LanguageSectorMenuEs = document.getElementById('language-sector-menu-es') 
         }
     }
 
-    function getCurrentPath() {
-        return window.location.pathname;
+    // Switch Language
+    function switchLanguage(lang: keyof typeof ui) {
+        const urllang = getLangFromUrl(
+            new URL(window.location.pathname, window.location.origin)
+        );
+        if (urllang === lang) return;
+        const translatePath = useTranslatedPath(lang);
+        const windowPath = window.location.pathname;
+        const newPath = windowPath.replace(`/${urllang}/`, `/`);
+        window.location.href = translatePath(newPath);
     }
 
-    function stripLocaleFromPath(path: string) {
-        return path.replace(/\/(en|es)/, '');
-    }
+    // Language Selector Event Listeners
+    LanguageSelector.addEventListener('click', () => toggleLanguageSelector(LanguageSectorMenu));
+    LanguageSectorMenuCancel.addEventListener('click', () => toggleLanguageSelector(LanguageSectorMenu));
 
-    function setLanguage(lang: string, path: string) {
-        const strippedPath = stripLocaleFromPath(path);
-        window.location.href = `/${lang}${strippedPath}`;
-    }
+    // Language Buttons (When adding a new language, new buttons should be added here)
+    const LanguageSectorMenuEn = document.getElementById('language-sector-menu-en') as HTMLButtonElement;
+    const LanguageSectorMenuEs = document.getElementById('language-sector-menu-es') as HTMLButtonElement;
 
+    // Event Listeners for Language Buttons
     LanguageSectorMenuEn.addEventListener('click', () => {
         toggleLanguageSelector(LanguageSectorMenu);
         // Set Language to English
-        setLanguage('en', getCurrentPath());
+        switchLanguage('en');
     });
     LanguageSectorMenuEs.addEventListener('click', () => {
         toggleLanguageSelector(LanguageSectorMenu);
         // Set Language to Español
-        setLanguage('es', getCurrentPath());
+        switchLanguage('es');
     });
 </script>

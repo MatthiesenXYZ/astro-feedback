@@ -32,6 +32,12 @@
     "homepage": "Home Page",
     "dashboard": "Dashboard"
   },
+  "components/open-submission-status": {
+    "open": "Open",
+    "in-progress": "In Progress",
+    "closed": "Closed",
+    "resolved": "Resolved"
+  },
   "public/index": {
     "greeting": "Welcome to the",
     "collect-manage": "Collect & manage User Feedback with ease!",

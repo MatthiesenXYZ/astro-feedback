@@ -1,6 +1,6 @@
 ---
 import routes from 'astro-feedback:routes';
-import { getLangFromUrl, useTranslations } from '../../i18n';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../../i18n';
 import RedirectButton from '../RedirectButton.astro';
 import Heading from '../headings/Heading.astro';
 import GetIcon from '../icons/GetIcon.astro';
@@ -10,8 +10,16 @@ interface Props {
 }
 
 const { userId } = Astro.props;
-const lang = getLangFromUrl(Astro.url);
+// Get the language and translations
+const referer = Astro.request.headers.get('referer');
+
+if (!referer) {
+	throw new Error('No referer found');
+}
+
+const lang = getLangFromUrl(new URL(referer));
 const t = useTranslations(lang, 'components/user-widget');
+const translatePath = useTranslatedPath(lang);
 ---
 <div class="flex-grow flex flex-col md:w-[25%] text-center gap-2">
     <Heading tag={'h4'}>
@@ -22,25 +30,25 @@ const t = useTranslations(lang, 'components/user-widget');
 
     <div class="card bg-base-300 shadow-xl my-0 p-4">
         <RedirectButton 
-            link={routes.portal.index} 
+            link={translatePath(routes.portal.index)} 
             class:list={['btn', 'btn-primary', 'my-2', 'font-bold']}
             ><span>{t('quick-actions-dashboard')}</span>
             <GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem]'/>
         </RedirectButton>
         <RedirectButton 
-            link={`${routes.portal.users.index}/${userId}`} 
+            link={translatePath(`${routes.portal.users.index}/${userId}`)} 
             class:list={['btn', 'btn-secondary', 'my-2', 'font-bold']}
             ><span>{t('quick-actions-profile')}</span>
             <GetIcon icon={'profile'} class='h-[1.2rem] w-[1.2rem]'/>
         </RedirectButton>
         <RedirectButton 
-            link={routes.portal.projects.index} 
+            link={translatePath(routes.portal.projects.index)} 
             class:list={['btn', 'btn-accent', 'my-2', 'font-bold']}
             ><span>{t('quick-actions-projects')}</span>
             <GetIcon icon={'project'} class='h-[1.2rem] w-[1.2rem]'/>
         </RedirectButton>
         <RedirectButton 
-            link={routes.portal.logout} 
+            link={translatePath(routes.portal.logout)} 
             class:list={['btn', 'btn-error', 'my-2', 'font-bold']}
             ><span>{t('quick-actions-logout')}</span>
             <GetIcon icon={'logout'} class='h-[1.2rem] w-[1.2rem]'/>

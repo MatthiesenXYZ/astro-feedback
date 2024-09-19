@@ -15,7 +15,14 @@ const { matchedSubmissions, routes } = Astro.props;
 
 // Get the count of open submissions
 const submissionCount = matchedSubmissions.length;
-const lang = getLangFromUrl(Astro.url);
+// Get the language and translations
+const referer = Astro.request.headers.get('referer');
+
+if (!referer) {
+	throw new Error('No referer found');
+}
+
+const lang = getLangFromUrl(new URL(referer));
 const t = useTranslations(lang, 'components/user-widget');
 ---
 <div class="flex-none md:w-[25%] md:max-w-[28%] gap-2 text-center">

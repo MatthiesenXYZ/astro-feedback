@@ -1,7 +1,7 @@
 ---
 import routes from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
-import { getLangFromUrl, useTranslations } from '../i18n';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n';
 import { getUserMetadata } from '../lib/GetMeta';
 import GetIcon from './icons/GetIcon.astro';
 import DialogHeader from './userWidgetParts/DialogHeader.astro';
@@ -12,8 +12,17 @@ import QuickActionsSection from './userWidgetParts/QuickActionsSection.astro';
 // Get the user metadata
 const { matchedProjects, matchedSubmissions, userAvatar, userData, isLoggedIn } =
 	await getUserMetadata(Astro);
-const lang = getLangFromUrl(Astro.url);
+
+// Get the language and translations
+const referer = Astro.request.headers.get('referer');
+
+if (!referer) {
+	throw new Error('No referer found');
+}
+
+const lang = getLangFromUrl(new URL(referer));
 const t = useTranslations(lang, 'components/user-widget');
+const translatePath = useTranslatedPath(lang);
 ---
 <div class="indicator">
     <button 
@@ -57,7 +66,7 @@ const t = useTranslations(lang, 'components/user-widget');
         id="user_panel_menu_dashboard" 
         class="btn btn-secondary" 
         type="button" 
-        data-route={routes.portal.index}
+        data-route={translatePath(routes.portal.index)}
         onclick="redirectTo(this)">
         <GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem] inline'/>
         <span id="ui-components-user-widget-contextmenu-dashboard">{t('contextmenu-dashboard')}</span>
@@ -67,7 +76,7 @@ const t = useTranslations(lang, 'components/user-widget');
         id="user_panel_menu_logout" 
         class="btn btn-error" 
         type="button" 
-        data-route={routes.portal.logout}
+        data-route={translatePath(routes.portal.logout)}
         onclick="redirectTo(this)">
         <GetIcon icon={'logout'} class='h-[1.2rem] w-[1.2rem] inline'/>    
         <span id="ui-components-user-widget-contextmenu-logout">{t('contextmenu-logout')}</span>

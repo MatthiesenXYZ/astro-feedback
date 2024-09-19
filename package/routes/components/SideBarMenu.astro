@@ -1,6 +1,6 @@
 ---
 import type { RouteMap } from 'astro-feedback:routes';
-import { getLangFromUrl, useTranslations } from '../i18n';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n';
 import GetIcon from './icons/GetIcon.astro';
 
 interface Props {
@@ -17,13 +17,14 @@ const {
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, 'components/side-bar');
+const translatePath = useTranslatedPath(lang);
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
 
 	<div class="divider mt-0 mb-2" id="ui-components-side-bar-main">{t('main')}</div>
 	<li>
-		<a class="btn shadow-md" id="home" href={homePage}>
+		<a class="btn shadow-md" id="home" href={translatePath(homePage)}>
 			<GetIcon icon={'back'} class='h-[1.2rem] w-[1.2rem]'/>
 			<span id="ui-components-side-bar-homepage">{t('homepage')}</span>
 		</a>
@@ -32,7 +33,7 @@ const t = useTranslations(lang, 'components/side-bar');
 	<div class="divider my-2" id="ui-components-side-bar-portal">{t('portal')}</div>
 	
 	<li>
-		<a class="btn shadow-md" id='dashboard' href={dashboardIndex}>
+		<a class="btn shadow-md" id='dashboard' href={translatePath(dashboardIndex)}>
 			<GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem]'/>
 			<span id="ui-components-side-bar-dashboard">{t('dashboard')}</span>
 		</a>
