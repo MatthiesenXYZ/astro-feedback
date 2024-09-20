@@ -1,22 +1,22 @@
 ---
 import branding from 'astro-feedback:branding';
 import config from 'astro-feedback:config';
-import r from 'astro-feedback:routes';
 import BaseHead from '../components/BaseHead.astro';
 import ButtonShelf from '../components/ButtonShelf.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import LanguageSelector from '../components/LanguageSelector.astro';
 import SideBar from '../components/SideBar.astro';
 import ThemeManager from '../components/ThemeManager.astro';
 import ThemeSelect from '../components/ThemeSelect.astro';
 import UserWidget from '../components/UserWidget.astro';
 import ViewTransitions from '../components/ViewTransitions.astro';
+import { LanguageSelector } from '../i18n';
 
 // Import global styles
 import '../styles/viewTransitions.css';
 import '../styles/overrides.css';
 import '../styles/base.css';
+import '../styles/toast.css';
 
 const { SITE_TITLE, SITE_DESCRIPTION } = branding;
 interface Props {
@@ -26,6 +26,7 @@ interface Props {
 	includeSidebar?: boolean;
 	includeHeader?: boolean;
 	sideBarActiveItemID?: string;
+	lang?: string;
 }
 
 const {
@@ -35,11 +36,12 @@ const {
 	includeSidebar = true,
 	includeHeader = true,
 	sideBarActiveItemID,
+	lang = 'en',
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <BaseHead {config} {title} {description} {image} />
     <ThemeManager />
@@ -48,22 +50,42 @@ const {
     <div class="bg-base-100 drawer lg:drawer-open">
       <input id="my-drawer" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content bg-base-100">
-          { includeHeader &&  <Header {r} {includeSidebar}/> }
+          { includeHeader &&  <Header {includeSidebar}/> }
       
           <div class="md:flex md:justify-center">
           
               <main class="container p-6 lg:p-12 lg:pt-10 lg:mt-10 lg:min-w-[70vw] max-w-[100vw]">
           
                   <slot />
+                  {/* 
+                  
+                  Example of how to use the toast component:
+
+                  <button id="test-button">
+                    test
+                  </button>
+        
+                  <script>
+                    document.getElementById('test-button').addEventListener('click', () => {
+                      const toast = document.createElement('toast-message');
+                      toast.innerText = 'Hello, World!';
+                      toast.setAttribute('dismissible', 'true');
+        
+                      document.body.appendChild(toast);
+                    });
+                  </script> 
+                  
+                  */}
           
               </main>
           
           </div>
       
           <Footer />
+
       
       </div>
-      { includeSidebar && <SideBar {r} {sideBarActiveItemID} /> }
+      { includeSidebar && <SideBar {sideBarActiveItemID} /> }
     </div>
     <ButtonShelf>
       <UserWidget server:defer />
@@ -71,5 +93,6 @@ const {
       <ThemeSelect lightTheme='emerald' />
     </ButtonShelf>
     <ViewTransitions />
+    <script src="../scripts/toast.ts"></script>
   </body>
 </html>

@@ -1,23 +1,20 @@
 ---
-import type { RouteMap } from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n';
 import GetIcon from './icons/GetIcon.astro';
 
 interface Props {
-	r: RouteMap;
 	sideBarActiveItemID?: string | undefined;
 }
-const {
-	sideBarActiveItemID,
-	r: {
-		base: { index: homePage },
-		portal: { index: dashboardIndex },
-	},
-} = Astro.props;
+const { sideBarActiveItemID } = Astro.props;
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, 'components/side-bar');
 const translatePath = useTranslatedPath(lang);
+const {
+	portal: { index: dashboardIndex },
+	base: { index: homePage },
+} = routeGenerator();
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">

@@ -14,7 +14,7 @@ export const tailwindConfig: Config = {
 	},
 	plugins: [
 		require('@matthiesenxyz/astro-feedback/twTextShadow'),
-		require('tailwind-scrollbar')({ nocompatible: true }),
+		require('tailwind-scrollbar'),
 		require('@tailwindcss/typography'),
 		require('daisyui'),
 	],

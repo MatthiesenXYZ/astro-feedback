@@ -1,5 +1,27 @@
 ---
+import { getLangFromUrl, languages, ui, useTranslatedPath } from './index';
 
+const languageKeys = Object.keys(languages);
+const languageValues = Object.values(languages);
+
+const LanguageMapped = languageKeys.map((key, index) => {
+	return {
+		key: key as keyof typeof ui,
+		value: languageValues[index],
+	};
+});
+
+const currentPath = new URL(Astro.url || Astro.request.headers.get('referer') || '').pathname;
+
+function switchLanguage(lang: keyof typeof ui) {
+	const currentLang = getLangFromUrl(
+		new URL(Astro.url || Astro.request.headers.get('referer') || '')
+	);
+	if (currentLang === lang) return;
+	const translatePath = useTranslatedPath(lang);
+	const newPath = currentPath.replace(`/${currentLang}/`, '/');
+	return translatePath(newPath);
+}
 ---
 
 <button
@@ -10,19 +32,12 @@
 </button>
 
 <menu id="language-sector-menu" type="context" class="bg-neutral rounded-md p-2">
-    <button 
-        id="language-sector-menu-en" 
-        class="btn btn-primary" 
-        type="button">
-        <span>English</span>
-    </button>
-    <button 
-        id="language-sector-menu-es" 
-        class="btn btn-primary" 
-        type="button">
-        <span>Español</span>
-    </button>
-    {/* Cancel Button */}
+    {
+        //Language Buttons Auto-Generated
+        LanguageMapped.map(({ key, value }) => (
+            <a class="btn btn-primary" href={switchLanguage(key)}>{value}</a>
+        ))
+    }
     <div class="flex flex-row-reverse">
         <button 
             id="language-sector-menu-cancel" 
@@ -57,7 +72,7 @@
         gap: 0.5rem;
         left: -4rem;
         top: 3rem;
-        width: 10rem;
+        width: max-content;
         z-index: 99999;
     }
 
@@ -67,8 +82,6 @@
 </style>
 
 <script>
-import { getLangFromUrl, ui, useTranslatedPath } from "../i18n";
-
     // Get the Language Selector elements
     const LanguageSelector = document.getElementById('language-selector') as HTMLButtonElement;
     const LanguageSectorMenuCancel = document.getElementById('language-sector-menu-cancel') as HTMLButtonElement;
@@ -94,35 +107,15 @@ import { getLangFromUrl, ui, useTranslatedPath } from "../i18n";
         }
     }
 
-    // Switch Language
-    function switchLanguage(lang: keyof typeof ui) {
-        const urllang = getLangFromUrl(
-            new URL(window.location.pathname, window.location.origin)
-        );
-        if (urllang === lang) return;
-        const translatePath = useTranslatedPath(lang);
-        const windowPath = window.location.pathname;
-        const newPath = windowPath.replace(`/${urllang}/`, `/`);
-        window.location.href = translatePath(newPath);
-    }
-
     // Language Selector Event Listeners
-    LanguageSelector.addEventListener('click', () => toggleLanguageSelector(LanguageSectorMenu));
-    LanguageSectorMenuCancel.addEventListener('click', () => toggleLanguageSelector(LanguageSectorMenu));
-
-    // Language Buttons (When adding a new language, new buttons should be added here)
-    const LanguageSectorMenuEn = document.getElementById('language-sector-menu-en') as HTMLButtonElement;
-    const LanguageSectorMenuEs = document.getElementById('language-sector-menu-es') as HTMLButtonElement;
-
-    // Event Listeners for Language Buttons
-    LanguageSectorMenuEn.addEventListener('click', () => {
-        toggleLanguageSelector(LanguageSectorMenu);
-        // Set Language to English
-        switchLanguage('en');
+    LanguageSelector.addEventListener('click', () => 
+        toggleLanguageSelector(LanguageSectorMenu)
+    );
+    LanguageSelector.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        toggleLanguageSelector(LanguageSectorMenu)
     });
-    LanguageSectorMenuEs.addEventListener('click', () => {
-        toggleLanguageSelector(LanguageSectorMenu);
-        // Set Language to Español
-        switchLanguage('es');
-    });
+    LanguageSectorMenuCancel.addEventListener('click', () => 
+        toggleLanguageSelector(LanguageSectorMenu)
+    );
 </script>

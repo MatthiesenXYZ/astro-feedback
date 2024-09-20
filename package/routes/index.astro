@@ -1,19 +1,14 @@
 ---
 import branding from 'astro-feedback:branding';
-import r from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
 import HorizontalContainer from './components/HorizontalContainer.astro';
 import RedirectButton from './components/RedirectButton.astro';
 import Heading from './components/headings/Heading.astro';
 import Span from './components/headings/Span.astro';
 import GetIcon from './components/icons/GetIcon.astro';
 import LandingLogo from './components/landing/LandingLogo.astro';
-import { getLangFromUrl, useTranslations } from './i18n';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from './i18n';
 import BaseLayout from './layouts/BaseLayout.astro';
-
-const {
-	base: { feedback },
-	portal: { login },
-} = r;
 
 const { SITE_TITLE } = branding;
 
@@ -26,12 +21,18 @@ export async function getStaticPaths() {
 }
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, 'public/index');
+const translatePath = useTranslatedPath(lang);
+const {
+	base: { feedback },
+	portal: { login },
+} = routeGenerator();
 ---
 
 <BaseLayout 
     sideBarActiveItemID="home" 
     includeSidebar={false} 
     includeHeader={false}
+    lang={lang}
     >
 
     <HorizontalContainer>
@@ -54,14 +55,14 @@ const t = useTranslations(lang, 'public/index');
             
             <div class="card bg-base-100 w-full shadow-xl text-center mt-2">
                 <div class="card-body flex flex-row">
-                    <RedirectButton link={login}>
+                    <RedirectButton link={translatePath(login)}>
                         <span class="btn btn-outline btn-primary text-lg text-shadow shadow-black flex items-center gap-2">
                             {t('signin')}
                             <GetIcon icon={'login'} class='h-[1.2rem] w-[1.2rem] inline'/>
                         </span>
                     </RedirectButton>
                         
-                    <RedirectButton link={feedback}>
+                    <RedirectButton link={translatePath(feedback)}>
                         <span class="btn btn-accent text-lg text-shadow shadow-black flex items-center gap-2">
                             {t('submit-feedback')}
                             <GetIcon icon={'feedback'} class='h-[1.2rem] w-[1.2rem] inline'/>

@@ -1,5 +1,5 @@
 ---
-import type { RouteMap } from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
 import type { tsProject } from '../../../db/tsTables';
 import { getLangFromUrl, useTranslatedPath } from '../../i18n';
 import RedirectButton from '../RedirectButton.astro';
@@ -7,10 +7,9 @@ import GetIcon from '../icons/GetIcon.astro';
 
 interface Props {
 	project: typeof tsProject.$inferSelect;
-	routes: RouteMap;
 }
 
-const { project, routes } = Astro.props;
+const { project } = Astro.props;
 // Get the language and translations
 const referer = Astro.request.headers.get('referer');
 
@@ -20,6 +19,9 @@ if (!referer) {
 
 const lang = getLangFromUrl(new URL(referer));
 const translatePath = useTranslatedPath(lang);
+const {
+	portal: { projects },
+} = routeGenerator();
 ---
 <div class="card bg-base-300 shadow-xl my-4 p-2">
     <div class="flex flex-row">
@@ -33,7 +35,7 @@ const translatePath = useTranslatedPath(lang);
         </div>
         <div class="flex-none">
             <RedirectButton 
-                link={translatePath(`${routes.portal.projects.index}/${project.id}`)} 
+                link={translatePath(projects(project.id).viewProject)} 
                 class="btn btn-primary font-bold"
                 >
                 <GetIcon icon={'view'} class='h-[1.5rem] w-[1.5rem]'/>

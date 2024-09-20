@@ -1,5 +1,5 @@
 ---
-import type { RouteMap } from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
 import Logo from '../assets/astrofeedback-logo.webp';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n';
@@ -7,20 +7,13 @@ import RedirectButton from './RedirectButton.astro';
 import Heading from './headings/Heading.astro';
 import GetIcon from './icons/GetIcon.astro';
 
-interface Props {
-	r: RouteMap;
-}
-
-const {
-	r: {
-		api: { login },
-		base: { index },
-	},
-} = Astro.props;
-
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, 'dashboard/login');
 const translatePath = useTranslatedPath(lang);
+const {
+	base: { index },
+	api: { login },
+} = routeGenerator();
 ---
 <Image 
 src={Logo} 

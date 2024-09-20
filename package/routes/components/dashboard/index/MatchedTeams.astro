@@ -1,6 +1,7 @@
 ---
-import routes from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
 import type { TeamTableTyped } from '../../../../db/tsTables';
+import { getLangFromUrl, useTranslatedPath } from '../../../i18n';
 import RedirectButton from '../../RedirectButton.astro';
 import GetIcon from '../../icons/GetIcon.astro';
 
@@ -9,9 +10,14 @@ interface Props {
 }
 
 const { matchedTeams } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+const {
+	portal: { teams },
+} = routeGenerator();
 ---
 { matchedTeams.length > 0 && (
-    <div class="col-span-1">
+    <div class="col-span-1 dashboard-card">
         <div class="flex flex-col items-center rounded-lg bg-base-300 gap-2 p-4 h-full">
             <slot />
             
@@ -28,7 +34,7 @@ const { matchedTeams } = Astro.props;
                                 <p class="text-sm mr-8 md:mr-10 line-clamp-2">{description}</p>
                                 <div class="absolute bottom-0 right-0">
                                     <RedirectButton 
-                                        link={`${routes.portal.teams.index}/${id}`} 
+                                        link={translatePath(teams(id).viewTeam)} 
                                         class="btn btn-sm btn-outline btn-accent shadow-md"
                                         >
                                         <GetIcon icon={'view'} class='h-[1rem] w-[1rem]'/>

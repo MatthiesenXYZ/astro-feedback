@@ -1,5 +1,5 @@
 ---
-import routes from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n';
 import { getUserMetadata } from '../lib/GetMeta';
@@ -23,6 +23,10 @@ if (!referer) {
 const lang = getLangFromUrl(new URL(referer));
 const t = useTranslations(lang, 'components/user-widget');
 const translatePath = useTranslatedPath(lang);
+const {
+	base: { feedback },
+	portal: { index, logout },
+} = routeGenerator();
 ---
 <div class="indicator">
     <button 
@@ -63,10 +67,20 @@ const translatePath = useTranslatedPath(lang);
     </button>
     
     <button 
+        id="user_panel_menu_new_feedback" 
+        class="btn btn-accent" 
+        type="button"
+        data-route={translatePath(feedback)}
+        onclick="redirectTo(this)">
+        <GetIcon icon={'feedback'} class='h-[1.2rem] w-[1.2rem] inline'/>    
+        <span id="ui-components-user-widget-contextmenu-new-feedback">{t('contextmenu-new-feedback')}</span>
+    </button>
+
+    <button 
         id="user_panel_menu_dashboard" 
         class="btn btn-secondary" 
         type="button" 
-        data-route={translatePath(routes.portal.index)}
+        data-route={translatePath(index)}
         onclick="redirectTo(this)">
         <GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem] inline'/>
         <span id="ui-components-user-widget-contextmenu-dashboard">{t('contextmenu-dashboard')}</span>
@@ -76,7 +90,7 @@ const translatePath = useTranslatedPath(lang);
         id="user_panel_menu_logout" 
         class="btn btn-error" 
         type="button" 
-        data-route={translatePath(routes.portal.logout)}
+        data-route={translatePath(logout)}
         onclick="redirectTo(this)">
         <GetIcon icon={'logout'} class='h-[1.2rem] w-[1.2rem] inline'/>    
         <span id="ui-components-user-widget-contextmenu-logout">{t('contextmenu-logout')}</span>
@@ -105,7 +119,7 @@ const translatePath = useTranslatedPath(lang);
 
         <div class="flex flex-col md:flex-row w-full">
 
-            <OpenSubmissionsSection matchedSubmissions={matchedSubmissions} routes={routes} />
+            <OpenSubmissionsSection matchedSubmissions={matchedSubmissions} />
 
             <div class="flex-none divider md:divider-horizontal mx-2" />
 
@@ -113,7 +127,7 @@ const translatePath = useTranslatedPath(lang);
 
             <div class="flex-none divider md:divider-horizontal mx-2" />
 
-            <MatchedProjectsSection matchedProjects={matchedProjects} routes={routes} />
+            <MatchedProjectsSection matchedProjects={matchedProjects} />
 
         </div>
 
@@ -215,7 +229,7 @@ const translatePath = useTranslatedPath(lang);
         gap: 0.5rem;
         left: -10rem;
         top: 3rem;
-        width: 13rem;
+        width: max-content;
         z-index: 99999;
     }
 

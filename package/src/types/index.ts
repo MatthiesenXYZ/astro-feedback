@@ -1,4 +1,4 @@
-export type { RouteMap } from './routeMap.ts';
+export type { RouteMap, RouteGenerator } from './routeMap.ts';
 export type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends (infer U)[]
 		? DeepPartial<U>[]

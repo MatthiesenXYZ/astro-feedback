@@ -1,4 +1,6 @@
 import type { AstroConfig, AstroIntegrationMiddleware, InjectedRoute } from 'astro';
+import { createResolver } from 'astro-integration-kit';
+import type { AstroTurnstileOptions } from 'astro-turnstile/schema';
 import { envField } from 'astro/config';
 import copy from 'rollup-plugin-copy';
 import routeMap from '~lib/routeMap.ts';
@@ -174,6 +176,10 @@ const branding: Branding = {
 
 export const loggerLabel: string = branding.SITE_TITLE;
 
+const { resolve } = createResolver(import.meta.url);
+
+const routeGenerator = resolve('./lib/routeMap.js');
+
 export const astroFeedbackVirtualModules = (
 	name: string,
 	o: {
@@ -185,8 +191,16 @@ export const astroFeedbackVirtualModules = (
 		name,
 		imports: {
 			'astro-feedback:config': `export default ${JSON.stringify(options)}`,
-			'astro-feedback:routes': `export default ${JSON.stringify(routeMap)}`,
+			'astro-feedback:routes': `export * from '${routeGenerator}'; export default ${JSON.stringify(routeMap)}`,
 			'astro-feedback:branding': `export default ${JSON.stringify(branding)}`,
 		},
+	};
+};
+
+export const turnstileOptions = (verbose: boolean): AstroTurnstileOptions => {
+	return {
+		verbose: verbose,
+		endpointPath: routeMap.api.captcha,
+		disableClientScript: true,
 	};
 };

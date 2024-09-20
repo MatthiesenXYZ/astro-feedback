@@ -1,14 +1,27 @@
 ---
-import r from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
+import { getLangFromUrl, useTranslatedPath } from '../i18n';
 import getUser from '../lib/getUser';
 
 const { isLoggedIn } = await getUser(Astro);
+// Get the language and translations
+const referer = Astro.request.headers.get('referer');
+
+if (!referer) {
+	throw new Error('No referer found');
+}
+
+const lang = getLangFromUrl(new URL(referer));
+const translatePath = useTranslatedPath(lang);
+const {
+	portal: { index },
+} = routeGenerator();
 ---
 <div 
   id="login-check" 
   style="display: none;" 
   data-isloggedin={`${isLoggedIn}`}
-  data-redirectroute={r.portal.index}
+  data-redirectroute={translatePath(index)}
   ></div>
 
 <script is:inline>

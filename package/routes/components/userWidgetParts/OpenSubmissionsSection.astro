@@ -1,5 +1,4 @@
 ---
-import type { RouteMap } from 'astro-feedback:routes';
 import type { tsSubmission } from '../../../db/tsTables';
 import { getLangFromUrl, useTranslations } from '../../i18n';
 import Heading from '../headings/Heading.astro';
@@ -8,10 +7,9 @@ import NoSubmissions from './NoSubmissions.astro';
 
 interface Props {
 	matchedSubmissions: (typeof tsSubmission.$inferSelect)[];
-	routes: RouteMap;
 }
 
-const { matchedSubmissions, routes } = Astro.props;
+const { matchedSubmissions } = Astro.props;
 
 // Get the count of open submissions
 const submissionCount = matchedSubmissions.length;
@@ -38,7 +36,7 @@ const t = useTranslations(lang, 'components/user-widget');
     { 
         matchedSubmissions.length > 0 
         ? matchedSubmissions.map((submission) => 
-        ( <MatchedSubmissions {submission} {routes} /> )) 
+        ( <MatchedSubmissions {submission} /> )) 
         : <NoSubmissions /> 
     }
 </div>

@@ -1,5 +1,9 @@
 html {
-    @apply scrollbar-thumb-rounded-full scrollbar scrollbar-thumb-accent scrollbar-track-transparent overflow-y-scroll;
+    @apply scrollbar hover:scrollbar-thumb-accent scrollbar-thumb-accent scrollbar-track-transparent overflow-y-scroll;
+}
+
+.dashboard-card {
+    @apply max-h-[400px] overflow-y-auto scrollbar scrollbar-thumb-accent scrollbar-track-transparent scrollbar-thin;
 }
 
 body {

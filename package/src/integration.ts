@@ -1,6 +1,5 @@
 import { addIntegration, addVirtualImports, defineIntegration } from 'astro-integration-kit';
 import turnstile from 'astro-turnstile';
-import routeMap from '~lib/routeMap.ts';
 import { AstroFeedbackOptionsSchema as optionsSchema } from '~schemas/index.ts';
 import {
 	astroFeedbackAstroDBConfig,
@@ -10,6 +9,7 @@ import {
 	middlewareConfig,
 	namedRoutes,
 	optionalRoutes,
+	turnstileOptions,
 } from '~src/consts.ts';
 import BrandingDTS from '~stubs/branding.ts';
 import configDts from '~stubs/config.ts';
@@ -41,13 +41,9 @@ export const astroFeedback = defineIntegration({
 
 					// Add the Turnstile Integration
 					addIntegration(params, {
-						integration: turnstile({
-							verbose,
-							endpointPath: routeMap.api.captcha,
-							disableClientScript: true,
-							disableDevToolbar: false,
-						}),
+						integration: turnstile(turnstileOptions(verbose)),
 					});
+					// Inject a custom script instead of `astro-turnstile`'s default script to avoid dependency conflicts
 					injectScript(
 						'page',
 						'import "@matthiesenxyz/astro-feedback/modules/turnstile-client.js"'

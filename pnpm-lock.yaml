@@ -80,18 +80,9 @@ importers:
       '@fontsource/poppins':
         specifier: ^5.1.0
         version: 5.1.0
-      '@inox-tools/request-nanostores':
-        specifier: ^0.1.1
-        version: 0.1.1(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))(nanostores@0.11.3)
       '@matthiesenxyz/astrodtsbuilder':
         specifier: ^0.1.2
         version: 0.1.2(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))
-      '@nanostores/i18n':
-        specifier: ^0.12.2
-        version: 0.12.2(nanostores@0.11.3)
-      '@nanostores/persistent':
-        specifier: ^0.10.2
-        version: 0.10.2(nanostores@0.11.3)
       '@tailwindcss/typography':
         specifier: ^0.5.15
         version: 0.5.15(tailwindcss@3.4.10)
@@ -105,8 +96,8 @@ importers:
         specifier: catalog:deps
         version: 0.16.1(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))
       astro-turnstile:
-        specifier: ^1.1.0
-        version: 1.1.0(@types/node@20.16.3)(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))
+        specifier: ^1.1.2
+        version: 1.1.2(@types/node@20.16.3)(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))
       daisyui:
         specifier: ^4.12.10
         version: 4.12.10(postcss@8.4.43)
@@ -119,9 +110,6 @@ importers:
       micromatch:
         specifier: catalog:deps
         version: 4.0.8
-      nanostores:
-        specifier: ^0.11.3
-        version: 0.11.3
       rollup-plugin-copy:
         specifier: ^3.5.0
         version: 3.5.0
@@ -867,20 +855,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@inox-tools/request-nanostores@0.1.1':
-    resolution: {integrity: sha512-r6Asx7iJZb3YiyZjkYEHmD4qcfrbbYxjOMtvdXR9GNCjUMoQs19h2e/2fxx6Ltf2yv2l8W4GETddiEZ+qK35sw==}
-    peerDependencies:
-      astro: ^4
-      nanostores: ^0.11.2
-
-  '@inox-tools/request-state@0.1.1':
-    resolution: {integrity: sha512-+w8G01H/LL6TDIfEcEYnumlDe6zWnrv0k7x0b+czoZvNXB+QA9o641Mq1BxKHoEQJ1/3hgZTQ8QZ0L4+yr+KnQ==}
-    peerDependencies:
-      astro: ^4
-
-  '@inox-tools/utils@0.1.3':
-    resolution: {integrity: sha512-UhneOA5PwcPhvcvcH1pW9wGZXRKASD7/MWHCrE+DbSzbMhzBTeUn1rKpssys8rDF51pr3FwgLFz1Cvjj2TMIwA==}
-
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -999,18 +973,6 @@ packages:
     resolution: {integrity: sha512-Sy8R9Kd4WIsYrHm0D+uHMf/5QLyttMdJSVrR4wdXSjVExLC/k4myBUh2mHzUVKbfCvtgsVl/EUEYJiQYeWscIQ==}
     peerDependencies:
       astro: ^4.14
-
-  '@nanostores/i18n@0.12.2':
-    resolution: {integrity: sha512-BZNDNB83qwfU8YGYEI5zwstBZGPRUfifhZcw0SqaiGLqUBe4onpQ/NCr4cRg0khlsvPtJ37MQ/XZaT7dN+/RvA==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    peerDependencies:
-      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
-
-  '@nanostores/persistent@0.10.2':
-    resolution: {integrity: sha512-BEndnLhRC+yP7gXTESepBbSj8XNl8OXK9hu4xAgKC7MWJHKXnEqJMqY47LUyHxK6vYgFnisyHmqq+vq8AUFyIg==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    peerDependencies:
-      nanostores: ^0.9.0 || ^0.10.0 || ^0.11.0
 
   '@neon-rs/load@0.0.4':
     resolution: {integrity: sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw==}
@@ -1476,8 +1438,8 @@ packages:
     peerDependencies:
       astro: ^4.12.0
 
-  astro-turnstile@1.1.0:
-    resolution: {integrity: sha512-x2VUaAwmZltOztdWowoHv+SY7d1hpwXdUKEj/X3Ws3MvpKmFVMmKyOc/oDIl4+lyHjvvHh5uZSEmx/e6j789jw==}
+  astro-turnstile@1.1.2:
+    resolution: {integrity: sha512-C5BOmuCV+BYp8GpujRkJGjTc/5umO7oQXWpEggZZkmPq1ZZ/k79r5TRgzDe8GIatpdkqS/Ltf/ZlycDRSYMCbg==}
     peerDependencies:
       astro: '>=4.14'
 
@@ -1656,10 +1618,6 @@ packages:
   consola@3.2.3:
     resolution: {integrity: sha512-I5qxpzLv+sJhTVEoLYNcTW+bThDCPsit0vLNKShZx6rLtpilNpmmeTPaeqJb9ZE9dV3DGaeby6Vuhrw38WjeyQ==}
     engines: {node: ^14.18.0 || >=16.10.0}
-
-  content-type@1.0.5:
-    resolution: {integrity: sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==}
-    engines: {node: '>= 0.6'}
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
@@ -2593,10 +2551,6 @@ packages:
     resolution: {integrity: sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==}
     engines: {node: ^18 || >=20}
     hasBin: true
-
-  nanostores@0.11.3:
-    resolution: {integrity: sha512-TUes3xKIX33re4QzdxwZ6tdbodjmn3tWXCEc1uokiEmo14sI1EaGYNs2k3bU2pyyGNmBqFGAVl6jAGWd06AVIg==}
-    engines: {node: ^18.0.0 || >=20.0.0}
 
   neotraverse@0.6.18:
     resolution: {integrity: sha512-Z4SmBUweYa09+o6pG+eASabEpP6QkQ70yHj351pQoEXIs8uHbaU2DWVmzBANKgflPa47A50PtB2+NgRpQvr7vA==}
@@ -4309,24 +4263,6 @@ snapshots:
   '@img/sharp-win32-x64@0.33.5':
     optional: true
 
-  '@inox-tools/request-nanostores@0.1.1(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))(nanostores@0.11.3)':
-    dependencies:
-      '@inox-tools/request-state': 0.1.1(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))
-      '@inox-tools/utils': 0.1.3
-      astro: 4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4)
-      astro-integration-kit: 0.16.1(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))
-      nanostores: 0.11.3
-
-  '@inox-tools/request-state@0.1.1(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))':
-    dependencies:
-      '@inox-tools/utils': 0.1.3
-      astro: 4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4)
-      astro-integration-kit: 0.16.1(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))
-      content-type: 1.0.5
-      devalue: 5.0.0
-
-  '@inox-tools/utils@0.1.3': {}
-
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -4449,14 +4385,6 @@ snapshots:
   '@matthiesenxyz/astrodtsbuilder@0.1.2(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))':
     dependencies:
       astro: 4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4)
-
-  '@nanostores/i18n@0.12.2(nanostores@0.11.3)':
-    dependencies:
-      nanostores: 0.11.3
-
-  '@nanostores/persistent@0.10.2(nanostores@0.11.3)':
-    dependencies:
-      nanostores: 0.11.3
 
   '@neon-rs/load@0.0.4': {}
 
@@ -4873,7 +4801,7 @@ snapshots:
       pathe: 1.1.2
       recast: 0.23.9
 
-  astro-turnstile@1.1.0(@types/node@20.16.3)(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4)):
+  astro-turnstile@1.1.2(@types/node@20.16.3)(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4)):
     dependencies:
       '@matthiesenxyz/astrodtsbuilder': 0.1.2(astro@4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4))
       astro: 4.15.1(@types/node@20.16.3)(rollup@4.21.2)(typescript@5.5.4)
@@ -5131,8 +5059,6 @@ snapshots:
   concat-map@0.0.1: {}
 
   consola@3.2.3: {}
-
-  content-type@1.0.5: {}
 
   convert-source-map@2.0.0: {}
 
@@ -6187,8 +6113,6 @@ snapshots:
   nanoid@3.3.7: {}
 
   nanoid@5.0.7: {}
-
-  nanostores@0.11.3: {}
 
   neotraverse@0.6.18: {}
 

@@ -1,0 +1,41 @@
+
+/* Base component styling */
+toast-message {
+    opacity: 0;
+    text-align: center;
+    border-radius: 8px;
+    padding: 4px 8px;
+    position: fixed; 
+    z-index: 999; /* Make sure the it's on top of everything */
+    top: 24px;
+    transition: opacity 0.25s; /* Fade in and out */
+    left: 50%;
+    transform: translateX(-50%); /* Horizontally center it on the page */
+    height: auto;
+    width: fit-content;
+    background: rgb(122, 122, 122);
+    color: rgb(0, 0, 0);
+  }
+  
+  /* Set opacity when set as visible in the attribute module  */
+  toast-message[visible~=true] {
+    opacity: 1;
+  }
+  
+  /* Add space for the 'x' to dismiss a dismissible Toast  */
+  toast-message[dismissible] {
+    padding-right: 32px;
+    pointer-events: none; /* Disable pointer events on the Toast; we only want the 'x' to be clickable */
+  }
+  
+  /* Configure the 'x' to dismiss the Toast */
+  toast-message[dismissible]:after {
+    position: absolute;
+    content: '✕';
+    text-align: center;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    pointer-events: all; /* Allow pointer events only on the 'x' */
+  }

@@ -1,5 +1,4 @@
 ---
-import type { RouteMap } from 'astro-feedback:routes';
 import type { tsProject } from '../../../db/tsTables';
 import { getLangFromUrl, useTranslations } from '../../i18n';
 import Heading from '../headings/Heading.astro';
@@ -18,10 +17,9 @@ const t = useTranslations(lang, 'components/user-widget');
 
 interface Props {
 	matchedProjects: (typeof tsProject.$inferSelect)[];
-	routes: RouteMap;
 }
 
-const { matchedProjects, routes } = Astro.props;
+const { matchedProjects } = Astro.props;
 ---
 <div class="flex-none md:w-[25%] md:max-w-[28%] gap-2">
     <Heading tag={'h4'}>
@@ -33,7 +31,7 @@ const { matchedProjects, routes } = Astro.props;
     { 
         matchedProjects.length > 0 
         ? matchedProjects.map((project) => 
-        ( <MatchedProjects {project} {routes} /> )) 
+        ( <MatchedProjects {project} /> )) 
         : <NoMatchedProjects /> 
     }
 </div>

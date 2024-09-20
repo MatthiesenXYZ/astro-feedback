@@ -66,6 +66,7 @@ const {
 
       bindEvents() {
         this.addEventListener("click", this.toggleTheme);
+        this.addEventListener("contextmenu", (e) => e.preventDefault());
         document.addEventListener("theme-changed", (e) =>
           this.updateThemeIconAndAriaLabel(
             e.detail.currentTheme,

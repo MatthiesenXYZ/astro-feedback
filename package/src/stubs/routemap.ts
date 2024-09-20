@@ -10,7 +10,23 @@ dts.addModule('astro-feedback:routes', {
 		typeDef: `import('${name}/types').RouteMap`,
 		singleLineDescription: 'Astro Feedback routes.',
 	},
-	typeExports: [{ name: 'RouteMap', typeDef: `import('${name}/types').RouteMap` }],
+	namedExports: [
+		{
+			name: 'routeGenerator',
+			typeDef: `import('${name}/types').RouteGenerator`,
+			singleLineDescription: 'Astro Feedback route generator.',
+		},
+	],
+	typeExports: [
+		{
+			name: 'RouteMap',
+			typeDef: `import('${name}/types').RouteMap`,
+		},
+		{
+			name: 'RouteGenerator',
+			typeDef: `import('${name}/types').RouteGenerator`,
+		},
+	],
 });
 
 export const RouteMapDTS = dts.makeAstroInjectedType('routemap.d.ts');

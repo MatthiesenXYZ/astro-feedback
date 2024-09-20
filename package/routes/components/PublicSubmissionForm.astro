@@ -1,18 +1,14 @@
 ---
-import r from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
 import { db } from 'astro:db';
-import { TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { TurnstileWidget } from 'astro-turnstile/components';
+// import { TURNSTILE_SITE_KEY } from 'astro:env/client';
 import { tsProject } from '../../db/tsTables';
-import { getLangFromUrl, useTranslations } from '../i18n';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n';
 import getUser from '../lib/getUser';
 import RedirectButton from './RedirectButton.astro';
 import Heading from './headings/Heading.astro';
 import GetIcon from './icons/GetIcon.astro';
-
-const {
-	base: { index },
-	api: { captcha, submissions },
-} = r;
 
 // Get the user data from the Astro locals
 const { user: UserData } = await getUser(Astro);
@@ -23,8 +19,20 @@ const currentProjects = await db.select().from(tsProject);
 // Check if there is a default project
 const defaultProject = currentProjects.filter(({ defaultProject }) => defaultProject).length > 0;
 
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang, 'public/submit-feedback');
+// Get the language and translations
+const referer = Astro.request.headers.get('referer');
+
+if (!referer) {
+	throw new Error('No referer found');
+}
+
+const lang = getLangFromUrl(new URL(referer));
+const t = useTranslations(lang, 'components/public-submission-form');
+const translatePath = useTranslatedPath(lang);
+const {
+	base: { index },
+	api: { captcha, submissions },
+} = routeGenerator();
 ---
 <form id="feedback-submissions" method="POST" class="card-body" action={submissions}>
 
@@ -93,6 +101,7 @@ const t = useTranslations(lang, 'public/submit-feedback');
                 type="email"
                 class="w-full"
                 value={UserData?.email}
+                placeholder="john.doe@gmail.com"
                 />
 
         </label>
@@ -119,6 +128,7 @@ const t = useTranslations(lang, 'public/submit-feedback');
                 form="feedback-submissions" 
                 type="text" 
                 class="w-full"
+                placeholder={t('subject-placeholder')}
                 required
                 />
 
@@ -140,15 +150,14 @@ const t = useTranslations(lang, 'public/submit-feedback');
             name="body" 
             form="feedback-submissions" 
             class="textarea textarea-info h-32" 
+            placeholder={t('feedback-body-placeholder')}
             required
             />
     </div>
 
     <input type="hidden" name="userId" value={UserData?.id}>
 
-    <div id="turnstile-container" class="h-[65px]" data-sitekey={TURNSTILE_SITE_KEY}>
-        <div class="sr-only">{t('captcha')}</div>
-    </div>
+    <TurnstileWidget size={'normal'}/>
 
     <div class="flex flex-row pt-6">
         <div class="flex-none">
@@ -162,7 +171,7 @@ const t = useTranslations(lang, 'public/submit-feedback');
         <div class="flex-2 grow"/>
 
         <div class="flex-none">
-            <RedirectButton link={index}>
+            <RedirectButton link={translatePath(index)}>
                 <span class="btn btn-error btn-outline flex items-center">
                     <GetIcon icon={'back'} class='h-[1.2rem] w-[1.2rem]'/>
                     <span>{t('back')}</span>
@@ -174,28 +183,6 @@ const t = useTranslations(lang, 'public/submit-feedback');
 
 <div style="display: none;" id="captchaPath" data-url={new URL(captcha, Astro.site).href}></div>
 
-<div id="form-error" role="alert" class="alert alert-error flex">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current inline"
-      fill="none" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <span><strong>{t('alert-error-title')}</div> <span>{t('alert-error-placeholder')}</span></span>
-</div>
-
-<div id="form-success" role="alert" class="alert alert-success flex">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current inline"
-      fill="none" viewBox="0 0 24 24">
-      <path
-        stroke-linecap="round" stroke-linejoin="round"
-        stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    <span><strong>{t('alert-success-title')}</strong> <span>{t('alert-success-placeholder')}</span></span>
-</div>
-
-<div 
-    id="ui-components-feedback-form-alert-error-placeholder" 
-    style="display: none;"
-    >{t('alert-error-placeholder')}</div>
 <div 
     id="ui-components-feedback-form-error-captcha-failed" 
     style="display: none;"
@@ -231,37 +218,22 @@ const t = useTranslations(lang, 'public/submit-feedback');
 
 <script is:inline>
     const form = document.getElementById('feedback-submissions');
-    const formError = document.getElementById('form-error');
-    const errorPlaceholder = document.getElementById('error-placeholder');
     const buttonLoader = document.getElementById('buttonloader');
-    const successPlaceholder = document.getElementById('success-placeholder');
-    const formSuccess = document.getElementById('form-success');
 
     // Get i18n strings
-    const alerterrorPlaceholderText = document.getElementById('ui-components-feedback-form-alert-error-placeholder').textContent;
-    const captchaErrorText = document.getElementById('ui-components-feedback-form-error-captcha-failed').textContent;
-    const feedbackErrorText = document.getElementById('ui-components-feedback-form-error-feedback-failed').textContent;
+    const captchaErrorText = document.getElementById('ui-components-feedback-form-error-captcha-failed');
+    const feedbackErrorText = document.getElementById('ui-components-feedback-form-error-feedback-failed');
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         buttonLoader.style.display = 'inline-block';
-
-        function timeout(resolve, ms, message, placeholder, button) {
-            setTimeout(() => { 
-                button.style.display = 'none';
-                placeholder.textContent = message;
-                resolve.style.display = 'block';
-            }, ms);
-            resolve.style.display = 'none';
-            placeholder.textContent = alerterrorPlaceholderText;
-        }
 
         const formData = new FormData(form);
 
         const url = (document.getElementById('captchaPath')).dataset.url;
 
         try {
-            const verifyData = await fetch(url, {
+            const verifyData = await fetch(new URL(url), {
                 method: 'POST',
                 body: formData,
             });
@@ -269,8 +241,12 @@ const t = useTranslations(lang, 'public/submit-feedback');
             console.log("Verify Data:", verifyData);
 
             if (verifyData.status !== 200) {
-                console.log(captchaErrorText);
-                timeout(formError, 4000, captchaErrorText, errorPlaceholder, buttonLoader);
+                console.log(captchaErrorText.textContent);
+                const toast = document.createElement('toast-message');
+                toast.innerText = captchaErrorText.textContent;
+                toast.setAttribute('dismissible', 'true');
+        
+                document.body.appendChild(toast);
                 return;
             }
 
@@ -285,48 +261,29 @@ const t = useTranslations(lang, 'public/submit-feedback');
                 const response = await submission.json();
 
                 console.log("Response:", response);
-
-                timeout(formSuccess, 4000, response.message, successPlaceholder, buttonLoader);
+                buttonLoader.style.display = 'none';
                 form.reset();
-                if (response.isLoggedInUser) {
-                    setTimeout(() => {
-                        window.location.href = response.submissionPath;
-                    }, 6000);
-                }
+                const toast = document.createElement('toast-message');
+                toast.innerText = response.message;
+                toast.setAttribute('dismissible', 'true');
+        
+                document.body.appendChild(toast);
             } else {
-                timeout(formError, 4000, feedbackErrorText, errorPlaceholder, buttonLoader);
+                buttonLoader.style.display = 'none';
+                const toast = document.createElement('toast-message');
+                toast.innerText = feedbackErrorText.textContent;
+                toast.setAttribute('dismissible', 'true');
+        
+                document.body.appendChild(toast);
             }
 
         } catch (error) {
-            timeout(formError, 4000, captchaErrorText, errorPlaceholder, buttonLoader);
+            buttonLoader.style.display = 'none';
+            const toast = document.createElement('toast-message');
+            toast.innerText = captchaErrorText.textContent;
+            toast.setAttribute('dismissible', 'true');
+        
+            document.body.appendChild(toast);
         }
     });
-</script>
-
-<script is:inline>
-
-    const turnstileElement = document.getElementById('turnstile-container');
-    const sitekey = document.getElementById('turnstile-container').dataset.sitekey;
-
-    const turnstileElementID = '#turnstile-container';
-
-    const themeMap = {
-        'auto': 'auto',
-        'emerald': 'light',
-        'dark': 'dark'
-    }
-
-    function onloadTurnstileCallback() {
-        widgetId = turnstile.render(turnstileElementID, {
-            sitekey: sitekey,
-            size: 'normal',
-            theme: themeMap[window.theme.getTheme()],
-        })
-    }
-
-    document.addEventListener('theme-changed', () => {
-        turnstile.remove(turnstileElementID);
-        onloadTurnstileCallback();
-    })
-
 </script>

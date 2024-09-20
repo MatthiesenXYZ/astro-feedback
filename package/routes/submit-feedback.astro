@@ -18,7 +18,7 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, 'public/submit-feedback');
 ---
 
-<BaseLayout sideBarActiveItemID="submit-feedback-public">
+<BaseLayout sideBarActiveItemID="submit-feedback-public" lang={lang}>
 
   <VerticalContainer>
 
@@ -26,7 +26,7 @@ const t = useTranslations(lang, 'public/submit-feedback');
 
         <div class="flex flex-row text-center">
             <Heading tag={'h1'}>{t('title')}</Heading>
-            <Image src={Logo} alt="Logo" width={64} height={64} loading={'eager'}/>
+            <Image src={Logo} alt="Astro Feedback Center Icon" width={64} height={64} loading={'eager'}/>
         </div>
 
         <p class="text-center">

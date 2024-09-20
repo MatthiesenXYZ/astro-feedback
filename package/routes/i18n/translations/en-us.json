@@ -13,6 +13,7 @@
   "components/user-widget": {
     "contextmenu-open-panel": "Open User Panel",
     "contextmenu-dashboard": "Dashboard",
+    "contextmenu-new-feedback": "Submit Feedback",
     "contextmenu-logout": "Logout",
     "matched-projects": "Your Projects",
     "no-projects": "No Projects Found",
@@ -20,6 +21,7 @@
     "open-submissions": "Open Submissions",
     "quick-actions": "Quick Actions",
     "quick-actions-dashboard": "Dashboard",
+    "quick-actions-new-feedback": "Submit Feedback",
     "quick-actions-profile": "View Profile",
     "quick-actions-projects": "View Projects",
     "quick-actions-logout": "Logout",
@@ -38,6 +40,25 @@
     "closed": "Closed",
     "resolved": "Resolved"
   },
+  "components/public-submission-form": {
+    "select-project-title": "Select a Project",
+    "select-project-unavailable": "No projects currently available.",
+    "email": "Email Address",
+    "subject": "Subject",
+    "subject-sr": "Subject of Feedback",
+    "subject-placeholder": "My Feedback Subject",
+    "feedback-body": "Your Feedback",
+    "feedback-body-placeholder": "My potentially important feedback...",
+    "captcha": "Turnstile Verification/Captcha",
+    "submit": "Submit",
+    "back": "Back to Homepage",
+    "alert-error-title": "Error:",
+    "alert-error-placeholder": "There was an Error",
+    "alert-success-title": "Success:",
+    "alert-success-placeholder": "Feedback Submitted Successfully!",
+    "error-captcha-failed": "Captcha verification failed, please try again.",
+    "error-feedback-failed": "Feedback submission failed, please try again."
+  },
   "public/index": {
     "greeting": "Welcome to the",
     "collect-manage": "Collect & manage User Feedback with ease!",
@@ -50,23 +71,6 @@
     "title": "Submit New Feedback",
     "description": "We appreciate your feedback! Please fill out the form below.",
     "form-preload": "Loading form..."
-  },
-  "public/submit-feedback:components": {
-    "select-project-title": "Select a Project",
-    "select-project-unavailable": "No projects currently available.",
-    "email": "Email Address",
-    "subject": "Subject",
-    "subject-sr": "Subject of Feedback",
-    "feedback-body": "Your Feedback",
-    "captcha": "Turnstile Verification/Captcha",
-    "submit": "Submit",
-    "back": "Back to Homepage",
-    "alert-error-title": "Error:",
-    "alert-error-placeholder": "There was an Error",
-    "alert-success-title": "Success:",
-    "alert-success-placeholder": "Feedback Submitted Successfully!",
-    "error-captcha-failed": "Captcha verification failed, please try again.",
-    "error-feedback-failed": "Feedback submission failed, please try again."
   },
   "dashboard/index": {
     "title": "Dashboard",

@@ -1,5 +1,4 @@
 ---
-import type { RouteMap } from 'astro-feedback:routes';
 import { Image } from 'astro:assets';
 import Logo from '../assets/astrofeedback-logo.webp';
 import { getLangFromUrl, useTranslations } from '../i18n';
@@ -7,11 +6,10 @@ import SideBarFooter from './SideBarFooter.astro';
 import SideBarMenu from './SideBarMenu.astro';
 
 interface Props {
-	r: RouteMap;
 	sideBarActiveItemID?: string | undefined;
 }
 
-const { sideBarActiveItemID, r } = Astro.props;
+const { sideBarActiveItemID } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, 'components/side-bar');
 ---
@@ -25,7 +23,7 @@ const t = useTranslations(lang, 'components/side-bar');
       <Image src={Logo} height={64} width={64} alt="Logo" loading={'eager'}/>
         <span class="text-2xl font-bold text-neutral-content">Astro Feedback</span>
     </div>
-    <SideBarMenu sideBarActiveItemID={sideBarActiveItemID} r={r} />
-    <SideBarFooter r={r} />
+    <SideBarMenu sideBarActiveItemID={sideBarActiveItemID} />
+    <SideBarFooter />
   </aside>
 </div>

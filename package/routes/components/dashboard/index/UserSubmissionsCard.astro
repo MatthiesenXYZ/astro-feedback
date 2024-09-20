@@ -1,7 +1,7 @@
 ---
-import routes from 'astro-feedback:routes';
+import { routeGenerator } from 'astro-feedback:routes';
 import type { tsSubmission } from '../../../../db/tsTables';
-import { getLangFromUrl } from '../../../i18n';
+import { getLangFromUrl, useTranslatedPath } from '../../../i18n';
 import { convertStatusString, getSubmissionStatusColor } from '../../../lib/statusHelpers';
 import RedirectButton from '../../RedirectButton.astro';
 import GetIcon from '../../icons/GetIcon.astro';
@@ -12,6 +12,10 @@ interface Props {
 
 const { userSubmissions } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+const {
+	portal: { submissions },
+} = routeGenerator();
 ---
 { 
     userSubmissions.length > 0 ?
@@ -26,7 +30,7 @@ const lang = getLangFromUrl(Astro.url);
                 <p class="text-sm mr-8 md:mr-10 line-clamp-2">{body}</p>
             </div>
             <RedirectButton 
-                link={`${routes.portal.projects.index}/${projectId}/submissions/${id}`}
+                link={translatePath(submissions(projectId, id).viewSubmission)}
                 class="btn btn-sm btn-outline btn-accent shadow-md absolute bottom-2 right-2"
                 >
                 <GetIcon icon={'view'} class='h-[1rem] w-[1rem]'/>
