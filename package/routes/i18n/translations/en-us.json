@@ -32,7 +32,14 @@
     "main": "Main Site",
     "portal": "Portal",
     "homepage": "Home Page",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "teams": "Teams",
+    "users": "User Management",
+    "admins": "Admin Tools",
+    "actions": "Actions",
+    "user-profile": "User Profile",
+    "logout": "Logout"
   },
   "components/open-submission-status": {
     "open": "Open",
@@ -85,5 +92,46 @@
     "title": "Please Sign in to Continue.",
     "github": "Sign in with GitHub",
     "back": "Back to Homepage"
+  },
+  "dashboard/projects/index": {
+    "title": "Projects",
+    "created": "Created",
+    "no-projects": "No Projects Found",
+    "no-projects-description": "You do not have any projects available.",
+    "new-project": "New Project",
+    "team": "Team"
+  },
+  "dashboard/projects/view-project": {
+    "title": "Project Details",
+    "created-at": "Created",
+    "owner": "Owner",
+    "submissions-open": "Submissions Open",
+    "yes": "Yes",
+    "no": "No",
+    "team": "Team",
+    "submissions": "Submissions",
+    "submissions-notfound": "No submissions found.",
+    "submissions-notfound-description": "There are no submissions for this project at this time.",
+    "edit-project": "Edit Project",
+    "details": "Details"
+  },
+  "dashboard/projects/new": {
+    "title": "Create a New Project",
+    "project-name": "Project Name",
+    "project-name-placeholder": "My New Project",
+    "project-description": "Project Description",
+    "project-description-placeholder": "A brief description of my new project...",
+    "project-team": "Project Team",
+    "project-team-placeholder": "My New Project Team",
+    "project-submissions": "Open Submissions?",
+    "project-submissions-placeholder": "Allow Submissions",
+    "project-submissions-true": "Yes",
+    "project-submissions-false": "No",
+    "project-default": "Set as Default Project?",
+    "project-default-placeholder": "Set as Default",
+    "project-default-true": "Yes",
+    "project-default-false": "No",
+    "create": "Create Project",
+    "cancel": "Cancel"
   }
 }

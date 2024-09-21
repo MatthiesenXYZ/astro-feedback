@@ -1,0 +1,61 @@
+---
+import { routeGenerator } from 'astro-feedback:routes';
+import type { tsSubmission } from '../../../../db/tsTables';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../../../i18n';
+import { convertStatusString, getSubmissionStatusColor } from '../../../lib/statusHelpers';
+import RedirectButton from '../../RedirectButton.astro';
+import GetIcon from '../../icons/GetIcon.astro';
+
+interface Props {
+	userSubmissions: (typeof tsSubmission.$inferSelect)[];
+}
+
+const { userSubmissions } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+const t = useTranslations(lang, 'dashboard/projects/view-project');
+const {
+	portal: { submissions },
+} = routeGenerator();
+---
+{ 
+    userSubmissions.length > 0 ?
+    userSubmissions.map(({ status, subject, body, projectId, id, createdAt }) => (
+        <div class="flex flex-row items-center justify-between p-4 w-full bg-base-100 rounded-lg shadow-lg relative">
+            <span 
+                class="text-sm text-base-content opacity-70 absolute top-4 right-4"
+                >
+                {t('created-at')} ━ {createdAt.toUTCString()}
+            </span>
+            <div class="flex flex-col">
+                <div class="flex flex-row items-center gap-2 pb-2 mt-4 md:mt-0">
+                    <span
+                        class:list={['text-sm', 'font-bold', 'submission-status', 'shadow-md', getSubmissionStatusColor(status)]}>{convertStatusString(status, lang)}</span>
+                    <span class="text-lg font-bold text-secondary">{subject}</span>
+                </div>
+                <p class="text-sm mr-8 md:mr-10 line-clamp-2">{body}</p>
+            </div>
+            <RedirectButton 
+                link={translatePath(submissions(projectId, id).viewSubmission)}
+                class="btn btn-sm btn-outline btn-accent shadow-md absolute bottom-2 right-2"
+                >
+                <GetIcon icon={'view'} class='h-[1rem] w-[1rem]'/>
+            </RedirectButton>
+        </div>
+    )) : <slot />
+}   
+
+
+<style>
+    .submission-status {
+        background-color: oklch(var(--b1));
+        border-radius: 0.25rem;
+        padding-inline: 0.5rem;
+        padding-top: 0.125rem;
+        padding-bottom: 0.125rem;
+        border-left: 2px solid;
+        border-right: 2px solid;
+        border-top: 0.125px solid;
+        border-bottom: 0.125px solid;
+    }
+</style>

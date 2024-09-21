@@ -1,0 +1,141 @@
+---
+import { routeGenerator } from 'astro-feedback:routes';
+import { db, eq } from 'astro:db';
+import { tsAdmin, tsProject, tsSubmission, tsTeam, tsUser } from '../../../../db/tsTables';
+import RedirectButton from '../../../components/RedirectButton.astro';
+import UserSubmissionsCard from '../../../components/dashboard/viewProject/UserSubmissionsCard.astro';
+import Heading from '../../../components/headings/Heading.astro';
+import GetIcon from '../../../components/icons/GetIcon.astro';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../../../i18n';
+import DashboardLayout from '../../../layouts/DashboardLayout.astro';
+import { getUserMetadata } from '../../../lib/GetMeta';
+import { validateUser } from '../../../lib/validateUser';
+
+export const prerender = false;
+
+const { isAdmin } = await getUserMetadata(Astro);
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'dashboard/projects/view-project');
+const translatePath = useTranslatedPath(lang);
+const {
+	portal: { projects },
+} = routeGenerator();
+
+const { project } = Astro.params;
+
+if (!project) {
+	return Astro.redirect('/404');
+}
+
+const projectData = await db.select().from(tsProject).where(eq(tsProject.id, project)).get();
+
+if (!projectData) {
+	return Astro.redirect('/404');
+}
+
+const { title, createdAt, description, owner, submissionsOpen, teamId } = projectData;
+
+const v = await validateUser(Astro, 'teammember', teamId);
+if (v) return v;
+
+const ownerAdminId = await db.select().from(tsAdmin).where(eq(tsAdmin.id, owner)).get();
+
+const ownerData = await db
+	.select()
+	.from(tsUser)
+	.where(eq(tsUser.id, ownerAdminId?.userId || ''))
+	.get();
+
+const teamData = await db.select().from(tsTeam).where(eq(tsTeam.id, teamId)).get();
+
+const projectSubmissions = await db
+	.select()
+	.from(tsSubmission)
+	.where(eq(tsSubmission.projectId, project));
+---
+
+<DashboardLayout sideBarActiveItemID="projects" lang={lang}>
+        
+    <div class="flex flex-col w-full relative mt-14 md:mt-0">
+        <Heading tag={'h1'}>{t('title')}</Heading>
+    </div>
+
+    <div class="divider my-4"></div>
+
+    <div class="card bg-base-300 p-4 rounded-lg my-2">
+        <div class="card-body bg-base-200 flex flex-col w-full relative">
+            <span class="text-4xl font-bold text-secondary text-shadow-md shadow-black mt-2 md:mt-0">
+                {title}
+            </span>
+
+            {
+                isAdmin && (
+                    <div class="absolute top-4 right-4">
+                        <RedirectButton 
+                            link={translatePath(projects(project).editProject)}
+                            class="btn btn-sm btn-outline btn-accent shadow-md"
+                            >
+                            {t('edit-project')}
+                            <GetIcon icon={'edit'} class='h-[1rem] w-[1rem]'/>
+                        </RedirectButton>
+                    </div>
+                )
+            }
+
+            <div class="divider my-2"></div>
+
+            <span class="text-md text-base-content mr-8">
+                {description}
+            </span>
+
+            <div class="my-2"></div>
+
+            <div class="bg-base-100 flex flex-col p-2">
+
+                <span class="text-2xl font-bold text-secondary text-shadow-md shadow-black my-2">
+                    {t('details')}
+                </span>
+
+                <span class="text-md text-accent mr-8">
+                    <strong>{t('created-at')}</strong> ━ <span class='text-base-content'>{createdAt.toUTCString()}</span>
+                </span>
+                <span class="text-md text-accent mr-8">
+                    <strong>{t('team')}</strong> ━ <span class='text-base-content'>{teamData?.name}</span>
+                </span>
+                <span class="text-md text-accent mr-8">
+                    <strong>{t('owner')}</strong> ━ <span class='text-base-content'>{ownerData?.name}</span>
+                </span>
+                <span class="text-md text-accent mr-8">
+                    <strong>
+                        {t('submissions-open')}
+                    </strong> ━ { submissionsOpen 
+                                ? <span class="text-success">{t('yes')}</span> 
+                                : <span class="text-error">{t('no')}</span> }
+                </span>
+            </div>
+            
+            <div class="flex flex-col">
+                <span class="text-3xl font-bold text-secondary text-shadow-md shadow-black my-2">
+                    {t('submissions')}
+                </span>
+
+                <div class="divider my-2"></div>
+
+                <UserSubmissionsCard userSubmissions={projectSubmissions}>
+                    <div class="flex flex-col items-center">
+                        <span class="text-lg font-bold text-accent">
+                            {t('submissions-notfound')}
+                        </span>
+                        <span class="text-sm">
+                            {t('submissions-notfound-description')}
+                        </span>
+                    </div>
+                </UserSubmissionsCard>
+
+            </div>
+
+        </div>
+    </div>
+
+</DashboardLayout>

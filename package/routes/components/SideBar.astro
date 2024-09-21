@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import Logo from '../assets/astrofeedback-logo.webp';
 import { getLangFromUrl, useTranslations } from '../i18n';
-import SideBarFooter from './SideBarFooter.astro';
 import SideBarMenu from './SideBarMenu.astro';
 
 interface Props {
@@ -24,6 +23,5 @@ const t = useTranslations(lang, 'components/side-bar');
         <span class="text-2xl font-bold text-neutral-content">Astro Feedback</span>
     </div>
     <SideBarMenu sideBarActiveItemID={sideBarActiveItemID} />
-    <SideBarFooter />
   </aside>
 </div>

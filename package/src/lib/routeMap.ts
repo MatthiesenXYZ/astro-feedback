@@ -10,14 +10,6 @@ export const routeGenerator: RouteGenerator = () => {
 			index: '/portal',
 			login: '/portal/login',
 			logout: '/portal/logout',
-			teams(team?: string) {
-				return {
-					index: '/portal/teams',
-					viewTeam: `/portal/teams/${team}`,
-					editTeam: `/portal/teams/${team}/edit`,
-					newTeam: '/portal/teams/new',
-				};
-			},
 			projects(project?: string) {
 				return {
 					index: '/portal/projects',
@@ -31,6 +23,14 @@ export const routeGenerator: RouteGenerator = () => {
 					index: `/portal/projects/${project}/submissions`,
 					viewSubmission: `/portal/projects/${project}/submissions/${submission}`,
 					newSubmission: `/portal/projects/${project}/submissions/new`,
+				};
+			},
+			teams(team?: string) {
+				return {
+					index: '/portal/teams',
+					viewTeam: `/portal/teams/${team}`,
+					editTeam: `/portal/teams/${team}/edit`,
+					newTeam: '/portal/teams/new',
 				};
 			},
 			users(user?: string) {

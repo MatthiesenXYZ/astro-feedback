@@ -1,0 +1,161 @@
+---
+import { routeGenerator } from 'astro-feedback:routes';
+import RedirectButton from '../../components/RedirectButton.astro';
+import Heading from '../../components/headings/Heading.astro';
+import GetIcon from '../../components/icons/GetIcon.astro';
+import { getLangFromUrl, useTranslatedPath, useTranslations } from '../../i18n';
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import { getUserMetadata } from '../../lib/GetMeta';
+import { validateUser } from '../../lib/validateUser';
+
+export const prerender = false;
+
+const { matchedTeams } = await getUserMetadata(Astro);
+
+const v = await validateUser(Astro, 'admin');
+if (v) return v;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang, 'dashboard/projects/new');
+const translatePath = useTranslatedPath(lang);
+const {
+	api: { projects: projectsApi },
+	portal: { projects },
+} = routeGenerator();
+---
+<DashboardLayout sideBarActiveItemID="projects" lang={lang}>
+        
+    <div class="flex flex-col w-full relative mt-14 md:mt-0">
+        <Heading tag={'h1'}>{t('title')}</Heading>
+    </div>
+
+    <div class="divider my-4"></div>
+
+    <div class="card bg-base-300 p-4 rounded-lg my-2">
+        <div class="card-body bg-base-200 flex flex-col w-full relative">
+
+            <form id="create-new-project" action={projectsApi} method="post">
+
+                <div class="flex flex-col w-full gap-4">
+                    <label 
+                        for="project-title" 
+                        class="text-2xl font-bold text-secondary flex inline gap-2"
+                        ><GetIcon icon="project" height={32} width={32} />
+                        {t('project-name')}
+                    </label>
+                    <input 
+                        type="text" 
+                        id="project-title" 
+                        name="project-title" 
+                        placeholder={t('project-name-placeholder')}
+                        class="input input-bordered" 
+                        required/>
+
+                    <label
+                        for="project-description"
+                        class="text-2xl font-bold text-secondary flex inline gap-2 mt-4"
+                        ><GetIcon icon="description" height={32} width={32} />
+                        {t('project-description')}
+                    </label>
+                    <textarea
+                        id="project-description"
+                        name="project-description"
+                        placeholder={t('project-description-placeholder')}
+                        class="textarea textarea-bordered"
+                        required></textarea>
+                    
+                    <label
+                        for="project-team"
+                        class="text-2xl font-bold text-secondary flex inline gap-2 mt-4"
+                        ><GetIcon icon="team" height={32} width={32} />
+                        {t('project-team')}
+                    </label>
+                    <select
+                        id="project-team"
+                        name="project-team"
+                        class="select select-bordered"
+                        required>
+                        <option value="" disabled selected>{t('project-team-placeholder')}</option>
+                        {
+                            matchedTeams.map((team) => {
+                                if (team) {
+                                    return (
+                                        <option value={team.id}>{team.name}</option>
+                                    )
+                                }
+                            })
+                        }
+                    </select>
+
+                    <label
+                        for="project-submissions"
+                        class="text-2xl font-bold text-secondary flex inline gap-2 mt-4"
+                        ><GetIcon icon="feedback" height={32} width={32} />
+                        {t('project-submissions')}
+                    </label>
+                    <select id="project-submissions" name="project-submissions" class="select select-bordered" required>
+                        <option value="" disabled selected>{t('project-submissions-placeholder')}</option>
+                        <option value="true">{t('project-submissions-true')}</option>
+                        <option value="false">{t('project-submissions-false')}</option>
+                    </select>
+
+                    <label 
+                        for="project-default" 
+                        class="text-2xl font-bold text-secondary flex inline gap-2 mt-4"
+                        ><GetIcon icon="star" height={32} width={32} />
+                        {t('project-default')}
+                    </label>
+                    <select
+                        id="project-default"
+                        name="project-default"
+                        class="select select-bordered"
+                        required>
+                        <option value="true">{t('project-default-true')}</option>
+                        <option value="false" selected>{t('project-default-false')}</option>
+                    </select>
+
+                    <div class="flex flex-row justify-end gap-2 mt-4">
+                        <RedirectButton
+                            link={translatePath(projects().index)}
+                            class="btn btn-outline btn-accent shadow-md">
+                            {t('cancel')}
+                        </RedirectButton>
+                        <button
+                            type="submit"
+                            class="btn btn-accent shadow-md">
+                            {t('create')}
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <script>
+                const form = document.getElementById("create-new-project") as HTMLFormElement;
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: form.method,
+                        body: formData
+                    });
+                    if (response.status === 201) {
+                        form.reset();
+                        const toast = document.createElement('toast-message');
+                        toast.innerText = response.statusText;
+                        toast.setAttribute('dismissible', 'true');
+                        document.body.appendChild(toast);
+                    } else {
+                        const toast = document.createElement('toast-message');
+                        toast.innerText = response.statusText || 'An error occurred';
+                        toast.setAttribute('dismissible', 'true');
+                        document.body.appendChild(toast);
+                    }
+                })
+            </script>
+        
+        </div>
+    </div>
+</DashboardLayout>

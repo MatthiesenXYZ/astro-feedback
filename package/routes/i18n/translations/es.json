@@ -32,7 +32,14 @@
     "main": "Sitio principal",
     "portal": "Portal",
     "homepage": "Página de inicio",
-    "dashboard": "Panel"
+    "dashboard": "Panel",
+    "projects": "Proyectos",
+    "teams": "Equipos",
+    "users": "Gestión de usuarios",
+    "admins": "Herramientas de administración",
+    "actions": "Acciones",
+    "user-profile": "Perfil de usuario",
+    "logout": "Cerrar sesión"
   },
   "components/open-submission-status": {
     "open": "Abierto",
@@ -63,7 +70,7 @@
     "greeting": "Bienvenido a la",
     "collect-manage": "¡Recopile y administre los comentarios de los usuarios con facilidad!",
     "description": "Recopile comentarios sobre sus proyectos sin esfuerzo y luego supervise y administre los envíos a través de un panel optimizado.",
-    "description.color": "Manténgase conectado con sus usuarios y mejore su trabajo con comentarios en tiempo real.",
+    "description-color": "Manténgase conectado con sus usuarios y mejore su trabajo con comentarios en tiempo real.",
     "signin": "Iniciar sesión",
     "submit-feedback": "Enviar comentarios"
   },
@@ -85,5 +92,27 @@
     "title": "Inicie sesión para continuar.",
     "github": "Iniciar sesión con GitHub",
     "back": "Volver a la página de inicio"
+  },
+  "dashboard/projects/index": {
+    "title": "Proyectos",
+    "created": "Creado",
+    "no-projects": "No se encontraron proyectos",
+    "no-projects-description": "No tienes ningún proyecto disponible.",
+    "new-project": "Nuevo proyecto",
+    "team": "Equipo"
+  },
+  "dashboard/projects/view-project": {
+    "title": "Detalles del proyecto",
+    "created-at": "Creado",
+    "owner": "Propietario",
+    "submissions-open": "Envíos abiertos",
+    "yes": "Sí",
+    "no": "No",
+    "team": "Equipo",
+    "submissions": "Envíos",
+    "submissions-notfound": "No se encontraron envíos.",
+    "submissions-notfound-description": "No tienes envíos en este momento.",
+    "edit-project": "Editar proyecto",
+    "details": "Detalles"
   }
 }

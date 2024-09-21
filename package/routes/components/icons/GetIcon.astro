@@ -20,7 +20,13 @@ type currentIcons =
 	| 'logout'
 	| 'view'
 	| 'subject'
-	| 'link';
+	| 'link'
+	| 'team'
+	| 'users'
+	| 'plus'
+	| 'edit'
+	| 'description'
+	| 'star';
 
 export type { currentIcons };
 
@@ -42,6 +48,12 @@ const Components: Record<currentIcons, AstroComponent> = {
 	view: (await import('./View.astro')).default,
 	subject: (await import('./Subject.astro')).default,
 	link: (await import('./Link.astro')).default,
+	team: (await import('./Team.astro')).default,
+	users: (await import('./UserManagement.astro')).default,
+	plus: (await import('./Plus.astro')).default,
+	edit: (await import('./Edit.astro')).default,
+	description: (await import('./Description.astro')).default,
+	star: (await import('./Star.astro')).default,
 };
 
 interface Props extends HTMLAttributes<'svg'> {
@@ -50,7 +62,7 @@ interface Props extends HTMLAttributes<'svg'> {
 	height?: number;
 }
 
-const { icon, width = 128, height = width, ...props } = Astro.props;
+const { icon, width, height, ...props } = Astro.props;
 
 const Tag = Components[icon];
 ---

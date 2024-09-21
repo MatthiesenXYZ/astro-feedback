@@ -1,6 +1,7 @@
 ---
 import { routeGenerator } from 'astro-feedback:routes';
 import { getLangFromUrl, useTranslatedPath, useTranslations } from '../i18n';
+import { getUserMetadata } from '../lib/GetMeta';
 import GetIcon from './icons/GetIcon.astro';
 
 interface Props {
@@ -8,33 +9,83 @@ interface Props {
 }
 const { sideBarActiveItemID } = Astro.props;
 
+const { isAdmin, userData, matchedProjects, matchedTeams } = await getUserMetadata(Astro);
+
+const shouldShowSidebarItems = isAdmin || matchedProjects.length > 0 || matchedTeams.length > 0;
+
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang, 'components/side-bar');
 const translatePath = useTranslatedPath(lang);
 const {
-	portal: { index: dashboardIndex },
+	portal: { index: dashboardIndex, logout, users, projects, teams },
 	base: { index: homePage },
 } = routeGenerator();
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
 
-	<div class="divider mt-0 mb-2" id="ui-components-side-bar-main">{t('main')}</div>
+	<div class="divider mt-0 mb-1" id="ui-components-side-bar-main">{t('main')}</div>
 	<li>
-		<a class="btn shadow-md" id="home" href={translatePath(homePage)}>
+		<a class="btn shadow-md my-2" id="home" href={translatePath(homePage)}>
 			<GetIcon icon={'back'} class='h-[1.2rem] w-[1.2rem]'/>
 			<span id="ui-components-side-bar-homepage">{t('homepage')}</span>
 		</a>
 	</li>
 	
-	<div class="divider my-2" id="ui-components-side-bar-portal">{t('portal')}</div>
+	<div class="divider my-1" id="ui-components-side-bar-portal">{t('portal')}</div>
 	
 	<li>
-		<a class="btn shadow-md" id='dashboard' href={translatePath(dashboardIndex)}>
+		<a class="btn shadow-md my-2" id='dashboard' href={translatePath(dashboardIndex)}>
 			<GetIcon icon={'dashboard'} class='h-[1.2rem] w-[1.2rem]'/>
 			<span id="ui-components-side-bar-dashboard">{t('dashboard')}</span>
 		</a>
 	</li>
+
+	{ shouldShowSidebarItems && (
+		<li>
+			<a class="btn shadow-md my-2" id='projects' href={translatePath(projects().index)}>
+				<GetIcon icon={'project'} class='h-[1.2rem] w-[1.2rem]'/>
+				<span id="ui-components-side-bar-projects">{t('projects')}</span>
+			</a>
+		</li>
+	
+		<li>
+			<a class="btn shadow-md my-2" id='teams' href={translatePath(teams().index)}>
+				<GetIcon icon={'team'} class='h-[1.2rem] w-[1.2rem]'/>
+				<span id="ui-components-side-bar-teams">{t('teams')}</span>
+			</a>
+		</li>
+	)}
+
+	{ isAdmin && (
+		<div class="divider my-1" id="ui-components-side-bar-users">{t('admins')}</div>
+		<li>
+			<a class="btn shadow-md my-2" id='users' href={translatePath(users().index)}>
+				<GetIcon icon={'users'} class='h-[1.2rem] w-[1.2rem]'/>
+				<span id="ui-components-side-bar-users">{t('users')}</span>
+			</a>
+		</li>
+	)}
+
+	<div class="grow shrink h-full"></div>
+
+	<div class="divider my-1" id="ui-components-side-bar-useractions">{t('actions')}</div>
+
+	<li>
+		<a class="btn btn-accent shadow-md my-2" id="user-profile" href={translatePath(users(userData?.id).viewUser)}>
+			<GetIcon icon={'profile'} class='h-[1.2rem] w-[1.2rem]'/>
+			<span id="ui-components-side-bar-user-profile">{t('user-profile')}</span>
+		</a>
+	</li>
+
+	<li>
+		<a class="btn btn-error shadow-md my-2" id="logout" href={translatePath(logout)}>
+			<GetIcon icon={'logout'} class='h-[1.2rem] w-[1.2rem]'/>
+			<span id="ui-components-side-bar-logout">{t('logout')}</span>
+		</a>
+	</li>
+
+	<div class="my-1"></div>
 
 </ul>
 
